@@ -1,0 +1,1 @@
+java -classpath $CLASSPATH:weka.jar:WLSVM/lib/libsvm.jar weka.gui.GUIChooser

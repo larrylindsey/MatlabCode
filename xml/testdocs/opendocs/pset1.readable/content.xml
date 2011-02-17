@@ -1,0 +1,1415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<office:document-content
+xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0"
+xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0"
+xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0"
+xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0"
+xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0"
+xmlns:dr3d="urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0"
+xmlns:math="http://www.w3.org/1998/Math/MathML"
+xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0"
+xmlns:script="urn:oasis:names:tc:opendocument:xmlns:script:1.0"
+xmlns:ooo="http://openoffice.org/2004/office"
+xmlns:ooow="http://openoffice.org/2004/writer"
+xmlns:oooc="http://openoffice.org/2004/calc"
+xmlns:dom="http://www.w3.org/2001/xml-events"
+xmlns:xforms="http://www.w3.org/2002/xforms"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:rpt="http://openoffice.org/2005/report"
+xmlns:of="urn:oasis:names:tc:opendocument:xmlns:of:1.2"
+xmlns:rdfa="http://docs.oasis-open.org/opendocument/meta/rdfa#"
+xmlns:field="urn:openoffice:names:experimental:ooo-ms-interop:xmlns:field:1.0"
+xmlns:formx="urn:openoffice:names:experimental:ooxml-odf-interop:xmlns:form:1.0"
+office:version="1.2">
+
+<office:scripts/>
+
+
+<office:font-face-decls>
+
+<style:font-face style:name="Liberation Serif"
+svg:font-family="&apos;Liberation Serif&apos;"
+style:font-family-generic="roman"
+style:font-pitch="variable"/>
+
+
+<style:font-face style:name="Liberation Sans"
+svg:font-family="&apos;Liberation Sans&apos;"
+style:font-family-generic="swiss"
+style:font-pitch="variable"/>
+
+
+<style:font-face style:name="DejaVu Sans"
+svg:font-family="&apos;DejaVu Sans&apos;"
+style:font-family-generic="system"
+style:font-pitch="variable"/>
+
+</office:font-face-decls>
+
+
+<office:automatic-styles>
+
+<style:style style:name="P1" style:family="paragraph"
+style:parent-style-name="Standard">
+
+<style:paragraph-properties fo:text-align="end"
+style:justify-single-word="false"/>
+
+</style:style>
+
+
+<style:style style:name="P2" style:family="paragraph"
+style:parent-style-name="Standard">
+
+<style:paragraph-properties fo:text-align="start"
+style:justify-single-word="false"/>
+
+
+<style:text-properties fo:font-weight="bold" style:font-weight-asian="bold"
+style:font-weight-complex="bold"/>
+
+</style:style>
+
+
+<style:style style:name="P3" style:family="paragraph"
+style:parent-style-name="Standard">
+
+<style:paragraph-properties fo:text-align="start"
+style:justify-single-word="false"/>
+
+
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal"
+style:font-weight-complex="normal"/>
+
+</style:style>
+
+
+<style:style style:name="P4" style:family="paragraph"
+style:parent-style-name="Standard">
+
+<style:paragraph-properties fo:margin-left="0.4925in" fo:margin-right="0in"
+fo:text-align="start"
+style:justify-single-word="false"
+fo:text-indent="0in"
+style:auto-text-indent="false"/>
+
+
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal"
+style:font-weight-complex="normal"/>
+
+</style:style>
+
+
+<style:style style:name="P5" style:family="paragraph"
+style:parent-style-name="Standard"
+style:list-style-name="L1">
+
+<style:paragraph-properties fo:margin-left="0.4925in" fo:margin-right="0in"
+fo:text-align="start"
+style:justify-single-word="false"
+fo:text-indent="0in"
+style:auto-text-indent="false"/>
+
+
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal"
+style:font-weight-complex="normal"/>
+
+</style:style>
+
+
+<style:style style:name="P6" style:family="paragraph"
+style:parent-style-name="Standard"
+style:list-style-name="L2">
+
+<style:paragraph-properties fo:margin-left="0.4925in" fo:margin-right="0in"
+fo:text-align="start"
+style:justify-single-word="false"
+fo:text-indent="0in"
+style:auto-text-indent="false"/>
+
+
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal"
+style:font-weight-complex="normal"/>
+
+</style:style>
+
+
+<style:style style:name="P7" style:family="paragraph"
+style:parent-style-name="Standard"
+style:list-style-name="L3">
+
+<style:paragraph-properties fo:margin-left="0.4925in" fo:margin-right="0in"
+fo:text-align="start"
+style:justify-single-word="false"
+fo:text-indent="0in"
+style:auto-text-indent="false"/>
+
+
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal"
+style:font-weight-complex="normal"/>
+
+</style:style>
+
+
+<style:style style:name="P8" style:family="paragraph"
+style:parent-style-name="Standard">
+
+<style:paragraph-properties fo:margin-left="0.4925in" fo:margin-right="0in"
+fo:text-align="start"
+style:justify-single-word="false"
+fo:text-indent="0in"
+style:auto-text-indent="false"
+fo:break-before="page"/>
+
+
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal"
+style:font-weight-complex="normal"/>
+
+</style:style>
+
+
+<style:style style:name="P9" style:family="paragraph"
+style:parent-style-name="Standard"
+style:list-style-name="L3">
+
+<style:paragraph-properties fo:margin-left="0.4925in" fo:margin-right="0in"
+fo:text-align="start"
+style:justify-single-word="false"
+fo:text-indent="0in"
+style:auto-text-indent="false"
+fo:break-before="page"/>
+
+
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal"
+style:font-weight-complex="normal"/>
+
+</style:style>
+
+
+<style:style style:name="P10" style:family="paragraph"
+style:parent-style-name="Standard">
+
+<style:paragraph-properties fo:margin-left="0.9846in" fo:margin-right="0in"
+fo:text-align="start"
+style:justify-single-word="false"
+fo:text-indent="0in"
+style:auto-text-indent="false"/>
+
+
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal"
+style:font-weight-complex="normal"/>
+
+</style:style>
+
+
+<style:style style:name="P11" style:family="paragraph"
+style:parent-style-name="Standard">
+
+<style:paragraph-properties fo:margin-left="0in" fo:margin-right="0in"
+fo:text-align="start"
+style:justify-single-word="false"
+fo:text-indent="0in"
+style:auto-text-indent="false"/>
+
+
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal"
+style:font-weight-complex="normal"/>
+
+</style:style>
+
+
+<style:style style:name="P12" style:family="paragraph"
+style:parent-style-name="Standard">
+
+<style:paragraph-properties fo:margin-left="0in" fo:margin-right="0in"
+fo:text-align="start"
+style:justify-single-word="false"
+fo:text-indent="0in"
+style:auto-text-indent="false"
+fo:break-before="page"/>
+
+
+<style:text-properties fo:font-weight="bold" style:font-weight-asian="bold"
+style:font-weight-complex="bold"/>
+
+</style:style>
+
+
+<style:style style:name="P13" style:family="paragraph"
+style:parent-style-name="Standard"
+style:list-style-name="L4">
+
+<style:paragraph-properties fo:margin-left="0in" fo:margin-right="0in"
+fo:text-align="start"
+style:justify-single-word="false"
+fo:text-indent="0in"
+style:auto-text-indent="false"
+fo:break-before="page"/>
+
+
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal"
+style:font-weight-complex="normal"/>
+
+</style:style>
+
+
+<style:style style:name="T1" style:family="text">
+
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal"
+style:font-weight-complex="normal"/>
+
+</style:style>
+
+
+<style:style style:name="fr1" style:family="graphic"
+style:parent-style-name="Graphics">
+
+<style:graphic-properties style:vertical-pos="top" style:vertical-rel="baseline"
+style:horizontal-pos="center"
+style:horizontal-rel="paragraph"
+style:mirror="none"
+fo:clip="rect(0in, 0in, 0in, 0in)"
+draw:luminance="0%"
+draw:contrast="0%"
+draw:red="0%"
+draw:green="0%"
+draw:blue="0%"
+draw:gamma="100%"
+draw:color-inversion="false"
+draw:image-opacity="100%"
+draw:color-mode="standard"/>
+
+</style:style>
+
+
+<style:style style:name="fr2" style:family="graphic"
+style:parent-style-name="Graphics">
+
+<style:graphic-properties style:vertical-pos="from-top"
+style:horizontal-pos="center"
+style:horizontal-rel="paragraph"
+style:mirror="none"
+fo:clip="rect(0in, 0in, 0in, 0in)"
+draw:luminance="0%"
+draw:contrast="0%"
+draw:red="0%"
+draw:green="0%"
+draw:blue="0%"
+draw:gamma="100%"
+draw:color-inversion="false"
+draw:image-opacity="100%"
+draw:color-mode="standard"/>
+
+</style:style>
+
+
+<text:list-style style:name="L1">
+
+<text:list-level-style-number text:level="1"
+text:style-name="Numbering_20_Symbols"
+style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="0.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="0.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="2" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="0.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="0.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="3" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1in"
+fo:text-indent="-0.25in"
+fo:margin-left="1in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="4" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.25in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.25in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="5" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="6" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="7" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2in"
+fo:text-indent="-0.25in"
+fo:margin-left="2in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="8" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.25in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.25in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="9" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="10" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+</text:list-style>
+
+
+<text:list-style style:name="L2">
+
+<text:list-level-style-number text:level="1"
+text:style-name="Numbering_20_Symbols"
+style:num-suffix="."
+style:num-format="1"
+text:start-value="2">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="0.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="0.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="2" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="0.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="0.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="3" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1in"
+fo:text-indent="-0.25in"
+fo:margin-left="1in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="4" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.25in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.25in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="5" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="6" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="7" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2in"
+fo:text-indent="-0.25in"
+fo:margin-left="2in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="8" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.25in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.25in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="9" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="10" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+</text:list-style>
+
+
+<text:list-style style:name="L3">
+
+<text:list-level-style-number text:level="1"
+text:style-name="Numbering_20_Symbols"
+style:num-suffix="."
+style:num-format="1"
+text:start-value="4">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="0.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="0.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="2" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="0.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="0.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="3" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1in"
+fo:text-indent="-0.25in"
+fo:margin-left="1in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="4" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.25in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.25in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="5" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="6" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="7" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2in"
+fo:text-indent="-0.25in"
+fo:margin-left="2in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="8" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.25in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.25in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="9" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="10" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+</text:list-style>
+
+
+<text:list-style style:name="L4">
+
+<text:list-level-style-number text:level="1"
+text:style-name="Numbering_20_Symbols"
+style:num-suffix="."
+style:num-format="1"
+text:start-value="5">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="0.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="0.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="2" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="0.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="0.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="3" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1in"
+fo:text-indent="-0.25in"
+fo:margin-left="1in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="4" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.25in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.25in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="5" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="6" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="1.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="1.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="7" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2in"
+fo:text-indent="-0.25in"
+fo:margin-left="2in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="8" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.25in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.25in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="9" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.5in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.5in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+
+<text:list-level-style-number text:level="10" style:num-suffix="."
+style:num-format="1">
+
+<style:list-level-properties
+text:list-level-position-and-space-mode="label-alignment">
+
+<style:list-level-label-alignment text:label-followed-by="listtab"
+text:list-tab-stop-position="2.75in"
+fo:text-indent="-0.25in"
+fo:margin-left="2.75in"/>
+
+</style:list-level-properties>
+
+</text:list-level-style-number>
+
+</text:list-style>
+
+</office:automatic-styles>
+
+
+<office:body>
+
+<office:text text:use-soft-page-breaks="true">
+
+<text:sequence-decls>
+
+<text:sequence-decl text:display-outline-level="0" text:name="Illustration"/>
+
+
+<text:sequence-decl text:display-outline-level="0" text:name="Table"/>
+
+
+<text:sequence-decl text:display-outline-level="0" text:name="Text"/>
+
+
+<text:sequence-decl text:display-outline-level="0" text:name="Drawing"/>
+
+
+<text:sequence-decl text:display-outline-level="0" text:name="Figure"/>
+
+</text:sequence-decls>
+
+
+<text:p text:style-name="P1"> Larry Lindsey </text:p>
+
+
+<text:p text:style-name="P1"> larry </text:p>
+
+
+<text:p text:style-name="P1"> CS 378 Problem Set 1 </text:p>
+
+
+<text:p text:style-name="P1"/>
+
+
+<text:p text:style-name="P2"> I. </text:p>
+
+
+<text:p text:style-name="P3"/>
+
+
+<text:list xml:id="list1564535911" text:style-name="L1">
+
+<text:list-item>
+
+<text:p text:style-name="P5">
+The best way to build a filter that would have a maximal response at the center of the holes would be to use a match filter.
+
+<text:s/>
+
+In other words, one could build an image of a typical hole, and then use that image as a filter.
+</text:p>
+
+</text:list-item>
+
+</text:list>
+
+
+<text:p text:style-name="P4"/>
+
+
+<text:list xml:id="list1095061783" text:style-name="L2">
+
+<text:list-item>
+
+<text:p text:style-name="P6"> Some English pseudocode follows: </text:p>
+
+</text:list-item>
+
+</text:list>
+
+
+<text:p text:style-name="P4"/>
+
+
+<text:p text:style-name="P10">
+#Make a filter bank of filters that give a response to a gradient in a particular direction
+</text:p>
+
+
+<text:p text:style-name="P10"> input: image </text:p>
+
+
+<text:p text:style-name="P10"> output: histogram </text:p>
+
+
+<text:p text:style-name="P10"/>
+
+
+<text:p text:style-name="P10"> filterBank=make filter bank </text:p>
+
+
+<text:p text:style-name="P10"> histogram=intialize histogram </text:p>
+
+
+<text:p text:style-name="P10"/>
+
+
+<text:p text:style-name="P10"> for each filter f in the filterbank </text:p>
+
+
+<text:p text:style-name="P10"> 
+<text:tab/>
+ energy map=filter image by filter f
+</text:p>
+
+
+<text:p text:style-name="P10"> 
+<text:tab/>
+ energy sum=sum
+the energy in energy map
+</text:p>
+
+
+<text:p text:style-name="P10"> 
+<text:tab/>
+
+#where i is the index corresponding to the current filter f
+</text:p>
+
+
+<text:p text:style-name="P10"> 
+<text:tab/>
+ histogram[i]=energy sum </text:p>
+
+
+<text:p text:style-name="P10"> end for </text:p>
+
+
+<text:p text:style-name="P4"/>
+
+
+<text:p text:style-name="P4">
+The output should now contain a histogram indicating the distribution of gradient orientations within the input image.
+
+<text:s/>
+
+The histogram is only as good as the filters in the filter bank, however, and this does not address any issues of linear independence, etc.
+
+<text:s/>
+
+(IE, the filter response at a given pixel is not guaranteed to be unique to that filter).
+</text:p>
+
+
+<text:p text:style-name="P4"/>
+
+
+<text:p text:style-name="P12"> II </text:p>
+
+
+<text:p text:style-name="P4"> 1. 
+<text:tab/>
+ Vertical Seam Carving </text:p>
+
+
+<text:p text:style-name="P4">
+
+<draw:frame draw:style-name="fr1" draw:name="graphics1"
+text:anchor-type="as-char"
+svg:width="5.1937in"
+style:rel-width="75%"
+svg:height="3.8902in"
+style:rel-height="scale"
+draw:z-index="0">
+
+<draw:image xlink:href="Pictures/10000000000004B00000038427EE7D09.jpg"
+xlink:type="simple"
+xlink:show="embed"
+xlink:actuate="onLoad"/>
+
+</draw:frame>
+
+</text:p>
+
+
+<text:p text:style-name="P4"> 2. Image Energy </text:p>
+
+
+<text:p text:style-name="P4">
+
+<draw:frame draw:style-name="fr1" draw:name="graphics2"
+text:anchor-type="as-char"
+svg:width="5.1937in"
+style:rel-width="75%"
+svg:height="3.8902in"
+style:rel-height="scale"
+draw:z-index="1">
+
+<draw:image xlink:href="Pictures/10000000000004B00000038407C4C7E5.jpg"
+xlink:type="simple"
+xlink:show="embed"
+xlink:actuate="onLoad"/>
+
+</draw:frame>
+
+</text:p>
+
+
+<text:p text:style-name="P4">
+The energy map is a map of the edges in the picture, where the intensity corresponds to the magnitude of the sum of the x and y gradients at the given pixel.
+
+<text:s/>
+
+The cost map for column seams increases from top to bottom wherever there is a strong horizontal line in the energy map.
+
+<text:s/>
+
+Triangular shapes occur when there are strong high-cost lines of limited length.
+
+<text:s/>
+
+Just below those lines, the 8-connected path has a high cost, but to either side, there are diagonal 8-
+
+<text:soft-page-break/>
+
+connected paths of lower cost.
+
+<text:s/>
+
+In this image, the cost map for vertical seams is fairly uniform with regard to row, while the cost map for horizontal seams is much more varied.
+
+<text:s/>
+
+This is because the image is one with a horizon, in which all of the objects in the image are lined up more-or-less horizontally.
+
+<text:s/>
+
+This causes there to be clear row-seams in which the pixel value varies very slightly, but this is not the case of the column-seams.
+</text:p>
+
+
+<text:p text:style-name="P4"/>
+
+
+<text:p text:style-name="P4"> 3. </text:p>
+
+
+<text:p text:style-name="P4">
+
+<draw:frame draw:style-name="fr1" draw:name="graphics3"
+text:anchor-type="as-char"
+svg:width="5.1937in"
+style:rel-width="75%"
+svg:height="3.8902in"
+style:rel-height="scale"
+draw:z-index="2">
+
+<draw:image xlink:href="Pictures/10000000000004B000000384B6410D30.jpg"
+xlink:type="simple"
+xlink:show="embed"
+xlink:actuate="onLoad"/>
+
+</draw:frame>
+
+</text:p>
+
+
+<text:p text:style-name="P4">
+The first horizontal seam is selected as optimal because it cuts across the sky in this image, which has very limited variation.
+
+<text:s/>
+
+The vertical seam is optimal because it cuts across an optimal length of the crashing wave portion of the image, which despite the frenetic motion it represents, is rather smooth in the image.
+
+<text:s/>
+
+The sea also have a well-connected region of intensity smoothness.
+
+<text:s/>
+
+The seam then continues across a portion of the sand that is minimally covered by seals.
+</text:p>
+
+
+<text:p text:style-name="P4"/>
+
+
+<text:p text:style-name="P11">
+I try to make my code as modular and commented as possible.
+
+<text:s/>
+
+Unfortunately, I did not have time with this project to do the latter – I fly to Germany for half of a week tomorrow (Saturday).
+
+<text:s/>
+
+In any case, the main functions are wThenHResize, hThenWResize, and greedyResize.
+
+<text:s/>
+
+wthenH resizes by removing all of the requested vertical seams first, then by moving onto horizontal ones.
+
+<text:s/>
+
+hthenW does just the opposite.
+
+<text:s/>
+
+greedyResize compares the cost of taking out a horizontal seam to that of taking out a vertical one, and removes the one that costs least.
+
+<text:s/>
+
+reduceHeight and reduceWidth each take optional arguments beyond the required ones – a function handle to a function that calculates an alternate energy, and a precalculated cost map, used to reduce computational time in the case of greedyResize.
+
+<text:s/>
+
+Besides those that calculate energy, the others are essentially energy functions.
+</text:p>
+
+
+<text:list xml:id="list2143647817" text:style-name="L3">
+
+<text:list-item> 
+<text:p text:style-name="P9"> Gradient Computation </text:p>
+
+
+<text:p text:style-name="P7">
+
+<draw:frame draw:style-name="fr2" draw:name="graphics4"
+text:anchor-type="as-char"
+svg:y="-4.4299in"
+svg:width="5.1937in"
+style:rel-width="75%"
+svg:height="3.8902in"
+style:rel-height="scale"
+draw:z-index="3">
+
+<draw:image xlink:href="Pictures/10000000000004B000000384EBE1A25C.jpg"
+xlink:type="simple"
+xlink:show="embed"
+xlink:actuate="onLoad"/>
+
+</draw:frame>
+
+</text:p>
+
+
+<text:p text:style-name="P7">
+
+<draw:frame draw:style-name="fr1" draw:name="graphics5"
+text:anchor-type="as-char"
+svg:width="5.1937in"
+style:rel-width="75%"
+svg:height="3.8902in"
+style:rel-height="scale"
+draw:z-index="4">
+
+<draw:image xlink:href="Pictures/10000000000004B00000038470B8DCFB.jpg"
+xlink:type="simple"
+xlink:show="embed"
+xlink:actuate="onLoad"/>
+
+</draw:frame>
+
+</text:p>
+
+</text:list-item>
+
+</text:list>
+
+
+<text:p text:style-name="P4"/>
+
+
+<text:p text:style-name="P8">
+
+<draw:frame draw:style-name="fr1" draw:name="graphics6"
+text:anchor-type="as-char"
+svg:width="5.1937in"
+style:rel-width="75%"
+svg:height="3.8902in"
+style:rel-height="scale"
+draw:z-index="5">
+
+<draw:image xlink:href="Pictures/10000000000004B0000003845995D8D9.jpg"
+xlink:type="simple"
+xlink:show="embed"
+xlink:actuate="onLoad"/>
+
+</draw:frame>
+
+</text:p>
+
+
+<text:p text:style-name="P4"/>
+
+
+<text:p text:style-name="P4">
+The original energy function is computed by filtering the image with [-1 1], then [-1; 1], taking the absolute value of the outputs, then summing them.
+
+<text:s/>
+
+In this case, the same is done, but with the differential of a gaussian filter taken in the x and y directions.
+
+<text:s/>
+
+I would expect the result to be that the minimal seam would be effected less by small localized variations in the image.
+
+<text:s/>
+
+It is difficult to test my theorem with a painstaking comparison of seams, but this seems to be the case.
+
+<text:s/>
+
+In the image with seals, seams were taken out of the pier more often when the gaussian was used.
+
+<text:s text:c="2"/>
+
+Similarly, in the image with groceries, the placement of seams appears to have been more uniform on the right than on the left.
+</text:p>
+
+
+<text:p text:style-name="P4"/>
+
+
+<text:p text:style-name="P4"/>
+
+
+<text:list xml:id="list1901030965" text:style-name="L4">
+
+<text:list-header> 
+<text:p text:style-name="P13"/>
+ </text:list-header>
+
+</text:list>
+
+</office:text>
+
+</office:body>
+
+</office:document-content>

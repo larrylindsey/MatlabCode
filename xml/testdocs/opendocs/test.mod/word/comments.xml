@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<w:comments xmlns:mo="http://schemas.microsoft.com/office/mac/office/2008/main"
+xmlns:ve="http://schemas.openxmlformats.org/markup-compatibility/2006"
+xmlns:mv="urn:schemas-microsoft-com:mac:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
+xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+xmlns:w10="urn:schemas-microsoft-com:office:word"
+xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml">
+
+<w:comment w:id="29" w:author="2009 Kristen Harris"
+w:date="2009-09-13T16:15:00Z"
+w:initials="2H">
+
+<w:p w:rsidR="00EA30B2" w:rsidRDefault="00EA30B2">
+
+<w:pPr> 
+<w:pStyle w:val="CommentText"/>
+ </w:pPr>
+
+
+<w:r> 
+<w:rPr> 
+<w:rStyle w:val="CommentReference"/>
+ </w:rPr>
+
+
+<w:annotationRef/>
+
+</w:r>
+
+
+<w:r>
+
+<w:t>
+Check these for Vol 1 – was it at 6000x?  Series K24. Double check the rest.
+</w:t>
+
+</w:r>
+
+</w:p>
+
+</w:comment>
+
+
+<w:comment w:id="74" w:author="2009 Kristen Harris"
+w:date="2009-09-13T17:41:00Z"
+w:initials="KH">
+
+<w:p w:rsidR="00EA30B2" w:rsidRPr="006E203D" w:rsidRDefault="00EA30B2"
+w:rsidP="000F14F0">
+
+<w:pPr> 
+<w:pStyle w:val="CommentText"/>
+
+
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+</w:pPr>
+
+
+<w:r> 
+<w:rPr> 
+<w:rStyle w:val="CommentReference"/>
+ </w:rPr>
+
+
+<w:annotationRef/>
+
+</w:r>
+
+
+<w:r w:rsidRPr="006E203D"> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t xml:space="preserve"> WD what is the number of </w:t>
+
+</w:r>
+
+
+<w:proofErr w:type="spellStart"/>
+
+
+<w:r w:rsidRPr="006E203D"> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t> glial </w:t>
+
+</w:r>
+
+
+<w:proofErr w:type="spellEnd"/>
+
+
+<w:r w:rsidRPr="006E203D"> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t xml:space="preserve"> processes? </w:t>
+
+</w:r>
+
+</w:p>
+
+</w:comment>
+
+
+<w:comment w:id="145" w:author="2009 Kristen Harris"
+w:date="2009-09-13T15:36:00Z"
+w:initials="KH">
+
+<w:p w:rsidR="00EA30B2" w:rsidRDefault="00EA30B2" w:rsidP="007A3B72">
+
+<w:pPr> 
+<w:pStyle w:val="CommentText"/>
+
+
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+</w:pPr>
+
+
+<w:r> 
+<w:rPr> 
+<w:rStyle w:val="CommentReference"/>
+ </w:rPr>
+
+
+<w:annotationRef/>
+
+</w:r>
+
+
+<w:r w:rsidRPr="006E203D"> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t xml:space="preserve"> WD It </w:t>
+
+</w:r>
+
+
+<w:proofErr w:type="gramStart"/>
+
+
+<w:r w:rsidRPr="006E203D"> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t> would , </w:t>
+
+</w:r>
+
+
+<w:proofErr w:type="gramEnd"/>
+
+
+<w:r w:rsidRPr="006E203D"> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t xml:space="preserve">
+in fact, be very useful to have that number, precisely in order to compare it to other estimates of the extracellular volume fraction, e.g. in high pressure-frozen tissue.  Is, for example, the fractional swelling the same for axons and dendrites?
+</w:t>
+
+</w:r>
+
+
+<w:r> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+ 
+<w:t xml:space="preserve"/>
+
+</w:r>
+
+</w:p>
+
+
+<w:p w:rsidR="00EA30B2" w:rsidRPr="006E203D" w:rsidRDefault="00EA30B2"
+w:rsidP="007A3B72">
+
+<w:pPr> 
+<w:pStyle w:val="CommentText"/>
+
+
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+</w:pPr>
+
+</w:p>
+
+
+<w:p w:rsidR="00EA30B2" w:rsidRPr="007645BE" w:rsidRDefault="00EA30B2"
+w:rsidP="007A3B72">
+
+<w:pPr> 
+<w:pStyle w:val="CommentText"/>
+
+
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+</w:pPr>
+
+
+<w:r w:rsidRPr="007645BE"> 
+<w:rPr> 
+<w:b/>
+ 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t xml:space="preserve"> KH Response to </w:t>
+
+</w:r>
+
+
+<w:proofErr w:type="spellStart"/>
+
+
+<w:r w:rsidRPr="007645BE"> 
+<w:rPr> 
+<w:b/>
+ 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t> Denk </w:t>
+
+</w:r>
+
+
+<w:proofErr w:type="spellEnd"/>
+
+
+<w:r w:rsidRPr="007645BE"> 
+<w:rPr> 
+<w:b/>
+ 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t> , </w:t>
+
+</w:r>
+
+
+<w:r> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t xml:space="preserve">
+dendrites and axons do not swell, ECS is lost and overall tissue shrinks by about the same fraction that
+</w:t>
+
+</w:r>
+
+
+<w:r w:rsidRPr="006E203D"> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t>
+(KH find the old JCN paper that shows shrinkage of about 12%; and also reference expectation that ECS is about 20% so that remaining 6-8% is consistent with its loss accounting for all of the shrinkage
+</w:t>
+
+</w:r>
+
+
+<w:r> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t xml:space="preserve">
+.  I have revised the text and will add appropriate citations
+</w:t>
+
+</w:r>
+
+
+<w:proofErr w:type="gramStart"/>
+
+
+<w:r> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+ 
+<w:t> if  DC </w:t>
+ </w:r>
+
+
+<w:proofErr w:type="gramEnd"/>
+
+
+<w:r> 
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+
+<w:t xml:space="preserve"> and YM agree. </w:t>
+
+</w:r>
+
+</w:p>
+
+</w:comment>
+
+
+<w:comment w:id="154" w:author="2009 Kristen Harris"
+w:date="2009-09-13T15:36:00Z"
+w:initials="KH">
+
+<w:p w:rsidR="00EA30B2" w:rsidRPr="006E203D" w:rsidRDefault="00EA30B2"
+w:rsidP="007A3B72">
+
+<w:pPr> 
+<w:pStyle w:val="CommentText"/>
+
+
+<w:rPr> 
+<w:lang w:val="en-US"/>
+ </w:rPr>
+
+</w:pPr>
+
+
+<w:r> 
+<w:rPr> 
+<w:rStyle w:val="CommentReference"/>
+ </w:rPr>
+
+
+<w:annotationRef/>
+
+</w:r>
+
+</w:p>
+
+</w:comment>
+
+</w:comments>

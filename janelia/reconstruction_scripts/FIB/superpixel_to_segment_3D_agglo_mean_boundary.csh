@@ -1,0 +1,48 @@
+#!/bin/csh
+
+echo "Compute 3D agglo. mean boundary"
+
+# stack specific parameters
+set STACK_NAME=$argv[1]
+set STACK_START_SECTION=$argv[2]
+set STACK_END_SECTION=$argv[3]
+set STACK_FILTER_VERSION=$argv[4]
+
+
+set EM_ROOT_DIR="/groups/chklovskii/home/vitaladevunis/research/em_reconstruction_pipeline"
+set CODE_DIR=$EM_ROOT_DIR"/code/segmentation_3D"
+set RECONSTRUCTION_DIR=$EM_ROOT_DIR"/reconstructions/"$STACK_NAME
+set SUB_STACK_DIR=$RECONSTRUCTION_DIR"/image_stacks"
+set SUPERPIXEL_DIR=$RECONSTRUCTION_DIR"/3D_segmentation_results/watershed"
+set SUPERPIXEL_SUFFIX=$argv[5]
+set SEGMENT_OUTPUT_DIR=$RECONSTRUCTION_DIR"/3D_segmentation_results/agglo_mean_boundary"
+
+
+set IMAGE_SUB_STACK_SUFFIX = "."$STACK_START_SECTION"."$STACK_END_SECTION"."$STACK_FILTER_VERSION
+set IMAGE_SUB_STACK = "image_stack"$IMAGE_SUB_STACK_SUFFIX
+set SUPERPIXEL=$SUPERPIXEL_DIR/"seg_stack"$IMAGE_SUB_STACK_SUFFIX$SUPERPIXEL_SUFFIX".raw"
+
+
+if("$argv[6]" == "-s") then
+    set SEGMENT_METHOD=$argv[7]
+    set SEGMENT_SUFFIX=$SUPERPIXEL_SUFFIX$argv[8]
+    set BOUNDARY_LENGTH_THRESHOLD=$argv[9]
+    set F_THRESHOLD_SEQ="$argv[10-]"
+
+    set SEGMENT_INPUT_DIR=$RECONSTRUCTION_DIR"/3D_segmentation_results/$SEGMENT_METHOD"
+    set SEGMENT_INPUT=$SEGMENT_INPUT_DIR/"seg_stack"$IMAGE_SUB_STACK_SUFFIX$SEGMENT_SUFFIX".raw"
+    set SEGMENT_OUTPUT=$SEGMENT_OUTPUT_DIR/"seg_stack"$IMAGE_SUB_STACK_SUFFIX$SEGMENT_SUFFIX".amb.T%u.L$BOUNDARY_LENGTH_THRESHOLD.raw"
+
+    echo $CODE_DIR/superpixel_2_segment_3D_agglo_mean_boundary_b $SUB_STACK_DIR/$IMAGE_SUB_STACK".tif" $SUPERPIXEL -s $SEGMENT_INPUT $SEGMENT_OUTPUT $BOUNDARY_LENGTH_THRESHOLD $F_THRESHOLD_SEQ
+    $CODE_DIR/superpixel_2_segment_3D_agglo_mean_boundary_b $SUB_STACK_DIR/$IMAGE_SUB_STACK".tif" $SUPERPIXEL -s $SEGMENT_INPUT $SEGMENT_OUTPUT $BOUNDARY_LENGTH_THRESHOLD $F_THRESHOLD_SEQ
+else
+    set BOUNDARY_LENGTH_THRESHOLD=$argv[6]
+    set F_THRESHOLD_SEQ="$argv[7-]"
+    set SEGMENT_OUTPUT=$SEGMENT_OUTPUT_DIR/"seg_stack"$IMAGE_SUB_STACK_SUFFIX$SUPERPIXEL_SUFFIX".amb.T%u.L$BOUNDARY_LENGTH_THRESHOLD.raw"
+
+    echo $CODE_DIR/superpixel_2_segment_3D_agglo_mean_boundary_b $SUB_STACK_DIR/$IMAGE_SUB_STACK".tif" $SUPERPIXEL $SEGMENT_OUTPUT $BOUNDARY_LENGTH_THRESHOLD $F_THRESHOLD_SEQ
+    $CODE_DIR/superpixel_2_segment_3D_agglo_mean_boundary_b $SUB_STACK_DIR/$IMAGE_SUB_STACK".tif" $SUPERPIXEL $SEGMENT_OUTPUT $BOUNDARY_LENGTH_THRESHOLD $F_THRESHOLD_SEQ
+endif
+
+
+

@@ -1,0 +1,2002 @@
+diff -ru x86info-2007-01-04/AMD/identify.c x86info-1.21/AMD/identify.c
+--- x86info-2007-01-04/AMD/identify.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/AMD/identify.c	2007-11-26 19:37:20.000000000 -0500
+@@ -3,6 +3,9 @@
+  *  This file is part of x86info.
+  *  (C) 2001 Dave Jones.
+  *
++ *  Copyright (C) 2007 Advanced Micro Devices, Inc.
++ *                     Andreas Herrmann <andreas.herrmann3@amd.com>
++ *
+  *  Licensed under the terms of the GNU GPL License version 2.
+  *
+  *  AMD-specific information
+@@ -12,37 +15,191 @@
+ 
+ #include <stdio.h>
+ #include <unistd.h>
++#include <string.h>
+ #include <sys/types.h>
+ #include "../x86info.h"
+ #include "AMD.h"
++#include "revision.h"
+ 
+ static char *amd_nameptr;
+-#define add_to_cpuname(x)	amd_nameptr += snprintf(amd_nameptr, sizeof(x), "%s", x);
++#define add_to_cpuname(x) \
++do { \
++	amd_nameptr += snprintf(amd_nameptr, sizeof(x), "%s", x); \
++} while(0)
+ 
+-static void do_assoc(unsigned long assoc)
++static void set_k8_name(struct k8_rev *r, struct cpudata *c)
++{
++	int i, id, cont;
++	char s[CPU_NAME_LEN];
++	const char *p;
++
++	s[0] = 0;
++	cont = 0;
++	for (i=0; (r!=NULL) && (i<ARRAY_SIZE(k8_names)); i++) {
++		p = NULL;
++		id = 1<<i;
++		if (r->nameid & id)
++			p = get_k8_name(id);
++		if (p) {
++			if (cont)
++				strncat(s, "/", CPU_NAME_LEN-1);
++			else
++				cont = 1;
++			strncat(s, p, CPU_NAME_LEN-1);
++		}
++	}
++	if (r)
++		snprintf(c->name, CPU_NAME_LEN, "%s (%s)", s, r->rev);
++	else
++		snprintf(c->name, CPU_NAME_LEN, "Unknown CPU");
++}
++
++void set_k8_revinfo(int id, struct cpudata *c)
++{
++	int i;
++	struct k8_rev *r;
++
++	c->connector = 0;
++	r = NULL;
++	for (i=0; i<ARRAY_SIZE(k8_revisions); i++) {
++		if (k8_revisions[i].eax == id) {
++			r = &k8_revisions[i];
++			break;
++		}
++	}
++
++	set_k8_name(r, c);
++	c->connector = r ? r->socketid : 0;
++}
++
++void set_fam10h_revinfo(int id, struct cpudata *c)
+ {
+-	if ((assoc & 0xff) == 255)
+-		printf("Fully");
++	unsigned long eax, ebx, ecx, edx;
++	int pkg_id;
++	const char *p;
++	
++
++	p = get_fam10h_revision_name(id);
++	if (p)
++		snprintf(c->name, CPU_NAME_LEN,
++			 "Quad-Core/Dual-Core/Embedded Opteron (%s)", p);
+ 	else
+-		printf("%lu-way", assoc);
+-	printf(" associative. ");
++		snprintf(c->name, CPU_NAME_LEN, "Unknown CPU");
++
++	cpuid(c->number, 0x80000001, &eax, &ebx, &ecx, &edx);
++	pkg_id = (ebx >> 28) & 0xf;
++
++	switch (pkg_id) {
++	case 0:
++		c->connector = CONN_SOCKET_F_R2;
++		break;
++	case 1:
++		c->connector = CONN_SOCKET_AM2_R2;
++		break;
++	default:
++		c->connector = 0;
++	}
++}
++
++static void do_assoc(unsigned long assoc)
++{
++	switch (assoc & 0xff) {
++	case 0x0:
++		break;
++	case 0x1:
++		printf("Direct mapped. ");
++		break;
++	case 0xff:
++		printf("Fully associative. ");
++		break;
++	default:
++		printf("%lu-way associative. ", assoc);
++	}
++}
++
++static void do_l2assoc(unsigned long assoc)
++{
++	unsigned long a;
++
++	a = 0;
++	switch (assoc) {
++	case 0x0:
++		printf("Disabled. ");
++		break;
++	case 0x1:
++		printf("Direct mapped. ");
++		break;
++	case 0xf:
++		printf("Fully associative. ");
++		break;
++	case 0x2:
++		a = 2;
++		break;
++	case 0x4:
++		a = 4;
++		break;
++	case 0x6:
++		a = 8;
++		break;
++	case 0x8:
++		a = 16;
++		break;
++	case 0xa:
++		a = 32;
++		break;
++	case 0xb:
++		a = 48;
++		break;
++	case 0xc:
++		a = 64;
++		break;
++	case 0xd:
++		a = 96;
++		break;
++	case 0xe:
++		a = 128;
++		break;
++	default:
++		break;
++	}
++
++	if (a)
++		printf("%lu-way associative. ", a);
+ }
+ 
+ static void decode_AMD_cacheinfo(struct cpudata *cpu)
+ {
+ 	unsigned long eax, ebx, ecx, edx;
+ 
++	if ((cpu->eflags_edx & 1<<26) && cpu->maxei >= 0x80000019) {
++		/* 1GB page TLB info */
++		cpuid(cpu->number, 0x80000019, &eax, &ebx, &ecx, &edx);
++
++		printf("L1 Data TLB (1G):           ");
++		do_l2assoc(eax >> 28);
++		printf("%lu entries.\n", (eax >> 16) & 0xfff);
++		printf("L1 Instruction TLB (1G):    ");
++		do_l2assoc((eax >> 12) & 0xf);
++		printf("%lu entries.\n", eax & 0xfff);
++	}
++
+ 	if (cpu->maxei >= 0x80000005) {
+ 		/* TLB and cache info */
+ 		cpuid(cpu->number, 0x80000005, &eax, &ebx, &ecx, &edx);
+ 
+-		printf("Instruction TLB: ");
+-		do_assoc((ebx >> 8) & 0xff);
+-		printf("%lu entries.\n", ebx & 0xff);
++		printf("L1 Data TLB (2M/4M):        ");
++		do_assoc(eax >> 24);
++		printf("%lu entries.\n", (eax >> 16) & 0xff);
++		printf("L1 Instruction TLB (2M/4M): ");
++		do_assoc((eax >> 8) & 0xff);
++		printf("%lu entries.\n", eax & 0xff);
+ 
+-		printf("Data TLB: ");
++		printf("L1 Data TLB (4K):           ");
+ 		do_assoc(ebx >> 24);
+ 		printf("%lu entries.\n", (ebx >> 16) & 0xff);
++		printf("L1 Instruction TLB (4K):    ");
++		do_assoc((ebx >> 8) & 0xff);
++		printf("%lu entries.\n", ebx & 0xff);
+ 
+ 		printf("L1 Data cache:\n\t");
+ 		printf("Size: %luKb\t", ecx >> 24);
+@@ -59,16 +216,54 @@
+ 		printf("line size=%lu bytes.\n", edx & 0xff);
+ 	}
+ 
+-	/* check K6-III (and later) on-chip L2 cache size */
++	if ((cpu->eflags_edx & 1<<26) && cpu->maxei >= 0x80000019) {
++		/* 1GB page TLB info */
++		cpuid(cpu->number, 0x80000019, &eax, &ebx, &ecx, &edx);
++
++		printf("L2 Data TLB (1G):           ");
++		do_l2assoc(ebx >> 28);
++		printf("%lu entries.\n", (ebx >> 16) & 0xfff);
++		printf("L2 Instruction TLB (1G):    ");
++		do_l2assoc((ebx >> 12) & 0xf);
++		printf("%lu entries.\n", ebx & 0xfff);
++	}
++
+ 	if (cpu->maxei >= 0x80000006) {
++		/* K6-III (and later) on-chip L2 cache size */
+ 		cpuid(cpu->number, 0x80000006, &eax, &ebx, &ecx, &edx);
+-		printf("L2 (on CPU) cache:\n\t");
++
++		printf("L2 Data TLB (2M/4M):        ");
++		do_l2assoc(eax >> 28);
++		printf("%lu entries.\n", (eax >> 16) & 0xfff);
++		printf("L2 Instruction TLB (2M/4M): ");
++		do_l2assoc((eax >> 12) & 0xf);
++		printf("%lu entries.\n", eax & 0xfff);
++
++		printf("L2 Data TLB (4K):           ");
++		do_l2assoc(ebx >> 28);
++		printf("%lu entries.\n", (ebx >> 16) & 0xfff);
++		printf("L2 Instruction TLB (4K):    ");
++		do_l2assoc((ebx >> 12) & 0xf);
++		printf("%lu entries.\n", ebx & 0xfff);
++
++		printf("L2 cache:\n\t");
+ 		printf("Size: %luKb\t", ecx >> 16);
+-		do_assoc((ecx >> 12) & 0x0f);
++		do_l2assoc((ecx >> 12) & 0x0f);
+ 		printf("\n\t");
+ 		printf("lines per tag=%lu\t", (ecx >> 8) & 0x0f);
+ 		printf("line size=%lu bytes.\n", ecx & 0xff);
++		if (family(cpu) == 0x10) {
++			/* family 0x10 has shared L3  cache */
++			printf("L3 (shared) cache:\n\t");
++			printf("Size: %luKb\t",
++			       (edx >> 18) * 512);
++			do_l2assoc((edx >> 12) & 0x0f);
++			printf("\n\t");
++			printf("lines per tag=%lu\t", (edx >> 8) & 0x0f);
++			printf("line size=%lu bytes.\n", edx & 0xff);
++		}
+ 	}
++
+ 	printf("\n");
+ }
+ 
+@@ -133,15 +328,28 @@
+ 	cpu->stepping = eax & 0xf;
+ 	cpu->model = (eax >> 4) & 0xf;
+ 	cpu->family = (eax >> 8) & 0xf;
+-	cpu->emodel = (eax >> 16) & 0xff;
+-	cpu->efamily= (eax >> 20) & 0xf;
++	if (cpu->family == 0xf) {
++		cpu->emodel = (eax >> 16) & 0xf;
++		cpu->efamily= (eax >> 20) & 0xff;
++	} else {
++		cpu->emodel = 0;
++		cpu->efamily = 0;
++	}
++
++	if (family(cpu) == 0xf) {
++		set_k8_revinfo(eax, cpu);
++		return;
++	} else if (family(cpu) == 0x10) {
++		set_fam10h_revinfo(eax, cpu);
++		return;
++	}
+ 
+ 	switch (cpu->family) {
+ 	case 4:
+ 		cpu->connector = CONN_SOCKET_3;
+ 		break;
+ 	}
+-
++	
+ 	switch (tuple(cpu) & 0xff0) {
+ 	case 0x430:
+ 		add_to_cpuname("Am486DX2-WT");
+@@ -182,10 +390,12 @@
+ 		cpu->connector = CONN_SOCKET_5_7;
+ 		break;
+ 	case 0x560:
++		// 166,200,233 MHz
+ 		add_to_cpuname("K6 (0.30 um)");
+ 		cpu->connector = CONN_SOCKET_7;
+ 		break;
+ 	case 0x570:
++		// 200,233,266,300 MHz
+ 		add_to_cpuname("K6 (0.25 um)");
+ 		cpu->connector = CONN_SOCKET_7;
+ 		break;
+@@ -451,161 +661,18 @@
+   * Registered DIMM not required
+   * Athlon64 3x00+ (Q3 2004)
+   */
+-
+-	case 0xF00:
+-		cpu->connector = CONN_SOCKET_754;
+-		add_to_cpuname("Athlon 64 ");
+-		switch (cpu->stepping) {
+-		case 0:
+-			add_to_cpuname("[SH7-A0]");
+-			break;
+-		case 1:
+-			add_to_cpuname("[SH7-A2]");
+-			break;
+-		}
+-		break;
+-
+-	case 0xF10:
+-		add_to_cpuname("Opteron ES ");
+-		cpu->connector = CONN_SOCKET_940;
+-		switch (cpu->stepping) {
+-		case 0:
+-			add_to_cpuname("[SH7-A0]");
+-			break;
+-		case 1:
+-			add_to_cpuname("[SH7-A2]");
+-			break;
+-		}
+-		break;
+-
+-	case 0xF40:
+-		cpu->connector = CONN_SOCKET_754;
+-		add_to_cpuname("Athlon 64 ");
+-		switch (cpu->stepping) {
+-		case 0:
+-			if (cpu->emodel==0) {
+-				add_to_cpuname("[SH7-B0]");
+-			} else {
+-				add_to_cpuname("[SH8-D0]");
+-			}
+-			break;
+-		case 8:
+-			// need to check for longmode bit. could be athlon xp 3000+.
+-			//  (These are 32bit only amd64's)
+-			//might be mobile
+-			add_to_cpuname("[SH7-C0]");
+-			break;
+-		case 0xa:
+-			//might be mobile
+-			add_to_cpuname("[SH7-CG]");
+-			break;
+-		}
+-		break;
+-
+-	// Gar, these could also be athlon 64fx
+-	case 0xF50:
+-		cpu->connector = CONN_SOCKET_940;
+-		add_to_cpuname("Opteron");
+-		switch (cpu->stepping) {
+-		case 0:
+-			if (cpu->emodel==0) {
+-				add_to_cpuname("[SH7-B0]");
+-			} else {
+-				add_to_cpuname("[SH8-D0]");
+-			}
+-			break;
+-		case 1:
+-			add_to_cpuname("[SH7-B3]");
+-			break;
+-		case 8:
+-			add_to_cpuname("[SH7-C0]");
+-			break;
+-		case 0xA:
+-			add_to_cpuname("[SH7-CG]");
+-			break;
+-		default:
+-			break;
+-		}
+-		break;
+-
+-	case 0xF70:
+-		add_to_cpuname("Athlon 64 ");
+-		cpu->connector = CONN_SOCKET_939;
+-		switch (cpu->stepping) {
+-		case 0x0:
+-			add_to_cpuname("[SH8-D0]");
+-			break;
+-		case 0xa:
+-			add_to_cpuname("[SH7-CG]");
+-			break;
+-		}
+-		break;
+-
+-	case 0xF80:
+-		cpu->connector = CONN_SOCKET_754;
+-		add_to_cpuname("Athlon 64 ");
+-		switch (cpu->stepping) {
+-		case 2:
+-			//might be mobile
+-			add_to_cpuname("CH7-CG");
+-			break;
+-		}
+-		break;
+-
+-	case 0xFB0:
+-		cpu->connector = CONN_SOCKET_939;
+-		add_to_cpuname("Athlon 64 ");
+-		switch (cpu->stepping) {
+-		case 2:
+-			add_to_cpuname("CH7-CG");
+-			break;
+-		}
+-		break;
+-
+-	case 0xFC0:
+-		cpu->connector = CONN_SOCKET_754;
+-		add_to_cpuname("Athlon 64 ");
+-		switch (cpu->stepping) {
+-		case 0:
+-			//might be mobile
+-			add_to_cpuname("DH7-CG");
+-			break;
+-		}
+-		break;
+-
+-	case 0xFE0:
+-		//might be mobile
+-		cpu->connector = CONN_SOCKET_754;
+-		add_to_cpuname("Athlon 64 ");
+-		switch (cpu->stepping) {
+-		case 0:
+-			add_to_cpuname("DH7-CG");
+-			break;
+-		}
+-		break;
+-
+-
+-	case 0xFF0:
+-		cpu->connector = CONN_SOCKET_939;
+-		add_to_cpuname("Athlon 64 ");
+-		switch (cpu->stepping) {
+-		case 0:
+-			add_to_cpuname("DH7-CG");
+-			break;
+-		}
+-		break;
+-
+ 	default:
+ 		add_to_cpuname("Unknown CPU");
+ 		break;
+ 	}
+ }
+ 
+-
+ void display_AMD_info(struct cpudata *cpu)
+ {
++	unsigned long eax, ebx, ecx, edx;
++
+ 	printf("Family: %u Model: %u Stepping: %u\n",
+-	       cpu->family, cpu->model, cpu->stepping);
++	       family(cpu), model(cpu), cpu->stepping);
+ 	printf ("CPU Model : %s\n", cpu->name);
+ 	get_model_name(cpu);
+ 
+@@ -630,16 +697,48 @@
+ 	if (show_bugs)
+ 		show_amd_bugs(cpu);
+ 
++	if (cpu->maxi >= 0x05) {
++		cpuid (cpu->number, 0x05, &eax, &ebx, &ecx, NULL);
++		printf("Monitor/Mwait: min/max line size %d/%d%s%s\n",
++		       (int) (eax & 0xffff), (int) (ebx & 0xffff),
++		       (ecx & 0x2) ? ", ecx bit 0 support" : "",
++		       (ecx & 0x1) ? ", enumeration extension" : "");
++	}
++
++	if (cpu->maxei >= 0x8000000a) {
++		cpuid (cpu->number, 0x8000000a, &eax, &ebx, NULL, &edx);
++		printf("SVM: revision %d, %d ASIDs",
++		       (int) (eax & 0xff), (int) ebx);
++		if (edx & 1)
++			printf(", np");
++		if (edx & 2)
++			printf(", lbrVirt");
++		if (edx & 4)
++			printf(", SVMLock");
++		if (edx & 8)
++			printf(", NRIPSave");
++		printf("\n");
++	}
++
+ 	/* AMD Multicore characterisation */
+ 	if (cpu->maxei >= 0x80000008) {
+-		int nr_cores;
+-		unsigned long ecx;
+-
+-		cpuid (cpu->number, 0x80000008, NULL, NULL, &ecx, NULL);
+-		nr_cores = 1 + (ecx & 0xff);
++		int n, p;
++		cpuid (cpu->number, 0x80000008, &eax, NULL, &ecx, NULL);
++		printf("Address Size: %d bits virtual, %d bits physical\n",
++		       (int) (eax >> 8) & 0xff, (int) eax & 0xff);
++
++		p = (ecx >> 12) & 0xf;
++		n = (ecx & 0xff) + 1;
++		if (p)
++			p = 1 << p;
++		else
++			p = n;
+ 
+-		if (nr_cores > 1)
+-			printf ("The physical package has %d cores\n", nr_cores);
++		if (p > 1)
++			printf("The physical package has %d of %d "
++			       "possible cores implemented.\n", n, p);
+ 	}
++
++
+ }
+ 
+diff -ru x86info-2007-01-04/AMD/powernow.c x86info-1.21/AMD/powernow.c
+--- x86info-2007-01-04/AMD/powernow.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/AMD/powernow.c	2007-11-26 19:37:20.000000000 -0500
+@@ -30,85 +30,43 @@
+ 	15.0, 22.5, 16.0, 16.5, 17.0, 18.0, -1, -1,
+ };
+ 
+-void decode_powernow(struct cpudata *cpu)
++static void decode_fidvid(struct cpudata *cpu)
+ {
+-	unsigned long eax, ebx, ecx, edx;
+ 	union msr_vidctl vidctl;
+ 	union msr_fidvidstatus fidvidstatus;
+-	int can_scale_vid=0, can_scale_bus=0;
+-
+-	if (cpu->maxei < 0x80000007)
+-		return;
+-
+-	cpuid(cpu->number, 0x80000007, &eax, &ebx, &ecx, &edx);
+-	printf("PowerNOW! Technology information\n");
+-	printf("Available features:");
+-
+-	if (edx & (1<<0))
+-		printf("\n\tTemperature sensing diode present.");
+-
+-	if (edx & (1<<1)) {
+-		printf("\n\tBus divisor control");
+-		can_scale_bus=1;
+-	}
+-
+-	if (edx & (1<<2)) {
+-		printf("\n\tVoltage ID control\n");
+-		can_scale_vid=1;
+-	}
+-
+-	if (edx & (1<<3))
+-		printf ("\n\tThermal Trip\n");
+-
+-	if (edx & (1<<4))
+-		printf ("\n\tThermal Monitoring\n");
+-
+-	if (edx & (1<<5))
+-		printf ("\n\tSoftware Thermal Control\n");
+-	if (edx & (1<<6))
+-		printf ("100MHz multiplier control\n");
+-
+-	if (!(edx & (1<<0 | 1<<1 | 1<<2 | 1<<3 | 1<<4 | 1<<5 | 1<<6)))
+-		printf(" None\n");
+-	printf("\n");
+-
+-	if (can_scale_bus==0 && can_scale_vid==0)
+-		return;
+-
+-	if (!user_is_root)
+-		return;
+ 
+ 	dumpmsr(cpu->number, MSR_FID_VID_CTL, 64);
+ 	dumpmsr(cpu->number, MSR_FID_VID_STATUS, 64);
+ 	printf("\n");
+ 
+ 	if (read_msr(cpu->number, MSR_FID_VID_CTL, &vidctl.val) != 1) {
+-		printf ("Something went wrong reading MSR_FID_VID_CTL\n");
++		printf("Something went wrong reading MSR_FID_VID_CTL\n");
+ 		return;
+ 	}
+ 
+-	printf ("FID changes %s happen\n", vidctl.bits.FIDC ? "will" : "won't");
+-	printf ("VID changes %s happen\n", vidctl.bits.VIDC ? "will" : "won't");
++	printf("FID changes %s happen\n", vidctl.bits.FIDC ? "will" : "won't");
++	printf("VID changes %s happen\n", vidctl.bits.VIDC ? "will" : "won't");
+ 
+ 	if (vidctl.bits.VIDC)
+-		printf ("Current VID multiplier code: %0.3f\n", mobile_vid_table[vidctl.bits.VID]);
++		printf("Current VID multiplier code: %0.3f\n",
++			mobile_vid_table[vidctl.bits.VID]);
+ 	if (vidctl.bits.FIDC)
+-		printf ("Current FSB multiplier code: %.1f\n", fid_codes[vidctl.bits.FID]);
++		printf("Current FSB multiplier code: %.1f\n",
++			fid_codes[vidctl.bits.FID]);
+ 
+ 	/* Now dump the status */
+-
+ 	if (read_msr(cpu->number, MSR_FID_VID_STATUS, &fidvidstatus.val) != 1) {
+-		printf ("Something went wrong reading MSR_FID_VID_STATUS\n");
++		printf("Something went wrong reading MSR_FID_VID_STATUS\n");
+ 		return;
+ 	}
+ 
+ 
+-	printf ("Voltage ID codes: Maximum=%0.3fV Startup=%0.3fV Currently=%0.3fV\n",
++	printf("Voltage ID codes: Maximum=%0.3fV Startup=%0.3fV Currently=%0.3fV\n",
+ 		mobile_vid_table[fidvidstatus.bits.MVID],
+ 		mobile_vid_table[fidvidstatus.bits.SVID],
+ 		mobile_vid_table[fidvidstatus.bits.CVID]);
+ 
+-	printf ("Frequency ID codes: Maximum=%.1fx Startup=%.1fx Currently=%.1fx\n",
++	printf("Frequency ID codes: Maximum=%.1fx Startup=%.1fx Currently=%.1fx\n",
+ 		fid_codes[fidvidstatus.bits.MFID],
+ 		fid_codes[fidvidstatus.bits.SFID],
+ 		fid_codes[fidvidstatus.bits.CFID]);
+@@ -119,9 +77,141 @@
+ //		fidvidstatus.MFID, fidvidstatus.SFID, fidvidstatus.CFID);
+ 
+ 	if (show_bios) {
+-		printf ("Decoding BIOS PST tables (maxfid=%x, startvid=%x)\n",
+-					fidvidstatus.bits.MFID, fidvidstatus.bits.SVID);
++		printf("Decoding BIOS PST tables (maxfid=%x, startvid=%x)\n",
++			fidvidstatus.bits.MFID, fidvidstatus.bits.SVID);
+ 		dump_PSB(cpu, fidvidstatus.bits.MFID, fidvidstatus.bits.SVID);
+ 	}
+ }
+ 
++static double k8_vid_table[32] = {
++	1.550, 1.525, 1.500, 1.475, 1.450, 1.425, 1.400, 1.375,
++	1.350, 1.325, 1.300, 1.275, 1.250, 1.225, 1.200, 1.175,
++	1.150, 1.125, 1.100, 1.075, 1.050, 1.025, 1.000, 0.975,
++	0.950, 0.925, 0.900, 0.875, 0.850, 0.825, 0.800, 0.000,
++};
++
++static int k8_fid_codes[43] = {
++	4, -1, 5, -1, 6, -1, 7, -1, 8, -1, 9, -1, 10, -1, 11, -1,
++	12, -1, 13, -1, 14, -1, 15, -1, 16, -1, 17, -1, 18, -1, 19, -1,
++	20, -1, 21, -1, 22, -1, 23, -1, 24, -1, -25
++};
++
++static void k8_decode_fidvid(struct cpudata *cpu)
++{
++	union k8_msr_fidvidstatus fidvidstatus;
++
++	dumpmsr(cpu->number, MSR_FID_VID_CTL, 64);
++	dumpmsr(cpu->number, MSR_FID_VID_STATUS, 64);
++	printf("\n");
++
++	if (read_msr(cpu->number, MSR_FID_VID_STATUS, &fidvidstatus.val) != 1) {
++		printf ("Something went wrong reading MSR_FID_VID_STATUS\n");
++		return;
++	}
++
++	printf("Voltage ID codes: Maximum=%0.3fV Startup=%0.3fV Currently=%0.3fV\n",
++		k8_vid_table[fidvidstatus.bits.maxvid],
++		k8_vid_table[fidvidstatus.bits.svid],
++		k8_vid_table[fidvidstatus.bits.cvid]);
++
++	printf("Frequency ID codes: Maximum=%dx Startup=%dx Currently=%dx\n",
++		k8_fid_codes[fidvidstatus.bits.mfid],
++		k8_fid_codes[fidvidstatus.bits.sfid],
++		k8_fid_codes[fidvidstatus.bits.cfid]);
++}
++
++static int get_cof(int fid, int did, int family)
++{
++	int t = 0x10;
++	if (family == 0x10)
++		t = 0x10;
++	else
++		t = 0x8;
++	return (100*(fid+t)>>did);
++}
++
++static void decode_pstates(struct cpudata *cpu)
++{
++	int i, psmax, pscur;
++	union msr_pstate pstate;
++	unsigned long long val;
++
++	if (read_msr(cpu->number, MSR_PSTATE_LIMIT, &val) != 1) {
++		printf("Something went wrong reading MSR_PSTATE_CUR_LIMIT\n");
++		return;
++	}
++	psmax = (val >> 4) & 0x7;
++
++	if (read_msr(cpu->number, MSR_PSTATE_STATUS, &val) != 1) {
++		printf("Something went wrong reading MSR_PSTATE_STATUS\n");
++		return;
++	}
++	pscur = val & 0x7;
++
++	for (i=0; i<=psmax; i++) {
++		if (read_msr(cpu->number, MSR_PSTATE + i, &pstate.val) != 1) {
++			printf("Something went wrong reading MSR_PSTATE_%d\n",
++				i);
++			return;
++		}
++		printf("Pstate-%d: fid=%x, did=%x, vid=%x (%dMHz)%s\n", i,
++		       pstate.bits.fid, pstate.bits.did, pstate.bits.vid,
++		       get_cof(pstate.bits.fid, pstate.bits.did, family(cpu)),
++		       (i == pscur) ? " (current)"  : "");
++	}
++	printf("\n");
++}
++
++void decode_powernow(struct cpudata *cpu)
++{
++	unsigned long eax, ebx, ecx, edx;
++	int can_scale_vid=0, can_scale_fid=0;
++
++	if (cpu->maxei < 0x80000007)
++		return;
++
++	cpuid(cpu->number, 0x80000007, &eax, &ebx, &ecx, &edx);
++	printf("PowerNOW! Technology information\n");
++	printf("Available features:");
++
++	if (edx & (1<<0))
++		printf("\n\tTemperature sensing diode present.");
++	if (edx & (1<<1)) {
++		printf("\n\tFrequency ID control");
++		can_scale_fid=1;
++	}
++	if (edx & (1<<2)) {
++		printf("\n\tVoltage ID control");
++		can_scale_vid=1;
++	}
++	if (edx & (1<<3))
++		printf ("\n\tThermal Trip");
++	if (edx & (1<<4))
++		printf ("\n\tThermal Monitoring");
++	if (edx & (1<<5))
++		printf ("\n\tSoftware Thermal Control");
++	if (edx & (1<<6))
++		printf ("\n\t100MHz multiplier control");
++	if (edx & (1<<7)) {
++		printf ("\n\tHardware P-state control");
++		can_scale_fid = can_scale_vid = 1;
++	}
++	if (edx & (1<<8))
++		printf ("\n\tinvariant TSC");
++	if (!(edx & 0x1f))
++		printf(" None");
++	printf("\n\n");
++
++	if (can_scale_fid==0 && can_scale_vid==0)
++		return;
++
++	if (!user_is_root)
++		return;
++
++	if (family(cpu) < 0xf)
++		decode_fidvid(cpu);
++	else if (family(cpu) == 0xf)
++		k8_decode_fidvid(cpu);
++	else if (family(cpu) >= 0x10)
++		decode_pstates(cpu);
++}
+diff -ru x86info-2007-01-04/AMD/powernow.h x86info-1.21/AMD/powernow.h
+--- x86info-2007-01-04/AMD/powernow.h	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/AMD/powernow.h	2007-11-26 19:37:20.000000000 -0500
+@@ -14,6 +14,10 @@
+ #define MSR_FID_VID_CTL		0xc0010041
+ #define MSR_FID_VID_STATUS	0xc0010042
+ 
++#define MSR_PSTATE_LIMIT	0xc0010061
++#define MSR_PSTATE_STATUS	0xc0010063
++#define MSR_PSTATE		0xc0010064
++
+ union msr_vidctl {
+ 	struct {
+ 		unsigned FID:5,			// 4:0
+@@ -49,6 +53,46 @@
+ 	unsigned long long val;
+ };
+ 
++union k8_msr_fidvidstatus {
++	struct {
++		unsigned cfid:6;
++		unsigned res1:2;
++		unsigned sfid:6;
++		unsigned res2:2;
++		unsigned mfid:6;
++		unsigned res3:2;
++		unsigned mrampvid:5;
++		unsigned res4:2;
++		unsigned fvpending:1;
++		unsigned cvid:5;
++		unsigned res5:3;
++		unsigned svid:5;
++		unsigned res6:3;
++		unsigned maxvid:5;
++		unsigned res7:3;
++		unsigned minvid:5;
++		unsigned res8:3;
++	} bits;
++	unsigned long long val;
++};
++
++union msr_pstate {
++	struct {
++		unsigned fid:6;
++		unsigned did:3;
++		unsigned vid:7;
++		unsigned res1:6;
++		unsigned nbdid:1;
++		unsigned res2:2;
++		unsigned nbvid:7;
++		unsigned iddval:8;
++		unsigned idddiv:2;
++		unsigned res3:21;
++		unsigned en:1;
++	} bits;
++	unsigned long long val;
++};
++
+ extern double mobile_vid_table[32];
+ extern double fid_codes[32];
+ 
+Only in x86info-1.21/AMD: revision.h
+diff -ru x86info-2007-01-04/bench/benchmarks.c x86info-1.21/bench/benchmarks.c
+--- x86info-2007-01-04/bench/benchmarks.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/bench/benchmarks.c	2007-11-26 19:37:20.000000000 -0500
+@@ -1,19 +1,24 @@
+ #include <time.h>
+ #include <sys/time.h>
+-#include <asm/unistd.h>
+ #include <sys/stat.h>
+ #include <stdio.h>
+ #include "../x86info.h"
+ #include "bench.h"
+ 
++#ifdef __linux__
++#include <asm/unistd.h>
++#endif
++
+ void show_benchmarks(void)
+ {
+-	int ret, tmp=0;
++	int tmp = 0;
+ 
+ 	if (show_bench != 1)
+ 		return;
+ 
+-	TIME(asm volatile("int $0x80" :"=a" (ret) :"0" (__NR_getppid)), "int 0x80");
++#ifdef __linux__
++	TIME(asm volatile("int $0x80" :"=a" (tmp) :"0" (__NR_getppid)), "int 0x80");
++#endif
+ 	TIME(asm volatile("cpuid": : :"ax", "dx", "cx", "bx"), "cpuid");
+ 
+ 	TIME(asm volatile("addl $1,0(%esp)"), "addl");
+diff -ru x86info-2007-01-04/connector.c x86info-1.21/connector.c
+--- x86info-2007-01-04/connector.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/connector.c	2007-11-26 19:37:20.000000000 -0500
+@@ -5,164 +5,59 @@
+ #include <stdio.h>
+ #include "x86info.h"
+ 
+-void decode_connector(unsigned int type)
+-{
++static struct {
++	enum connector id;
++	const char *name;
++} connector_strings[] = {
+ 	/* generic sockets */
+-	char conn_socket_3[] = "Socket 3 (PGA socket)";
+-	char conn_socket_4[] = "Socket 4 (273 pin PGA)";
+-	char conn_socket_5[] = "Socket 5 (296 pin PGA socket)";
+-	char conn_socket_7[] = "Socket 7 (321 pin PGA socket)";
+-	char conn_socket_370[] = "Socket 370  (370 Pin PGA)";
+-	char conn_socket_370FCPGA[] = "Socket 370 (FC-PGA) or (PPGA)";
++	{CONN_SOCKET_3, "Socket 3 (PGA socket)"},
++	{CONN_SOCKET_4, "Socket 4 (273 pin PGA)"},
++	{CONN_SOCKET_5, "Socket 5 (296 pin PGA socket)"},
++	{CONN_SOCKET_7, "Socket 7 (321 pin PGA socket)"},
++	{CONN_SOCKET_370, "Socket 370  (370 Pin PGA)"},
++	{CONN_SOCKET_370_FCPGA, "Socket 370 (FC-PGA) or (PPGA)"},
+ 	/* AMD specific sockets */
+-	char conn_socket_5_7[] = "Socket 5/7 (296 Pin PGA)";
+-	char conn_super_socket_7[] = "Super Socket 7 (321 Pin PGA)";
+-	char conn_slot_a[] = "Slot A (242 Contact Cartridge)";
+-	char conn_socket_a[] = "Socket A (462 Pin PGA)";
+-	char conn_socketA_or_slotA[] = "Socket A or Slot A";
+-	char conn_socket_754[] = "Socket 754";
+-	char conn_socket_939[] = "Socket 939";
+-	char conn_socket_940[] = "Socket 940";
++	{CONN_SOCKET_5_7, "Socket 5/7 (296 Pin PGA)"},
++	{CONN_SUPER_SOCKET_7, "Super Socket 7 (321 Pin PGA)"},
++	{CONN_SLOT_A, "Slot A (242 Contact Cartridge)"},
++	{CONN_SOCKET_A, "Socket A (462 Pin PGA)"},
++	{CONN_SOCKET_A_OR_SLOT_A, "Socket A or Slot A"},
++	{CONN_SOCKET_754, "Socket 754"},
++	{CONN_SOCKET_939, "Socket 939"},
++	{CONN_SOCKET_940, "Socket 940"},
++	{CONN_SOCKET_S1G1, "Socket S1g1"},
++	{CONN_SOCKET_F, "Socket F (1207)"},
++	{CONN_SOCKET_AM2, "Socket AM2"},
++	{CONN_SOCKET_F_R2, "Socket Fr2 (1207)"},
++	{CONN_SOCKET_AM2_R2, "Socket AM2r2"},
+ 	/* Intel specific sockets */
+-	char conn_socket_57b[] = "Socket 5/7 (320 Pin PGA)";
+-	char conn_mobile_7[] = "Mobile Module (320 Lead TCP)";
+-	char conn_socket_8[] = "Socket 8 (387 pin Dual Cavity PGA)";
+-	char conn_slot_1[] = "Slot 1 (242 Contact Cartridge)";
+-	char conn_slot_2[] = "Slot 2 (SEC Cartridge)";
+-	char conn_socket_423[] = "Socket423 (PGA423 Socket)";
+-	char conn_socket_478[] = "Socket478 (PGA478 Socket)";
+-	char conn_socket_603[] = "Socket603 (PGA603 Socket)";
+-	char conn_MMC[] = "Mobile Module Connector (BGA)";
+-	char conn_MMC2[] = "Mobile Module Connector (MMC-2)";
+-	char conn_MICROFCBGA[] = "Micro-FCBGA";
+-	char conn_LGA775[] = "LGA775";
++	{CONN_SOCKET_57B, "Socket 5/7 (320 Pin PGA)"},
++	{CONN_MOBILE_7, "Mobile Module (320 Lead TCP)"},
++	{CONN_SOCKET_8, "Socket 8 (387 pin Dual Cavity PGA)"},
++	{CONN_SLOT_1, "Slot 1 (242 Contact Cartridge)"},
++	{CONN_SLOT_2, "Slot 2 (SEC Cartridge)"},
++	{CONN_SOCKET_423, "Socket423 (PGA423 Socket)"},
++	{CONN_SOCKET_478, "Socket478 (PGA478 Socket)"},
++	{CONN_SOCKET_603, "Socket603 (PGA603 Socket)"},
++	{CONN_MMC, "Mobile Module Connector (BGA)"},
++	{CONN_MMC2, "Mobile Module Connector (MMC-2)"},
++	{CONN_MICROFCBGA, "Micro-FCBGA"},
++	{CONN_LGA775, "LGA775"},
+ 	/* Transmeta specific sockets */
+-	char conn_BGA474[] = "474 Pin BGA";
++	{CONN_BGA474, "474 Pin BGA"},
+ 	/* natsemi specific (Geode) */
+-	char conn_BGA[] = "BGA";
++	{CONN_BGA, "BGA"},	/*  */
++};
++get_name(connector, enum connector, connector_strings);
+ 
++void decode_connector(enum connector type)
++{
++	const char *s;
+ 	if (type == CONN_UNKNOWN)
+ 		return;
+ 
+-	printf("Connector type: ");
+-	switch (type) {
+-	case CONN_SOCKET_3:
+-		printf("%s", conn_socket_3);
+-		break;
+-
+-	case CONN_SOCKET_4:
+-		printf("%s", conn_socket_4);
+-		break;
+-
+-	case CONN_SOCKET_5:
+-		printf("%s", conn_socket_5);
+-		break;
+-
+-	case CONN_SOCKET_7:
+-		printf("%s", conn_socket_7);
+-		break;
+-
+-	case CONN_SOCKET_370:
+-		printf("%s", conn_socket_370);
+-		break;
+-
+-	case CONN_SOCKET_370_FCPGA:
+-		printf("%s", conn_socket_370FCPGA);
+-		break;
+-
+-	case CONN_SOCKET_5_7:
+-		printf("%s", conn_socket_5_7);
+-		break;
+-
+-	case CONN_SUPER_SOCKET_7:
+-		printf("%s", conn_super_socket_7);
+-		break;
+-
+-	case CONN_SLOT_A:
+-		printf("%s", conn_slot_a);
+-		break;
+-
+-	case CONN_SOCKET_A:
+-		printf("%s", conn_socket_a);
+-		break;
+-
+-	case CONN_SOCKET_A_OR_SLOT_A:
+-		printf("%s", conn_socketA_or_slotA);
+-		break;
+-
+-	case CONN_SOCKET_754:
+-		printf("%s", conn_socket_754);
+-		break;
+-
+-	case CONN_SOCKET_939:
+-		printf("%s", conn_socket_939);
+-		break;
+-
+-	case CONN_SOCKET_940:
+-		printf("%s", conn_socket_940);
+-		break;
+-
+-	case CONN_SOCKET_57B:
+-		printf("%s", conn_socket_57b);
+-		break;
+-
+-	case CONN_MOBILE_7:
+-		printf("%s", conn_mobile_7);
+-		break;
+-
+-	case CONN_SOCKET_8:
+-		printf("%s", conn_socket_8);
+-		break;
+-
+-	case CONN_SLOT_1:
+-		printf("%s", conn_slot_1);
+-		break;
+-
+-	case CONN_SOCKET_423:
+-		printf("%s", conn_socket_423);
+-		break;
+-
+-	case CONN_SOCKET_478:
+-		printf("%s", conn_socket_478);
+-		break;
+-
+-	case CONN_SOCKET_603:
+-		printf("%s", conn_socket_603);
+-		break;
+-
+-	case CONN_MMC:
+-		printf("%s", conn_MMC);
+-		break;
+-
+-	case CONN_MMC2:
+-		printf("%s", conn_MMC2);
+-		break;
+-
+-	case CONN_MICROFCBGA:
+-		printf("%s", conn_MICROFCBGA);
+-		break;
+-
+-	case CONN_SLOT_2:
+-		printf("%s", conn_slot_2);
+-		break;
+-
+-	case CONN_BGA474:
+-		printf("%s", conn_BGA474);
+-		break;
+-
+-	case CONN_BGA:
+-		printf("%s", conn_BGA);
+-		break;
+-
+-	case CONN_LGA775:
+-		printf("%s", conn_LGA775);
+-		break;
+-
+-	default:
+-		printf("unknown");
+-		break;
+-	}
+-
+-	printf("\n\n");
+-
++	s = get_connector_name(type);
++	if (!s)
++		s = "unknown";
++	printf("Connector type: %s\n\n", s);
+ }
+diff -ru x86info-2007-01-04/COPYING x86info-1.21/COPYING
+--- x86info-2007-01-04/COPYING	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/COPYING	2007-11-26 19:37:20.000000000 -0500
+@@ -1,8 +1,8 @@
+ 		    GNU GENERAL PUBLIC LICENSE
+ 		       Version 2, June 1991
+ 
+- Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+-     59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ Copyright (C) 1989, 1991 Free Software Foundation, Inc.,
++ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  Everyone is permitted to copy and distribute verbatim copies
+  of this license document, but changing it is not allowed.
+ 
+@@ -15,7 +15,7 @@
+ General Public License applies to most of the Free Software
+ Foundation's software and to any other program whose authors commit to
+ using it.  (Some other Free Software Foundation software is covered by
+-the GNU Library General Public License instead.)  You can apply it to
++the GNU Lesser General Public License instead.)  You can apply it to
+ your programs, too.
+ 
+   When we speak of free software, we are referring to freedom, not
+@@ -55,7 +55,7 @@
+ 
+   The precise terms and conditions for copying, distribution and
+ modification follow.
+-
++
+ 		    GNU GENERAL PUBLIC LICENSE
+    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+ 
+@@ -110,7 +110,7 @@
+     License.  (Exception: if the Program itself is interactive but
+     does not normally print such an announcement, your work based on
+     the Program is not required to print an announcement.)
+-
++
+ These requirements apply to the modified work as a whole.  If
+ identifiable sections of that work are not derived from the Program,
+ and can be reasonably considered independent and separate works in
+@@ -168,7 +168,7 @@
+ access to copy the source code from the same place counts as
+ distribution of the source code, even though third parties are not
+ compelled to copy the source along with the object code.
+-
++
+   4. You may not copy, modify, sublicense, or distribute the Program
+ except as expressly provided under this License.  Any attempt
+ otherwise to copy, modify, sublicense or distribute the Program is
+@@ -225,7 +225,7 @@
+ 
+ This section is intended to make thoroughly clear what is believed to
+ be a consequence of the rest of this License.
+-
++
+   8. If the distribution and/or use of the Program is restricted in
+ certain countries either by patents or by copyrighted interfaces, the
+ original copyright holder who places the Program under this License
+@@ -278,7 +278,7 @@
+ POSSIBILITY OF SUCH DAMAGES.
+ 
+ 		     END OF TERMS AND CONDITIONS
+-
++
+ 	    How to Apply These Terms to Your New Programs
+ 
+   If you develop a new program, and you want it to be of the greatest
+@@ -303,17 +303,16 @@
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+ 
+-    You should have received a copy of the GNU General Public License
+-    along with this program; if not, write to the Free Software
+-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+-
++    You should have received a copy of the GNU General Public License along
++    with this program; if not, write to the Free Software Foundation, Inc.,
++    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ 
+ Also add information on how to contact you by electronic and paper mail.
+ 
+ If the program is interactive, make it output a short notice like this
+ when it starts in an interactive mode:
+ 
+-    Gnomovision version 69, Copyright (C) year  name of author
++    Gnomovision version 69, Copyright (C) year name of author
+     Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
+     This is free software, and you are welcome to redistribute it
+     under certain conditions; type `show c' for details.
+@@ -336,5 +335,5 @@
+ This General Public License does not permit incorporating your program into
+ proprietary programs.  If your program is a subroutine library, you may
+ consider it more useful to permit linking proprietary applications with the
+-library.  If this is what you want to do, use the GNU Library General
++library.  If this is what you want to do, use the GNU Lesser General
+ Public License instead of this License.
+diff -ru x86info-2007-01-04/cpuid.c x86info-1.21/cpuid.c
+--- x86info-2007-01-04/cpuid.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/cpuid.c	2007-11-26 19:37:20.000000000 -0500
+@@ -13,14 +13,21 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <string.h>
+ #include <fcntl.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+ #include <errno.h>
+ 
++#if defined(__FreeBSD__)
++# include <sys/ioctl.h>
++# include <cpu.h>
++#endif
++
+ #include "x86info.h"
+ 
++#if defined(__FreeBSD__)
+ void cpuid (int CPU_number, unsigned int idx,
+ 	unsigned long *eax,
+ 	unsigned long *ebx,
+@@ -31,20 +38,78 @@
+ 	char cpuname[20];
+ 	unsigned char buffer[16];
+ 	int fh;
++	cpu_cpuid_args_t args;
+ 
+ 	if (nodriver==1) {
+ 		cpuid_UP(idx, eax, ebx, ecx, edx);
+ 		return;
+ 	}
+ 
++	args.level = idx;
+ 	/* Ok, use the /dev/CPU interface in preference to the _up code. */
+-	(void)snprintf(cpuname,18, "/dev/cpu/%d/cpuid", CPU_number);
++	(void)snprintf(cpuname,18, "/dev/cpu%d", CPU_number);
++	fh = open(cpuname, O_RDONLY);
++	if (fh != -1) {
++		if (ioctl(fh, CPU_CPUID, &args) != 0) {
++			perror(cpuname);
++			exit(EXIT_FAILURE);
++		}
++		if (eax!=0)	*eax = args.data[0];
++		if (ebx!=0)	*ebx = args.data[1];
++		if (ecx!=0)	*ecx = args.data[2];
++		if (edx!=0)	*edx = args.data[3];
++		if (close(fh) == -1) {
++			perror("close");
++			exit(EXIT_FAILURE);
++		}
++	} else {
++		/* Something went wrong, just do UP and hope for the best. */
++		nodriver = 1;
++		if (!silent && nrCPUs != 1)
++			perror(cpuname);
++		used_UP = 1;
++		cpuid_UP (idx, eax, ebx, ecx, edx);
++		return;
++	}
++}
++
++#else /* !__FreeBSD__ */
++
++/* Kernel CPUID driver's minimum supported read size
++ * (see linux/arch/i386/kernel/cpuid.c)
++ */
++#define CPUID_CHUNK_SIZE (16)
++
++void cpuid (int CPU_number, unsigned int idx,
++	unsigned long *eax,
++	unsigned long *ebx,
++	unsigned long *ecx,
++	unsigned long *edx)
++{
++	static int nodriver=0;
++	char cpuname[20];
++	unsigned char buffer[CPUID_CHUNK_SIZE];
++	int fh;
++
++	if (nodriver==1) {
++		cpuid_UP(idx, eax, ebx, ecx, edx);
++		return;
++	}
++
++	memset(cpuname, 0, sizeof(cpuname));
++#ifdef __sun__
++	/* Solaris doesn't (yet) have per-CPU interface */
++	(void)snprintf(cpuname, sizeof(cpuname), "/dev/cpu/self/cpuid");
++#else
++	/* Ok, use the /dev/cpu interface in preference to the _up code. */
++	(void)snprintf(cpuname, sizeof(cpuname), "/dev/cpu/%d/cpuid", CPU_number);
++#endif
+ 	fh = open(cpuname, O_RDONLY);
+ 	if (fh != -1) {
+ #ifndef S_SPLINT_S
+ 		lseek64(fh, (off64_t)idx, SEEK_CUR);
+ #endif
+-		if (read(fh, &buffer[0], 16) == -1) {
++		if (read(fh, &buffer[0], CPUID_CHUNK_SIZE) == -1) {
+ 			perror(cpuname);
+ 			exit(EXIT_FAILURE);
+ 		}
+@@ -66,3 +131,5 @@
+ 		return;
+ 	}
+ }
++
++#endif /* __FreeBSD__ */
+diff -ru x86info-2007-01-04/features.c x86info-1.21/features.c
+--- x86info-2007-01-04/features.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/features.c	2007-11-26 19:37:20.000000000 -0500
+@@ -56,20 +56,20 @@
+ 		"CMOV instruction",
+ 		"Page Attribute Table",
+ 		"36-bit PSEs",
+-		"Processor serial number",
++		"Processor serial number",	/* reserved on AMD */
+ 		"CLFLUSH instruction",
+ 		NULL,
+-		"Debug Trace Store",
+-		"ACPI via MSR",
++		"Debug Trace Store",		/* reserved on AMD */
++		"ACPI via MSR",			/* reserved on AMD */
+ 		"MMX support",
+ 		"FXSAVE and FXRESTORE instructions",
+ 		"SSE support",
+ 		"SSE2 support",
+-		"CPU self snoop",
++		"CPU self snoop",		/* reserved on AMD */
+ 		"Hyper-Threading",
+-		"Thermal Monitor",
++		"Thermal Monitor",		/* reserved on AMD */
+ 		NULL,
+-		"Pending Break Enable"
++		"Pending Break Enable"		/* reserved on AMD */
+ 	};
+ 	/* CPUID 0x00000001 ECX flags */
+ 	const char *intel_cap_generic_ecx_flags[] = {
+@@ -94,20 +94,23 @@
+ 	};
+ 
+ 	const char *amd_cap_generic_ecx_flags[] = {
+-		"sse3", NULL, NULL, NULL, NULL, NULL, NULL, NULL,
++		"sse3", NULL, NULL, "mwait", NULL, NULL, NULL, NULL,
+ 		NULL, NULL, NULL, NULL, NULL, "cmpxchg16b", NULL, NULL,
+-		NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
++		NULL, NULL, NULL, NULL, NULL, NULL, NULL, "popcnt",
+ 		NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
+ 	};
+ 	const char *amd_cap_extended_edx_flags[] = {
+-		NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+-		NULL, NULL, NULL, "syscall", NULL, NULL, NULL, NULL,
+-		NULL, NULL, NULL, "mp/sempron", "nx", NULL, "mmxext", NULL,
+-		NULL, "Fast fxsave/fxrstor", NULL, "rdtscp", NULL, "lm", "3dnowext", "3dnow"
+-	};
++		"fpu", "vme", "de", "pse", "tsc", "msr", "pae", "mce",
++		"cx8", "apic", NULL, "sep", "mtrr", "pge", "mca", "cmov",
++		"pat", "pse36", NULL, "mp", "nx", NULL, "mmxext", "mmx",
++		"fxsr", "ffxsr", "page1gb", "rdtscp",
++		NULL, "lm", "3dnowext",	"3dnow"
++	}; /* "mp" defined for CPUs prior to AMD family 0xf */
++
+ 	const char *amd_cap_extended_ecx_flags[] = {
+-		"lahf/sahf", "CMP legacy", "svm", "ExtApicSpace", "LockMovCr0", NULL, NULL, NULL,
+-		"3DNowPrefetch", NULL, NULL, NULL, NULL, NULL, NULL, NULL,
++		"lahf/sahf", "CmpLegacy", "svm", "ExtApicSpace",
++		"LockMovCr0", "abm", "sse4a", "misalignsse",
++		"3dnowPref", "osvw", "ibs", NULL, "skinit", "wdt", NULL, NULL,
+ 		NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+ 		NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL
+ 	};
+@@ -167,26 +170,27 @@
+ 			if (cpu->maxei < 0x80000001)
+ 				break;
+ 			printf ("Extended feature flags:\n");
+-			flag_decode(cpu->eflags_edx, &amd_cap_extended_edx_flags);
+-			flag_decode(cpu->eflags_ecx, &amd_cap_extended_ecx_flags);
++			flag_decode(cpu->eflags_edx, amd_cap_extended_edx_flags);
++			flag_decode(cpu->eflags_ecx, amd_cap_extended_ecx_flags);
++			printf("\n");
+ 			break;
+ 
+ 		case VENDOR_CENTAUR:
+ 			printf ("\n");
+ 			printf ("Extended feature flags:\n");
+-			flag_decode(cpu->flags_ecx, &centaur_cap_extended_ecx_flags);
++			flag_decode(cpu->flags_ecx, centaur_cap_extended_ecx_flags);
+ 			cpuid(cpu->number, 0xc0000000, &eax, &ebx, &ecx, &edx);
+ 			if (eax >=0xc0000001) {
+ 				cpuid(cpu->number, 0xc0000001, &eax, &ebx, &ecx, &edx);
+ 				cpu->flags_edx = edx;
+-				flag_decode(cpu->flags_edx, &centaur_cap_extended_edx_flags);
++				flag_decode(cpu->flags_edx, centaur_cap_extended_edx_flags);
+ 			}
+ 			break;
+ 
+ 		case VENDOR_TRANSMETA:
+ 			printf ("\n");
+ 			printf ("Extended feature flags:\n");
+-			flag_decode(cpu->flags_ecx, &transmeta_cap_flags);
++			flag_decode(cpu->flags_ecx, transmeta_cap_flags);
+ 			break;
+ 
+ 		case VENDOR_CYRIX:
+@@ -196,12 +200,12 @@
+ 		case VENDOR_INTEL:
+ 			printf ("\n");
+ 			printf ("Extended feature flags:\n");
+-			flag_decode(cpu->flags_ecx, &intel_cap_generic_ecx_flags);
++			flag_decode(cpu->flags_ecx, intel_cap_generic_ecx_flags);
+ 			if (cpu->maxei < 0x80000001)
+ 				break;
+ 			printf ("\n");
+-			flag_decode(cpu->eflags_edx, &intel_cap_extended_edx_flags);
+-			flag_decode(cpu->eflags_ecx, &intel_cap_extended_ecx_flags);
++			flag_decode(cpu->eflags_edx, intel_cap_extended_edx_flags);
++			flag_decode(cpu->eflags_ecx, intel_cap_extended_ecx_flags);
+ 			break;
+ 
+ 		default:
+diff -ru x86info-2007-01-04/Intel/cachesize.c x86info-1.21/Intel/cachesize.c
+--- x86info-2007-01-04/Intel/cachesize.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/Intel/cachesize.c	2007-11-26 19:37:20.000000000 -0500
+@@ -67,14 +67,6 @@
+ 	{ 0x43, 512, "L2 unified cache: 512KB, 4-way associative. 32 byte line size." },
+ 	{ 0x44, 1024, "L2 unified cache: 1MB, 4-way associative. 32 byte line size." },
+ 	{ 0x45, 2048, "L2 unified cache: 2MB, 4-way associative. 32 byte line size." },
+-	{ 0x46, 4096, "L3 unified cache: 4MB, 4-way associative. 64 byte line size." },
+-	{ 0x47, 8192, "L3 unified cache: 8MB, 8-way associative. 64 byte line size." },
+-	{ 0x49, 4096, "L3 unified cache: 4MB, 16-way associative. 64 byte line size." },
+-	{ 0x4a, 6144, "L3 unified cache: 6MB, 12-way associative. 64 byte line size." },
+-	{ 0x4b, 8192, "L3 unified cache: 8MB, 16-way associative. 64 byte line size." },
+-	{ 0x4c, 12288, "L3 unified cache: 12MB, 12-way associative. 64 byte line size." },
+-	{ 0x4d, 16384, "L3 unified cache: 16MB, 16-way associative. 64 byte line size." },
+-	{ 0x78, 1024, "L3 unified cache: 1MB, sectored, 8-way associative. 64 byte line size." },
+ 	{ 0x79, 128, "L2 unified cache: 128KB, sectored, 8-way associative. 64 byte line size." },
+ 	{ 0x7a, 256, "L2 unified cache: 256KB, sectored, 8-way associative. 64 byte line size." },
+ 	{ 0x7b, 512, "L2 unified cache: 512KB, sectored, 8-way associative. 64 byte line size." },
+@@ -90,6 +82,31 @@
+ 	{ 0, 0, NULL }
+ };
+ 
++static struct _cache_table L2L3_cache_table[] =
++{
++	{ 0x46, 4096, "L2 unified cache: 4MB, 4-way associative. 64 byte line size." },
++	{ 0x47, 8192, "L2 unified cache: 8MB, 8-way associative. 64 byte line size." },
++	{ 0x49, 4096, "L2 unified cache: 4MB, 16-way associative. 64 byte line size." },
++	{ 0x4a, 6144, "L2 unified cache: 6MB, 12-way associative. 64 byte line size." },
++	{ 0x4b, 8192, "L2 unified cache: 8MB, 16-way associative. 64 byte line size." },
++	{ 0x4c, 12288, "L2 unified cache: 12MB, 12-way associative. 64 byte line size." },
++	{ 0x4d, 16384, "L2 unified cache: 16MB, 16-way associative. 64 byte line size." },
++	{ 0x78, 1024, "L2 unified cache: 1MB, sectored, 8-way associative. 64 byte line size." },
++	{ 0, 0, NULL }
++};
++static struct _cache_table L3L2_cache_table[] =
++{
++	{ 0x46, 4096, "L3 unified cache: 4MB, 4-way associative. 64 byte line size." },
++	{ 0x47, 8192, "L3 unified cache: 8MB, 8-way associative. 64 byte line size." },
++	{ 0x49, 4096, "L3 unified cache: 4MB, 16-way associative. 64 byte line size." },
++	{ 0x4a, 6144, "L3 unified cache: 6MB, 12-way associative. 64 byte line size." },
++	{ 0x4b, 8192, "L3 unified cache: 8MB, 16-way associative. 64 byte line size." },
++	{ 0x4c, 12288, "L3 unified cache: 12MB, 12-way associative. 64 byte line size." },
++	{ 0x4d, 16384, "L3 unified cache: 16MB, 16-way associative. 64 byte line size." },
++	{ 0x78, 1024, "L3 unified cache: 1MB, sectored, 8-way associative. 64 byte line size." },
++	{ 0, 0, NULL }
++};
++
+ static struct _cache_table L3_cache_table[] =
+ {
+ 	{ 0x22, 512, "L3 unified cache: 512KB, 4-way associative. 64 byte line size." },
+@@ -132,8 +149,8 @@
+ 	{0xf1, 64, "128 byte prefetching."},
+ };
+ 
+-static char found_unknown=0;
+-static char unknown_array[256];
++static unsigned char found_unknown=0;
++static unsigned char unknown_array[256];
+ 
+ /* Decode Intel TLB and cache info descriptors */
+ //TODO : Errata workaround. http://www.sandpile.org/post/msgs/20002736.htm
+@@ -141,6 +158,7 @@
+ 			struct _cache_table *table)
+ {
+ 	int k=0;
++	int found=0;
+ 
+ 	/* "No 2nd-level cache or, if processor contains a valid 2nd-level
+ 	   cache, no 3rd-level cache". Skip this pointless entry.*/
+@@ -149,7 +167,7 @@
+ 
+ 	//TODO: Add description to link-list in cpu->
+ 
+-	while (table[k].descriptor != 0) {
++	while ((table[k].descriptor != 0) && (found==0)) {
+ 		if (table[k].descriptor == des) {
+ 
+ 			if (table == TRACE_cache_table)
+@@ -163,20 +181,24 @@
+ 
+ 			if (table == L2_cache_table)
+ 				cpu->cachesize_L2 += table[k].size;
++			if (table == L2L3_cache_table)
++				cpu->cachesize_L2 += table[k].size;
+ 
+ 			if (table == L3_cache_table)
+ 				cpu->cachesize_L3 += table[k].size;
++			if (table == L3L2_cache_table)
++				cpu->cachesize_L3 += table[k].size;
+ 
+ 			if (output)
+ 				printf (" %s\n", table[k].string);
++			found = 1;
+ 		}
+ 		k++;
+ 	}
+-	if (table[k].descriptor == 0) {
+-		if (unknown_array[des]==0) {
+-			unknown_array[des]=1;
+-			found_unknown++;
+-		}
++
++	if ((found==0) && (unknown_array[des]==0)) {
++		unknown_array[des]=1;
++		found_unknown++;
+ 	}
+ }
+ 
+@@ -223,9 +245,10 @@
+ }
+ 
+ 
+-void decode_Intel_caches (struct cpudata *cpu, int output)
++void decode_Intel_caches(struct cpudata *cpu, int output)
+ {
+-	unsigned int i;
++	unsigned int i = 0;
++	unsigned char oldknown;
+ 
+ 	if (cpu->maxi < 2)
+ 		return;
+@@ -234,10 +257,20 @@
+ 
+ 	if (output)
+ 		printf("Cache info\n");
++
+ 	decode_cache(cpu, TRACE_cache_table, output);
+ 	decode_cache(cpu, L1I_cache_table, output);
+ 	decode_cache(cpu, L1D_cache_table, output);
++	oldknown = found_unknown;
+ 	decode_cache(cpu, L2_cache_table, output);
++	if (found_unknown > 0) {
++		if (oldknown == found_unknown) {
++			 decode_cache(cpu, L2L3_cache_table, output);
++		} else {
++			 decode_cache(cpu, L3L2_cache_table, output);
++		}
++	}
++
+ 	decode_cache(cpu, L3_cache_table, output);
+ 	if (output)
+ 		printf("TLB info\n");
+@@ -249,16 +282,15 @@
+ 		return;
+ 
+ 	/* Remove any known entries */
+-	for (i=0; i<256; i++) {
+-		clean_unknowns(TRACE_cache_table);
+-		clean_unknowns(L1I_cache_table);
+-		clean_unknowns(L1D_cache_table);
+-		clean_unknowns(L2_cache_table);
+-		clean_unknowns(L3_cache_table);
+-		clean_unknowns(ITLB_cache_table);
+-		clean_unknowns(DTLB_cache_table);
+-		clean_unknowns(prefetch_table);
+-	}
++	clean_unknowns(TRACE_cache_table);
++	clean_unknowns(L1I_cache_table);
++	clean_unknowns(L1D_cache_table);
++	clean_unknowns(L2_cache_table);
++	clean_unknowns(L3_cache_table);
++	clean_unknowns(L2L3_cache_table);
++	clean_unknowns(ITLB_cache_table);
++	clean_unknowns(DTLB_cache_table);
++	clean_unknowns(prefetch_table);
+ 
+ 	if (found_unknown == 0)
+ 		return;
+diff -ru x86info-2007-01-04/Intel/identify.c x86info-1.21/Intel/identify.c
+--- x86info-2007-01-04/Intel/identify.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/Intel/identify.c	2007-11-26 19:37:20.000000000 -0500
+@@ -662,7 +662,11 @@
+ 		if(cpu->MHz/100 >= 29) {
+ 			add_to_cpuname("Extreme ");
+ 		} else {
+-			add_to_cpuname("Duo ");
++			if (cpu->stepping == 7) {
++				add_to_cpuname("Quad (Kentsfield)");
++			} else {
++				add_to_cpuname("Duo ");
++			}
+ 		}
+ 		// Check for Thermal Monitor 2 feature bit, because only the
+ 		// non-mobile processors have it
+@@ -720,13 +724,77 @@
+ 		// The Sept 06 Core 2 Intel Errata documentation says there are
+ 		// at least B1 and B2 steppings.
+ 		switch(cpu->stepping) {
++		case 2:
++			// 2M L2
++			// SL9TB E4300 1.86GHz
++			// SLA3F E4400 2GHz
++			// SL9TA E6300 1.86GHz
++			// SL9T9 E6400 2.13GHz
++			add_to_cpuname(" [L2]");
++			break;
+ 		// TODO: B1 as stepping 5 is a 100% guess
+ 		case 5:
+ 			add_to_cpuname(" [B1]");
+ 			break;
+ 		case 6:
++			// 2M L2
++			// SL9SA E6300 1.86GHz
++			// SL9S9 E6400 2.13GHz
++			//
++			// 4M L2
++			// SLA4U E6320 1.86GHz
++			// SLA4T E6420 2.13GHz
++			// SL9S8 E6600 2.4GHz
++			// SL9ZL E6700 2.66GHz
++			// SL9ZF E6700 2.66GHz
++			// SL9S5 X6800 2.93GHz
+ 			add_to_cpuname(" [B2]");
+ 			break;
++		case 7:
++			// SL9UK [B3] 2.93GHz  QX6800
++			// SL9UL [B3] 2.66GHz  QX6700
++			// SL9UM [B3] 2.4GHz   Q6600
++			// SLACP [G0] 2.93GHz  QX6800
++			break;
++		case 0xa:
++			// sCode Procname (IDA/HFM)
++			// SLA43 T7700 (2.6GHz/2.4GHz)
++			// SLA3M T7700 (2.6GHz/2.4GHz)
++			// SLA44 T7500 (2.4GHz/2.2GHz)
++			// SLA3N T7500 (2.4GHz/2.2GHz)
++			// SLA45 T7300 (2.4GHz/2.0GHz)
++			// SLA3P T7300 (2.2GHz/2.0GHz)
++			// SLA3R L7500 (1.8GHz/1.6GHz)
++			// SLA3S L7300 (1.6GHz/1.4GHz)
++			// SLA33 X7900 (2.8GHz)
++			// SLA6Z X7800 (2.6GHz)
++			add_to_cpuname(" [E1]");
++			break;
++		case 0xb:
++			// SLAA5 2.33GHz E6540
++			// SLA9X 2.33GHz E6550
++			// SLA9V 2.66GHz E6750
++			// SLA9U 3GHz    E6850
++			// SLAFN 3GHz    QX6850
++			// SLACQ 2.66GHz Q6700
++			// SLACR 2.4GHz  Q6600
++			//
++			// Xeon 7200/7300 series
++			// SLA67 2.93GHz X7350 [8M L2]
++			// SLA68 2.4GHz  E7340 [8M L2]
++			// SLA77 2.4GHz  E7330 [8M L2]
++			// SLA69 2.13GHz E7320 [4M L2]
++			// SLA6A 1.6GHz  E7310 [4M L2]
++			// SLA6B 1.86GHz L7345 [8M L2]
++			// SLA6C 2.93GHz E7220 [8M L2]
++			// SLA6D 2.4GHz  E7210 [8M L2]
++			add_to_cpuname(" [G0]");
++			break;
++		case 0xd:
++			// SLA98 E4400 2GHz
++			// SLA95 E4500 2GHz
++			add_to_cpuname(" [M0]");
++			break;
+ 		}
+ 		break;
+ 
+diff -ru x86info-2007-01-04/Intel/info.c x86info-1.21/Intel/info.c
+--- x86info-2007-01-04/Intel/info.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/Intel/info.c	2007-11-26 19:37:20.000000000 -0500
+@@ -69,7 +69,7 @@
+ 	if (show_msr) {
+ 		if (cpu->family==0xf)
+ 			dump_p4_MSRs(cpu);
+-		if (cpu->family==0x6 && cpu->model==9)
++		if (cpu->family==0x6 && (cpu->model == 9 || cpu->model == 13))
+ 			dump_centrino_MSRs(cpu);
+ 	}
+ 
+diff -ru x86info-2007-01-04/Makefile x86info-1.21/Makefile
+--- x86info-2007-01-04/Makefile	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/Makefile	2007-11-26 19:37:20.000000000 -0500
+@@ -1,4 +1,5 @@
+ CFLAGS = -Wall -W -Wshadow -g -O2
++CC = gcc
+ 
+ SHELL = /bin/sh
+ 
+@@ -67,8 +68,8 @@
+ test:
+ 	scripts/testnodes
+ 
+-VERSION=1.20
+-	
++VERSION=1.21
++
+ release:
+ 	git repack -a -d
+ 	git-prune-packed
+@@ -79,6 +80,10 @@
+ 	@find . -name "*~" -exec rm {} \;
+ 	@rm -f x86info x86info.exe
+ 
++C_SRC = *.c AMD/*.c Cyrix/*.c Intel/*.c NatSemi/*.c RiSE/*.c SiS/*.c IDT/*.c
++
+ splint:
+-	splint +posixlib -badflag -fileextensions -type -nullassign -boolops -showcolumn -sysunrecog -fullinitblock -onlytrans -unrecog -usedef -statictrans -compdestroy -predboolint -predboolothers -D__`uname -m`__ *.c  AMD/*.c  Cyrix/*.c Intel/*.c NatSemi/*.c RiSE/*.c SiS/*.c IDT/*.c
++	splint +posixlib -badflag -fileextensions -type -nullassign -boolops -showcolumn -sysunrecog -fullinitblock -onlytrans -unrecog -usedef -statictrans -compdestroy -predboolint -predboolothers -D__`uname -m`__ $(C_SRC)
+ 
++sparse:
++	sparse $(C_SRC)
+diff -ru x86info-2007-01-04/mptable.c x86info-1.21/mptable.c
+--- x86info-2007-01-04/mptable.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/mptable.c	2007-11-26 19:37:20.000000000 -0500
+@@ -170,6 +170,7 @@
+ static void processorEntry(void)
+ {
+ 	ProcEntry entry;
++	int t, family, model;
+ 
+ 	/* read it into local memory */
+ 	readEntry(&entry, sizeof(entry));
+@@ -185,11 +186,14 @@
+ 				(entry.cpuFlags & PROCENTRY_FLAG_BP) ? "BSP" : "AP",
+ 				(entry.cpuFlags & PROCENTRY_FLAG_EN) ? "usable" : "unusable");
+ 
+-		printf("\t %d\t %d\t %d",
+-				(int) (entry.cpuSignature >> 8) & 0x0f,
+-				(int) (entry.cpuSignature >> 4) & 0x0f,
+-				(int)  entry.cpuSignature & 0x0f);
+-
++		t = (int) entry.cpuSignature;
++		family = (t >> 8) & 0xf;
++		model = (t >> 4) & 0xf;
++		if (family == 0xf) {
++			family += (t >> 20) & 0xff;
++			model += (t >> 12) & 0xf0;
++		}
++		printf("\t %d\t %d\t %d", family, model, t & 0xf);
+ 		printf("\t 0x%04x\n", entry.featureFlags);
+ 	}
+ }
+diff -ru x86info-2007-01-04/rdmsr.c x86info-1.21/rdmsr.c
+--- x86info-2007-01-04/rdmsr.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/rdmsr.c	2007-11-26 19:37:20.000000000 -0500
+@@ -16,6 +16,56 @@
+ #include <unistd.h>
+ #include "x86info.h"
+ 
++#if defined(__FreeBSD__)
++# include <sys/ioctl.h>                                                         
++# include <cpu.h>
++#endif
++
++#if defined(__FreeBSD__)
++
++int read_msr(int cpu, unsigned int idx, unsigned long long *val)
++{
++	char cpuname[16];
++	unsigned char buffer[8];
++	unsigned long lo, hi;
++	int fh;
++	static int nodriver=0;
++	cpu_msr_args_t args;
++
++	if (nodriver==1)
++		return 0;
++
++	(void)snprintf(cpuname, sizeof(cpuname), "/dev/cpu%d", cpu);
++
++	fh = open(cpuname, O_RDONLY);
++	if (fh==-1) {
++		if (!silent)
++			perror(cpuname);
++		nodriver=1;
++		return 0;
++	}
++
++	args.msr = idx;                                                         
++	if (ioctl(fh, CPU_RDMSR, &args) != 0) {                                 
++		if (close(fh) == -1) {                                          
++			perror("close");                                        
++			exit(EXIT_FAILURE);
++		}
++
++		return 0;
++	}
++
++	*val = args.data; 
++
++	if (close(fh)==-1) {
++		perror("close");
++		exit(EXIT_FAILURE);
++	}
++	return 1;
++}
++
++#else /* !__FreeBSD__ */
++
+ int read_msr(int cpu, unsigned int idx, unsigned long long *val)
+ {
+ 	char cpuname[16];
+@@ -63,6 +113,8 @@
+ 	return 1;
+ }
+ 
++#endif /* __FreeBSD__ */
++
+ 
+ void dumpmsr (int cpu, unsigned int msr, int size)
+ {
+diff -ru x86info-2007-01-04/README x86info-1.21/README
+--- x86info-2007-01-04/README	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/README	2007-11-26 19:37:20.000000000 -0500
+@@ -1,4 +1,4 @@
+-x86info v1.20            http://www.codemonkey.org.uk/projects/x86info
++x86info v1.21            http://www.codemonkey.org.uk/projects/x86info
+ Dave Jones <davej@redhat.com>
+ 
+ Somewhere in the mists of time, there was a program by Phil Karn (KA9Q)
+@@ -38,7 +38,7 @@
+    as opposed to built into the kernel, then you should ensure
+    the following is in your /etc/modules.conf
+ 
+-	alias char-major-202 msr  
++	alias char-major-202 msr
+ 	alias char-major-203 cpuid
+ 
+ Info on the command line switches can be found in the man page.
+Only in x86info-1.21/results/Intel: core2-duo-b2.txt
+Only in x86info-1.21/results/Intel: core2-extreme-E6800.txt
+Only in x86info-1.21/results/VIA: C7-Esther.txt
+diff -ru x86info-2007-01-04/scripts/testnodes x86info-1.21/scripts/testnodes
+--- x86info-2007-01-04/scripts/testnodes	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/scripts/testnodes	2007-11-26 19:37:20.000000000 -0500
+@@ -1,5 +1,6 @@
+-#!/bin/sh
+-# FIXME: Don't spit out these warnings on *BSD / Win32.
++#!/bin/bash
++
++[ `uname -s` != "Linux" ] && exit 0
+ 
+ NRNODES=`grep processor /proc/cpuinfo | wc -l`
+ need=0
+diff -ru x86info-2007-01-04/x86info.c x86info-1.21/x86info.c
+--- x86info-2007-01-04/x86info.c	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/x86info.c	2007-11-26 19:37:20.000000000 -0500
+@@ -1,6 +1,6 @@
+ /*
+  *  This file is part of x86info.
+- *  (C) 2001-2006 Dave Jones.
++ *  (C) 2001-2007 Dave Jones.
+  *
+  *  Licensed under the terms of the GNU GPL License version 2.
+  */
+@@ -177,7 +177,7 @@
+ 
+ 	parse_command_line(argc, argv);
+ 	if (!silent) {
+-		printf ("x86info v1.20.  Dave Jones 2001-2006\n");
++		printf ("x86info v1.21.  Dave Jones 2001-2007\n");
+ 		printf ("Feedback to <davej@redhat.com>.\n\n");
+ 	}
+ 
+@@ -193,7 +193,7 @@
+ 	if (need_root && !user_is_root)
+ 		printf ("Need to be root to use specified options.\n");
+ 
+-	nrCPUs = sysconf (_SC_NPROCESSORS_CONF);
++	nrCPUs = sysconf (_SC_NPROCESSORS_ONLN);
+ 
+ 	if (!silent) {
+ 		printf ("Found %u CPU", nrCPUs);
+diff -ru x86info-2007-01-04/x86info.h x86info-1.21/x86info.h
+--- x86info-2007-01-04/x86info.h	2006-09-27 19:19:21.000000000 -0400
++++ x86info-1.21/x86info.h	2007-11-26 19:37:20.000000000 -0500
+@@ -14,6 +14,45 @@
+ #define VENDOR_TRANSMETA 7
+ #define VENDOR_SIS 8
+ 
++enum connector {
++	CONN_UNKNOWN = 0,
++	CONN_SOCKET_3,
++	CONN_SOCKET_4,
++	CONN_SOCKET_5,
++	CONN_SOCKET_7,
++	CONN_SOCKET_370,
++	CONN_SOCKET_370_FCPGA,
++	CONN_SOCKET_5_7,
++	CONN_SUPER_SOCKET_7,
++	CONN_SLOT_A,
++	CONN_SOCKET_A,
++	CONN_SOCKET_A_SLOT_A,
++	CONN_SOCKET_A_OR_SLOT_A,
++	CONN_SOCKET_57B,
++	CONN_MOBILE_7,
++	CONN_SOCKET_8,
++	CONN_SLOT_1,
++	CONN_SLOT_2,
++	CONN_SOCKET_423,
++	CONN_MMC,
++	CONN_MMC2,
++	CONN_BGA474,
++	CONN_BGA,
++	CONN_SOCKET_754,
++	CONN_SOCKET_478,
++	CONN_SOCKET_603,
++	CONN_MICROFCBGA,
++	CONN_SOCKET_939,
++	CONN_SOCKET_940,
++	CONN_LGA775,
++	CONN_SOCKET_F,
++	CONN_SOCKET_AM2,
++	CONN_SOCKET_S1G1,
++	CONN_SOCKET_F_R2,
++	CONN_SOCKET_AM2_R2,
++};
++
++#define CPU_NAME_LEN 80
+ struct cpudata {
+ 	struct cpudata *next;
+ 	unsigned int number;
+@@ -30,8 +69,8 @@
+ 	unsigned int cachesize_L3;
+ 	unsigned int cachesize_trace;
+ 	unsigned int maxi, maxei, maxei2;
+-	char name[80];
+-	unsigned char connector;
++	char name[CPU_NAME_LEN];
++	enum connector connector;
+ 	unsigned int flags_ecx;
+ 	unsigned int flags_edx;
+ 	unsigned int eflags_ecx;
+@@ -41,39 +80,23 @@
+ 	char * errata_url;
+ };
+ 
++#define family(c) (c->family + c->efamily)
++#define model(c) ((c->emodel << 4) + c->model)
++
+ #define tuple(c) ((c->family<<8)|(c->model<<4)|(c->stepping))
+ #define etuple(c) ((c->efamily<<8)|(c->model<<4)|(c->stepping))
+ 
+-#define CONN_UNKNOWN		0
+-#define CONN_SOCKET_3		1
+-#define CONN_SOCKET_4		2
+-#define CONN_SOCKET_5		3
+-#define CONN_SOCKET_7		4
+-#define CONN_SOCKET_370		5
+-#define CONN_SOCKET_370_FCPGA	6
+-#define CONN_SOCKET_5_7		7
+-#define CONN_SUPER_SOCKET_7	8
+-#define CONN_SLOT_A		9
+-#define CONN_SOCKET_A		10
+-#define CONN_SOCKET_A_SLOT_A	11
+-#define CONN_SOCKET_A_OR_SLOT_A	12
+-#define CONN_SOCKET_57B		13
+-#define CONN_MOBILE_7		14
+-#define CONN_SOCKET_8		15
+-#define CONN_SLOT_1		16
+-#define CONN_SLOT_2		17
+-#define CONN_SOCKET_423		18
+-#define CONN_MMC		19
+-#define CONN_MMC2		20
+-#define CONN_BGA474		21
+-#define CONN_BGA		22
+-#define CONN_SOCKET_754		23
+-#define CONN_SOCKET_478		24
+-#define CONN_SOCKET_603		25
+-#define CONN_MICROFCBGA		26
+-#define CONN_SOCKET_939		27
+-#define CONN_SOCKET_940		28
+-#define CONN_LGA775		29
++#define ARRAY_SIZE(x) ((int)(sizeof(x)/sizeof(x[0])))
++
++#define get_name(title,type,table) \
++static const char *get_##title##_name(type id) \
++{ \
++	int i; \
++        for (i = 0; i < ARRAY_SIZE(table); i++) \
++                if (id == table[i].id) \
++                        return table[i].name;   \
++        return NULL; \
++}
+ 
+ extern void cpuid (int, unsigned int, unsigned long *, unsigned long *, unsigned long *, unsigned long *);
+ extern void cpuid_UP (int, unsigned long *, unsigned long *, unsigned long *, unsigned long *);
+@@ -113,7 +136,7 @@
+ extern int issmp(int verb);
+ extern int enumerate_cpus(void);
+ extern void get_model_name (struct cpudata *cpu);
+-extern void decode_connector (unsigned int type);
++extern void decode_connector(enum connector type);
+ extern void show_benchmarks (void);
+ 
+ extern int show_bench;

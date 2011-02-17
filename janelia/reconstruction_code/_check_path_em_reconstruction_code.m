@@ -1,0 +1,1 @@
+% check that path is set correctly

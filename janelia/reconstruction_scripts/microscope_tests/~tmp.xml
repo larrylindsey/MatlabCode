@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<trakem2>
+	
+   <project id="0" mipmaps_folder="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/trakem2.1246400088455.728900919.1709559715/trakem2.mipmaps/" storage_folder="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/" title="Project" unuid="1246400088455.728900919.1709559715">
+	
+   </project>
+	
+   <t2_layer_set height="20.0" layer_height="5328.0" layer_width="5308.0" links="" oid="3" rot_x="0.0" rot_y="0.0" rot_z="0.0" snapshots_mode="Full" snapshots_quality="true" title="Top Level" transform="matrix(1.0,0.0,0.0,1.0,0.0,0.0)" width="20.0">
+		
+      <t2_calibration info="null" pixelDepth="1.0" pixelHeight="1.0" pixelWidth="1.0" timeUnit="sec" unit="pixel" valueUnit="Gray Value" xOrigin="0.0" yOrigin="0.0" zOrigin="0.0"/>
+		
+      <t2_layer oid="5" thickness="1.0" title="" z="0.0">
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/001_09jun15a_31245J2_i001_00008gr_00001sq_00025ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="16" style="fill-opacity:1.0;stroke:#ffff00;" title="001_09jun15a_31245J2_i001_00008gr_00001sq_00025ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/002_09jun15a_31245J2_i001_00008gr_00001sq_00024ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="17" style="fill-opacity:1.0;stroke:#ffff00;" title="002_09jun15a_31245J2_i001_00008gr_00001sq_00024ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/003_09jun15a_31245J2_i001_00008gr_00001sq_00023ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="18" style="fill-opacity:1.0;stroke:#ffff00;" title="003_09jun15a_31245J2_i001_00008gr_00001sq_00023ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/004_09jun15a_31245J2_i001_00008gr_00001sq_00022ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="19" style="fill-opacity:1.0;stroke:#ffff00;" title="004_09jun15a_31245J2_i001_00008gr_00001sq_00022ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/005_09jun15a_31245J2_i001_00008gr_00001sq_00021ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="20" style="fill-opacity:1.0;stroke:#ffff00;" title="005_09jun15a_31245J2_i001_00008gr_00001sq_00021ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/006_09jun15a_31245J2_i001_00008gr_00001sq_00020ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="21" style="fill-opacity:1.0;stroke:#ffff00;" title="006_09jun15a_31245J2_i001_00008gr_00001sq_00020ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/009_09jun15a_31245J2_i001_00008gr_00001sq_00017ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="22" style="fill-opacity:1.0;stroke:#ffff00;" title="009_09jun15a_31245J2_i001_00008gr_00001sq_00017ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/008_09jun15a_31245J2_i001_00008gr_00001sq_00018ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="23" style="fill-opacity:1.0;stroke:#ffff00;" title="008_09jun15a_31245J2_i001_00008gr_00001sq_00018ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/007_09jun15a_31245J2_i001_00008gr_00001sq_00019ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="24" style="fill-opacity:1.0;stroke:#ffff00;" title="007_09jun15a_31245J2_i001_00008gr_00001sq_00019ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/010_09jun15a_31245J2_i001_00008gr_00001sq_00016ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="25" style="fill-opacity:1.0;stroke:#ffff00;" title="010_09jun15a_31245J2_i001_00008gr_00001sq_00016ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/014_09jun15a_31245J2_i001_00008gr_00001sq_00012ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="26" style="fill-opacity:1.0;stroke:#ffff00;" title="014_09jun15a_31245J2_i001_00008gr_00001sq_00012ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/016_09jun15a_31245J2_i001_00008gr_00001sq_00010ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="27" style="fill-opacity:1.0;stroke:#ffff00;" title="016_09jun15a_31245J2_i001_00008gr_00001sq_00010ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/022_09jun15a_31245J2_i001_00008gr_00001sq_00004ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="28" style="fill-opacity:1.0;stroke:#ffff00;" title="022_09jun15a_31245J2_i001_00008gr_00001sq_00004ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/015_09jun15a_31245J2_i001_00008gr_00001sq_00011ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="34" style="fill-opacity:1.0;stroke:#ffff00;" title="015_09jun15a_31245J2_i001_00008gr_00001sq_00011ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/021_09jun15a_31245J2_i001_00008gr_00001sq_00005ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="31" style="fill-opacity:1.0;stroke:#ffff00;" title="021_09jun15a_31245J2_i001_00008gr_00001sq_00005ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/023_09jun15a_31245J2_i001_00008gr_00001sq_00003ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="33" style="fill-opacity:1.0;stroke:#ffff00;" title="023_09jun15a_31245J2_i001_00008gr_00001sq_00003ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/017_09jun15a_31245J2_i001_00008gr_00001sq_00009ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="32" style="fill-opacity:1.0;stroke:#ffff00;" title="017_09jun15a_31245J2_i001_00008gr_00001sq_00009ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/019_09jun15a_31245J2_i001_00008gr_00001sq_00007ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="30" style="fill-opacity:1.0;stroke:#ffff00;" title="019_09jun15a_31245J2_i001_00008gr_00001sq_00007ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/011_09jun15a_31245J2_i001_00008gr_00001sq_00015ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="29" style="fill-opacity:1.0;stroke:#ffff00;" title="011_09jun15a_31245J2_i001_00008gr_00001sq_00015ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/018_09jun15a_31245J2_i001_00008gr_00001sq_00008ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="37" style="fill-opacity:1.0;stroke:#ffff00;" title="018_09jun15a_31245J2_i001_00008gr_00001sq_00008ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/013_09jun15a_31245J2_i001_00008gr_00001sq_00013ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="36" style="fill-opacity:1.0;stroke:#ffff00;" title="013_09jun15a_31245J2_i001_00008gr_00001sq_00013ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/020_09jun15a_31245J2_i001_00008gr_00001sq_00006ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="35" style="fill-opacity:1.0;stroke:#ffff00;" title="020_09jun15a_31245J2_i001_00008gr_00001sq_00006ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section01/012_09jun15a_31245J2_i001_00008gr_00001sq_00014ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="38" style="fill-opacity:1.0;stroke:#ffff00;" title="012_09jun15a_31245J2_i001_00008gr_00001sq_00014ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1244.0,1108.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+		
+      </t2_layer>
+		
+      <t2_layer oid="8" thickness="1.0" title="" z="1.0">
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/001_09jun15a_31245J2_i001_00008gr_00002sq_00025ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="39" style="fill-opacity:1.0;stroke:#ffff00;" title="001_09jun15a_31245J2_i001_00008gr_00002sq_00025ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/002_09jun15a_31245J2_i001_00008gr_00002sq_00024ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="40" style="fill-opacity:1.0;stroke:#ffff00;" title="002_09jun15a_31245J2_i001_00008gr_00002sq_00024ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/003_09jun15a_31245J2_i001_00008gr_00002sq_00023ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="41" style="fill-opacity:1.0;stroke:#ffff00;" title="003_09jun15a_31245J2_i001_00008gr_00002sq_00023ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/006_09jun15a_31245J2_i001_00008gr_00002sq_00020ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="42" style="fill-opacity:1.0;stroke:#ffff00;" title="006_09jun15a_31245J2_i001_00008gr_00002sq_00020ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/004_09jun15a_31245J2_i001_00008gr_00002sq_00022ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="43" style="fill-opacity:1.0;stroke:#ffff00;" title="004_09jun15a_31245J2_i001_00008gr_00002sq_00022ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/005_09jun15a_31245J2_i001_00008gr_00002sq_00021ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="44" style="fill-opacity:1.0;stroke:#ffff00;" title="005_09jun15a_31245J2_i001_00008gr_00002sq_00021ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/010_09jun15a_31245J2_i001_00008gr_00002sq_00016ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="45" style="fill-opacity:1.0;stroke:#ffff00;" title="010_09jun15a_31245J2_i001_00008gr_00002sq_00016ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/008_09jun15a_31245J2_i001_00008gr_00002sq_00018ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="46" style="fill-opacity:1.0;stroke:#ffff00;" title="008_09jun15a_31245J2_i001_00008gr_00002sq_00018ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/009_09jun15a_31245J2_i001_00008gr_00002sq_00017ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="47" style="fill-opacity:1.0;stroke:#ffff00;" title="009_09jun15a_31245J2_i001_00008gr_00002sq_00017ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/017_09jun15a_31245J2_i001_00008gr_00002sq_00009ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="48" style="fill-opacity:1.0;stroke:#ffff00;" title="017_09jun15a_31245J2_i001_00008gr_00002sq_00009ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/015_09jun15a_31245J2_i001_00008gr_00002sq_00011ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="49" style="fill-opacity:1.0;stroke:#ffff00;" title="015_09jun15a_31245J2_i001_00008gr_00002sq_00011ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/012_09jun15a_31245J2_i001_00008gr_00002sq_00014ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="50" style="fill-opacity:1.0;stroke:#ffff00;" title="012_09jun15a_31245J2_i001_00008gr_00002sq_00014ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/011_09jun15a_31245J2_i001_00008gr_00002sq_00015ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="51" style="fill-opacity:1.0;stroke:#ffff00;" title="011_09jun15a_31245J2_i001_00008gr_00002sq_00015ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/016_09jun15a_31245J2_i001_00008gr_00002sq_00010ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="52" style="fill-opacity:1.0;stroke:#ffff00;" title="016_09jun15a_31245J2_i001_00008gr_00002sq_00010ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/019_09jun15a_31245J2_i001_00008gr_00002sq_00007ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="53" style="fill-opacity:1.0;stroke:#ffff00;" title="019_09jun15a_31245J2_i001_00008gr_00002sq_00007ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/018_09jun15a_31245J2_i001_00008gr_00002sq_00008ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="54" style="fill-opacity:1.0;stroke:#ffff00;" title="018_09jun15a_31245J2_i001_00008gr_00002sq_00008ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/013_09jun15a_31245J2_i001_00008gr_00002sq_00013ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="55" style="fill-opacity:1.0;stroke:#ffff00;" title="013_09jun15a_31245J2_i001_00008gr_00002sq_00013ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/014_09jun15a_31245J2_i001_00008gr_00002sq_00012ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="56" style="fill-opacity:1.0;stroke:#ffff00;" title="014_09jun15a_31245J2_i001_00008gr_00002sq_00012ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/007_09jun15a_31245J2_i001_00008gr_00002sq_00019ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="57" style="fill-opacity:1.0;stroke:#ffff00;" title="007_09jun15a_31245J2_i001_00008gr_00002sq_00019ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/020_09jun15a_31245J2_i001_00008gr_00002sq_00006ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="58" style="fill-opacity:1.0;stroke:#ffff00;" title="020_09jun15a_31245J2_i001_00008gr_00002sq_00006ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/022_09jun15a_31245J2_i001_00008gr_00002sq_00004ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="59" style="fill-opacity:1.0;stroke:#ffff00;" title="022_09jun15a_31245J2_i001_00008gr_00002sq_00004ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/023_09jun15a_31245J2_i001_00008gr_00002sq_00003ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="60" style="fill-opacity:1.0;stroke:#ffff00;" title="023_09jun15a_31245J2_i001_00008gr_00002sq_00003ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section02/021_09jun15a_31245J2_i001_00008gr_00002sq_00005ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="61" style="fill-opacity:1.0;stroke:#ffff00;" title="021_09jun15a_31245J2_i001_00008gr_00002sq_00005ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1222.0,1054.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+		
+      </t2_layer>
+		
+      <t2_layer oid="9" thickness="1.0" title="" z="2.0">
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/008_09jun15a_31245J2_i001_00008gr_00003sq_00018ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="62" style="fill-opacity:1.0;stroke:#ffff00;" title="008_09jun15a_31245J2_i001_00008gr_00003sq_00018ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/002_09jun15a_31245J2_i001_00008gr_00003sq_00024ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="63" style="fill-opacity:1.0;stroke:#ffff00;" title="002_09jun15a_31245J2_i001_00008gr_00003sq_00024ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/014_09jun15a_31245J2_i001_00008gr_00003sq_00012ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="67" style="fill-opacity:1.0;stroke:#ffff00;" title="014_09jun15a_31245J2_i001_00008gr_00003sq_00012ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/006_09jun15a_31245J2_i001_00008gr_00003sq_00020ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="65" style="fill-opacity:1.0;stroke:#ffff00;" title="006_09jun15a_31245J2_i001_00008gr_00003sq_00020ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/001_09jun15a_31245J2_i001_00008gr_00003sq_00025ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="66" style="fill-opacity:1.0;stroke:#ffff00;" title="001_09jun15a_31245J2_i001_00008gr_00003sq_00025ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/011_09jun15a_31245J2_i001_00008gr_00003sq_00015ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="64" style="fill-opacity:1.0;stroke:#ffff00;" title="011_09jun15a_31245J2_i001_00008gr_00003sq_00015ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/004_09jun15a_31245J2_i001_00008gr_00003sq_00022ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="68" style="fill-opacity:1.0;stroke:#ffff00;" title="004_09jun15a_31245J2_i001_00008gr_00003sq_00022ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/012_09jun15a_31245J2_i001_00008gr_00003sq_00014ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="69" style="fill-opacity:1.0;stroke:#ffff00;" title="012_09jun15a_31245J2_i001_00008gr_00003sq_00014ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/009_09jun15a_31245J2_i001_00008gr_00003sq_00017ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="70" style="fill-opacity:1.0;stroke:#ffff00;" title="009_09jun15a_31245J2_i001_00008gr_00003sq_00017ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/020_09jun15a_31245J2_i001_00008gr_00003sq_00006ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="72" style="fill-opacity:1.0;stroke:#ffff00;" title="020_09jun15a_31245J2_i001_00008gr_00003sq_00006ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/013_09jun15a_31245J2_i001_00008gr_00003sq_00013ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="71" style="fill-opacity:1.0;stroke:#ffff00;" title="013_09jun15a_31245J2_i001_00008gr_00003sq_00013ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/016_09jun15a_31245J2_i001_00008gr_00003sq_00010ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="73" style="fill-opacity:1.0;stroke:#ffff00;" title="016_09jun15a_31245J2_i001_00008gr_00003sq_00010ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/019_09jun15a_31245J2_i001_00008gr_00003sq_00007ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="74" style="fill-opacity:1.0;stroke:#ffff00;" title="019_09jun15a_31245J2_i001_00008gr_00003sq_00007ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/010_09jun15a_31245J2_i001_00008gr_00003sq_00016ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="75" style="fill-opacity:1.0;stroke:#ffff00;" title="010_09jun15a_31245J2_i001_00008gr_00003sq_00016ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/018_09jun15a_31245J2_i001_00008gr_00003sq_00008ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="76" style="fill-opacity:1.0;stroke:#ffff00;" title="018_09jun15a_31245J2_i001_00008gr_00003sq_00008ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/022_09jun15a_31245J2_i001_00008gr_00003sq_00004ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="77" style="fill-opacity:1.0;stroke:#ffff00;" title="022_09jun15a_31245J2_i001_00008gr_00003sq_00004ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/017_09jun15a_31245J2_i001_00008gr_00003sq_00009ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="78" style="fill-opacity:1.0;stroke:#ffff00;" title="017_09jun15a_31245J2_i001_00008gr_00003sq_00009ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/007_09jun15a_31245J2_i001_00008gr_00003sq_00019ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="79" style="fill-opacity:1.0;stroke:#ffff00;" title="007_09jun15a_31245J2_i001_00008gr_00003sq_00019ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/023_09jun15a_31245J2_i001_00008gr_00003sq_00003ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="80" style="fill-opacity:1.0;stroke:#ffff00;" title="023_09jun15a_31245J2_i001_00008gr_00003sq_00003ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/021_09jun15a_31245J2_i001_00008gr_00003sq_00005ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="81" style="fill-opacity:1.0;stroke:#ffff00;" title="021_09jun15a_31245J2_i001_00008gr_00003sq_00005ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/015_09jun15a_31245J2_i001_00008gr_00003sq_00011ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="82" style="fill-opacity:1.0;stroke:#ffff00;" title="015_09jun15a_31245J2_i001_00008gr_00003sq_00011ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/003_09jun15a_31245J2_i001_00008gr_00003sq_00023ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="83" style="fill-opacity:1.0;stroke:#ffff00;" title="003_09jun15a_31245J2_i001_00008gr_00003sq_00023ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section03/005_09jun15a_31245J2_i001_00008gr_00003sq_00021ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="84" style="fill-opacity:1.0;stroke:#ffff00;" title="005_09jun15a_31245J2_i001_00008gr_00003sq_00021ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1076.0,1180.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+		
+      </t2_layer>
+		
+      <t2_layer oid="10" thickness="1.0" title="" z="3.0">
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/001_09jun15a_31245J2_i001_00008gr_00004sq_00025ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="85" style="fill-opacity:1.0;stroke:#ffff00;" title="001_09jun15a_31245J2_i001_00008gr_00004sq_00025ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/003_09jun15a_31245J2_i001_00008gr_00004sq_00023ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="86" style="fill-opacity:1.0;stroke:#ffff00;" title="003_09jun15a_31245J2_i001_00008gr_00004sq_00023ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/002_09jun15a_31245J2_i001_00008gr_00004sq_00024ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="87" style="fill-opacity:1.0;stroke:#ffff00;" title="002_09jun15a_31245J2_i001_00008gr_00004sq_00024ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/004_09jun15a_31245J2_i001_00008gr_00004sq_00022ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="88" style="fill-opacity:1.0;stroke:#ffff00;" title="004_09jun15a_31245J2_i001_00008gr_00004sq_00022ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/021_09jun15a_31245J2_i001_00008gr_00004sq_00005ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="89" style="fill-opacity:1.0;stroke:#ffff00;" title="021_09jun15a_31245J2_i001_00008gr_00004sq_00005ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/007_09jun15a_31245J2_i001_00008gr_00004sq_00019ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="90" style="fill-opacity:1.0;stroke:#ffff00;" title="007_09jun15a_31245J2_i001_00008gr_00004sq_00019ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/019_09jun15a_31245J2_i001_00008gr_00004sq_00007ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="91" style="fill-opacity:1.0;stroke:#ffff00;" title="019_09jun15a_31245J2_i001_00008gr_00004sq_00007ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/017_09jun15a_31245J2_i001_00008gr_00004sq_00009ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="92" style="fill-opacity:1.0;stroke:#ffff00;" title="017_09jun15a_31245J2_i001_00008gr_00004sq_00009ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/011_09jun15a_31245J2_i001_00008gr_00004sq_00015ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="93" style="fill-opacity:1.0;stroke:#ffff00;" title="011_09jun15a_31245J2_i001_00008gr_00004sq_00015ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/008_09jun15a_31245J2_i001_00008gr_00004sq_00018ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="94" style="fill-opacity:1.0;stroke:#ffff00;" title="008_09jun15a_31245J2_i001_00008gr_00004sq_00018ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/009_09jun15a_31245J2_i001_00008gr_00004sq_00017ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="95" style="fill-opacity:1.0;stroke:#ffff00;" title="009_09jun15a_31245J2_i001_00008gr_00004sq_00017ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/010_09jun15a_31245J2_i001_00008gr_00004sq_00016ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="99" style="fill-opacity:1.0;stroke:#ffff00;" title="010_09jun15a_31245J2_i001_00008gr_00004sq_00016ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/015_09jun15a_31245J2_i001_00008gr_00004sq_00011ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="100" style="fill-opacity:1.0;stroke:#ffff00;" title="015_09jun15a_31245J2_i001_00008gr_00004sq_00011ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/016_09jun15a_31245J2_i001_00008gr_00004sq_00010ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="98" style="fill-opacity:1.0;stroke:#ffff00;" title="016_09jun15a_31245J2_i001_00008gr_00004sq_00010ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/022_09jun15a_31245J2_i001_00008gr_00004sq_00004ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="102" style="fill-opacity:1.0;stroke:#ffff00;" title="022_09jun15a_31245J2_i001_00008gr_00004sq_00004ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/006_09jun15a_31245J2_i001_00008gr_00004sq_00020ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="96" style="fill-opacity:1.0;stroke:#ffff00;" title="006_09jun15a_31245J2_i001_00008gr_00004sq_00020ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/005_09jun15a_31245J2_i001_00008gr_00004sq_00021ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="104" style="fill-opacity:1.0;stroke:#ffff00;" title="005_09jun15a_31245J2_i001_00008gr_00004sq_00021ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/020_09jun15a_31245J2_i001_00008gr_00004sq_00006ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="101" style="fill-opacity:1.0;stroke:#ffff00;" title="020_09jun15a_31245J2_i001_00008gr_00004sq_00006ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/013_09jun15a_31245J2_i001_00008gr_00004sq_00013ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="97" style="fill-opacity:1.0;stroke:#ffff00;" title="013_09jun15a_31245J2_i001_00008gr_00004sq_00013ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/014_09jun15a_31245J2_i001_00008gr_00004sq_00012ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="103" style="fill-opacity:1.0;stroke:#ffff00;" title="014_09jun15a_31245J2_i001_00008gr_00004sq_00012ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/023_09jun15a_31245J2_i001_00008gr_00004sq_00003ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="105" style="fill-opacity:1.0;stroke:#ffff00;" title="023_09jun15a_31245J2_i001_00008gr_00004sq_00003ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/018_09jun15a_31245J2_i001_00008gr_00004sq_00008ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="106" style="fill-opacity:1.0;stroke:#ffff00;" title="018_09jun15a_31245J2_i001_00008gr_00004sq_00008ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section04/012_09jun15a_31245J2_i001_00008gr_00004sq_00014ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="107" style="fill-opacity:1.0;stroke:#ffff00;" title="012_09jun15a_31245J2_i001_00008gr_00004sq_00014ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,917.0,1264.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+		
+      </t2_layer>
+		
+      <t2_layer oid="11" thickness="1.0" title="" z="4.0">
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/001_09jun15a_31245J2_i001_00008gr_00005sq_00025ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="108" style="fill-opacity:1.0;stroke:#ffff00;" title="001_09jun15a_31245J2_i001_00008gr_00005sq_00025ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/002_09jun15a_31245J2_i001_00008gr_00005sq_00024ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="109" style="fill-opacity:1.0;stroke:#ffff00;" title="002_09jun15a_31245J2_i001_00008gr_00005sq_00024ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/005_09jun15a_31245J2_i001_00008gr_00005sq_00021ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="110" style="fill-opacity:1.0;stroke:#ffff00;" title="005_09jun15a_31245J2_i001_00008gr_00005sq_00021ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/003_09jun15a_31245J2_i001_00008gr_00005sq_00023ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="111" style="fill-opacity:1.0;stroke:#ffff00;" title="003_09jun15a_31245J2_i001_00008gr_00005sq_00023ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/006_09jun15a_31245J2_i001_00008gr_00005sq_00020ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="112" style="fill-opacity:1.0;stroke:#ffff00;" title="006_09jun15a_31245J2_i001_00008gr_00005sq_00020ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/004_09jun15a_31245J2_i001_00008gr_00005sq_00022ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="113" style="fill-opacity:1.0;stroke:#ffff00;" title="004_09jun15a_31245J2_i001_00008gr_00005sq_00022ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/007_09jun15a_31245J2_i001_00008gr_00005sq_00019ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="114" style="fill-opacity:1.0;stroke:#ffff00;" title="007_09jun15a_31245J2_i001_00008gr_00005sq_00019ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/010_09jun15a_31245J2_i001_00008gr_00005sq_00016ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="115" style="fill-opacity:1.0;stroke:#ffff00;" title="010_09jun15a_31245J2_i001_00008gr_00005sq_00016ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/008_09jun15a_31245J2_i001_00008gr_00005sq_00018ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="116" style="fill-opacity:1.0;stroke:#ffff00;" title="008_09jun15a_31245J2_i001_00008gr_00005sq_00018ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/018_09jun15a_31245J2_i001_00008gr_00005sq_00008ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="117" style="fill-opacity:1.0;stroke:#ffff00;" title="018_09jun15a_31245J2_i001_00008gr_00005sq_00008ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/012_09jun15a_31245J2_i001_00008gr_00005sq_00014ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="118" style="fill-opacity:1.0;stroke:#ffff00;" title="012_09jun15a_31245J2_i001_00008gr_00005sq_00014ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/021_09jun15a_31245J2_i001_00008gr_00005sq_00005ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="119" style="fill-opacity:1.0;stroke:#ffff00;" title="021_09jun15a_31245J2_i001_00008gr_00005sq_00005ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/009_09jun15a_31245J2_i001_00008gr_00005sq_00017ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="120" style="fill-opacity:1.0;stroke:#ffff00;" title="009_09jun15a_31245J2_i001_00008gr_00005sq_00017ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/019_09jun15a_31245J2_i001_00008gr_00005sq_00007ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="121" style="fill-opacity:1.0;stroke:#ffff00;" title="019_09jun15a_31245J2_i001_00008gr_00005sq_00007ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/011_09jun15a_31245J2_i001_00008gr_00005sq_00015ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="122" style="fill-opacity:1.0;stroke:#ffff00;" title="011_09jun15a_31245J2_i001_00008gr_00005sq_00015ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/016_09jun15a_31245J2_i001_00008gr_00005sq_00010ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="123" style="fill-opacity:1.0;stroke:#ffff00;" title="016_09jun15a_31245J2_i001_00008gr_00005sq_00010ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/015_09jun15a_31245J2_i001_00008gr_00005sq_00011ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="124" style="fill-opacity:1.0;stroke:#ffff00;" title="015_09jun15a_31245J2_i001_00008gr_00005sq_00011ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/023_09jun15a_31245J2_i001_00008gr_00005sq_00003ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="125" style="fill-opacity:1.0;stroke:#ffff00;" title="023_09jun15a_31245J2_i001_00008gr_00005sq_00003ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/013_09jun15a_31245J2_i001_00008gr_00005sq_00013ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="126" style="fill-opacity:1.0;stroke:#ffff00;" title="013_09jun15a_31245J2_i001_00008gr_00005sq_00013ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/014_09jun15a_31245J2_i001_00008gr_00005sq_00012ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="127" style="fill-opacity:1.0;stroke:#ffff00;" title="014_09jun15a_31245J2_i001_00008gr_00005sq_00012ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/017_09jun15a_31245J2_i001_00008gr_00005sq_00009ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="128" style="fill-opacity:1.0;stroke:#ffff00;" title="017_09jun15a_31245J2_i001_00008gr_00005sq_00009ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/020_09jun15a_31245J2_i001_00008gr_00005sq_00006ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="129" style="fill-opacity:1.0;stroke:#ffff00;" title="020_09jun15a_31245J2_i001_00008gr_00005sq_00006ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+			
+         <t2_patch file_path="/groups/chklovskii/chklovskiilab/electron_microscopy_data/1st_Instar_Test.Round3.06162009/OregonR/section05/022_09jun15a_31245J2_i001_00008gr_00005sq_00004ex.mrc.tif" height="4064.0" links="" o_height="4064" o_width="4064" oid="130" style="fill-opacity:1.0;stroke:#ffff00;" title="022_09jun15a_31245J2_i001_00008gr_00005sq_00004ex.mrc.tif" transform="matrix(1.0,0.0,0.0,1.0,1001.0,996.0)" type="0" width="4064.0">
+			
+         </t2_patch>
+		
+      </t2_layer>
+
+   </t2_layer_set>
+	
+   <t2_display c_alphas="-1" c_alphas_state="-1" id="7" layer_id="5" magnification="0.75" scroll_step="1" srcrect_height="2043" srcrect_width="2048" srcrect_x="0" srcrect_y="0" x="751" y="0"/>
+
+</trakem2>

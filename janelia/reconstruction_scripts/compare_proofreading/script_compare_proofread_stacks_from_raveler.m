@@ -1,0 +1,46 @@
+clear all
+close all
+
+section_image_name_format = ...
+  '/groups/chklovskii/chklovskiilab/em_reconstruction/data_to_be_proofread/medulla.HPF.Leginon.3500x.zhiyuan.fall2008/region.crop4_global_alignment_0161_0860.446.455.cr825891584100_40/ms3_446.455_3.5k.3.5k/grayscale_maps/image.v_a.%05d.png';
+planes = 3:6;
+proofread_dir_a = ...
+  '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/medulla.HPF.Leginon.3500x.zhiyuan.fall2008/region.crop4_global_alignment_0161_0860.446.455.cr825891584100_40/ms3_446.455_3.5k.3.5k/katerina.042709/';
+proofread_dir_b = ...
+  '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/medulla.HPF.Leginon.3500x.zhiyuan.fall2008/region.crop4_global_alignment_0161_0860.446.455.cr825891584100_40/ms3_446.455_3.5k.3.5k/satoko.051409/';
+% diff_stack_file_name = '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/comparison_of_proofreading/medulla.HPF.Leginon.3500x.zhiyuan.fall2008/ms3_446.455_3.5k.3.5k/Katerina_Satoko_medulla_446.455.tif';
+diff_stack_file_name = '~/temp/1.tif';
+
+% section_image_name_format = ...
+%   '/groups/chklovskii/chklovskiilab/em_reconstruction/data_to_be_proofread/medulla.HPF.Leginon.3500x.zhiyuan.fall2008/region.crop4_global_alignment_0161_0860.596.605.cr928967291924_40/ms3_596.605_3.5k.3.5k/grayscale_maps/image.v_a.%05d.png';
+% planes = 1:10;
+% proofread_dir_a = ...
+%   '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/medulla.HPF.Leginon.3500x.zhiyuan.fall2008/region.crop4_global_alignment_0161_0860.596.605.cr928967291924_40/ms3_596.605_3.5k.3.5k/katerina.051209/';
+% proofread_dir_b = ...
+%   '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/medulla.HPF.Leginon.3500x.zhiyuan.fall2008/region.crop4_global_alignment_0161_0860.596.605.cr928967291924_40/ms3_596.605_3.5k.3.5k/satoko.042709/';
+% diff_stack_file_name = '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/comparison_of_proofreading/medulla.HPF.Leginon.3500x.zhiyuan.fall2008/ms3_596.605_3.5k.3.5k/test_Katerina_Satoko_medulla_596.605.tif';
+
+% section_image_name_format = ...
+%   '/groups/chklovskii/chklovskiilab/em_reconstruction/data_to_be_proofread/fly_larva.no_ua.5000xbinx2.0_17/analysis1/grayscale_maps/image.v0.%05d.png';
+% planes = 1:10;
+% proofread_dir_a = ...
+%   '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/proofreader_training/changl/fly_larva.no_ua.5000xbinx2.0_17/analysis1/';
+% proofread_dir_b = ...
+%   '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/proofreader_training/ogundeyio/fly_larva.no_ua.5000xbinx2.0_17/analysis1/';
+% diff_stack_file_name = '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/comparison_of_proofreading/fly_larva.no_ua.5000xbinx2.0_17/analysis1/chagl_ogundeyio.tif';
+
+% section_image_name_format = ...
+%   '/groups/chklovskii/chklovskiilab/em_reconstruction/data_to_be_proofread/fly_larva.no_ua.5000xbinx2.0_17/analysis1/grayscale_maps/image.v0.%05d.png';
+% planes = 1:10;
+% proofread_dir_a = ...
+%   '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/proofreader_training/gold_standards/shapirov/fly_larva.no_ua.5000xbinx2.0_17/analysis1/';
+% proofread_dir_b = ...
+%   '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/proofreader_training/changl/fly_larva.no_ua.5000xbinx2.0_17/analysis1/';
+% diff_stack_file_name = '/groups/chklovskii/chklovskiilab/em_reconstruction/proofread_data/comparison_of_proofreading/fly_larva.no_ua.5000xbinx2.0_17/analysis1/gold_standard_changl.tif';
+
+rendering_scale = 2;
+render_original_image = true;
+compare_proofread_stacks_from_raveler(...
+  section_image_name_format, planes, proofread_dir_a, proofread_dir_b, ...
+  diff_stack_file_name, rendering_scale, render_original_image);
+

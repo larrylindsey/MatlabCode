@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE Section SYSTEM "section.dtd">
+
+<Section index="71" thickness="0.05" alignLocked="false">
+<Transform dim="3"
+ xcoef=" -2.91019803090792 0.998985542081033 0.0450320631669586 0 0 0"
+ ycoef=" 3.43034351017808 -0.0450320631669586 0.998985542081033 0 0 0">
+<Image mag="0.00254" contrast="1" brightness="0" red="true" green="true" blue="true"
+ src="Tile_r1-c1_Grid_15_16.tif" />
+<Contour name="domain1" hidden="false" closed="true" simplified="false" border="1 0 1" fill="1 0 1" mode="11"
+ points="0 0,
+	24575 0,
+	24575 24575,
+	0 24575,
+	"/>
+</Transform>
+
+</Section>

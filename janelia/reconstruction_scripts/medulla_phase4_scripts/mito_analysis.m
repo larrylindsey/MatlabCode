@@ -1,0 +1,10 @@
+mt = m.mitochondria_detection_confidence>1;
+mte = imerode(mt, strel('disk', 2));
+mtea = bwareaopen(mte, 500);
+mtead = imdilate(mtea, strel('disk', 2));
+mteadf = imfill(mtead, 'holes');
+mteadfa = bwareaopen(mteadf, 10000);
+l = bwlabel(mteadfa);
+p = regionprops(l, 'Area', 'ConvexArea');
+i = find(([p(:).Area]./[p(:).ConvexArea])<0.85);
+mi = ~ismember(l, [0 i]); d = repmat(image, [1 1 3]); d(:,:,3) = 255*mi; figure; imshow(d);

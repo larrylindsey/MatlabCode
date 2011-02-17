@@ -1,0 +1,10 @@
+prefix=/groups/chklovskii/home/vitaladevunis/research/em_reconstruction_pipeline/code/lib/fftw-3.2
+exec_prefix=/groups/chklovskii/home/vitaladevunis/research/em_reconstruction_pipeline/code/lib/fftw-3.2
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: FFTW
+Description: fast Fourier transform library
+Version: 3.2
+Libs: -L${libdir} -lfftw3 -lm
+Cflags: -I${includedir}
