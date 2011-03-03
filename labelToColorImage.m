@@ -1,12 +1,14 @@
-function labelim = labelToColorImage(l)
+function labelim = labelToColorImage(l, cmap)
 
 labelim = zeros([size(l) 3]);
 L = max(l(:));
 
-cmap = hsv(L);
-
-cmap = cmap(randperm(L), :);
-cmap = cat(1, zeros(1, 3), cmap);
+if nargin < 2
+    cmap = hsv(L);
+    
+    cmap = cmap(randperm(L), :);
+    cmap = cat(1, zeros(1, 3), cmap);
+end
 
 for il = 1:L
     [r c] = find(l == il);

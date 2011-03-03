@@ -49,6 +49,8 @@ else
     order = 3;
 end
 
+tsize = (order + 1) * (order + 2) / 2;
+
 if nargin < 3
     direction = false;
 end
@@ -71,6 +73,8 @@ if direction
 else
     T = trans.T;
 end
+
+T = T(1:tsize,:);
 
 U = A * T;
 
