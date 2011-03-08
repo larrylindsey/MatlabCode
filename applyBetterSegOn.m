@@ -10,7 +10,7 @@ for ii = 1:numel(imnames)
     segname = ['class_' filename];
     fprintf('%d, reading files\n', ii);
     im = rgb2gray(imread(filename));
-    seg = imread(segname);
+    seg = 255 - imread(segname);
     diffsize = (size(seg) - size(im)) + 1;
     diffsize = floor(diffsize / 2);
     seg = seg(diffsize(1):(end - diffsize(1)), diffsize(2):(end - diffsize(2)));
