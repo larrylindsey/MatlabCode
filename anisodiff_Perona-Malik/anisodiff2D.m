@@ -1,4 +1,4 @@
-function diff_im = anisodiff2D(im, num_iter, delta_t, kappa, option)
+function diff_im = anisodiff2D(im, num_iter, delta_t, kappa, m, option)
 %ANISODIFF2D Conventional anisotropic diffusion
 %   DIFF_IM = ANISODIFF2D(IM, NUM_ITER, DELTA_T, KAPPA, OPTION) perfoms 
 %   conventional anisotropic diffusion (Perona & Malik) upon a gray scale
@@ -121,7 +121,9 @@ for t = 1:num_iter
                   (1/(dx^2))*cW.*nablaW + (1/(dx^2))*cE.*nablaE + ...
                   (1/(dd^2))*cNE.*nablaNE + (1/(dd^2))*cSE.*nablaSE + ...
                   (1/(dd^2))*cSW.*nablaSW + (1/(dd^2))*cNW.*nablaNW );
-           
+        if m > 0
+            diff_im = medfilt2(diff_im, [m m]);
+        end
         % Iteration warning.
         fprintf('\rIteration %d\n',t);
 end
