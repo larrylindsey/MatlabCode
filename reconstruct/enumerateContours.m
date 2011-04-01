@@ -8,7 +8,7 @@ for i_sec = 1:numel(secdoc)
     for i_t = 1:numel(transforms)
         tform = transforms(i_t);
         for i_c = 1:numel(tform.Contour)
-            catName = tform.Contour.name;
+            catName = tform.Contour(i_c).name;
             if ~ischar(catName)
                 catName = num2str(catName);
             end
