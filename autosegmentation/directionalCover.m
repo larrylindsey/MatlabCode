@@ -1,7 +1,7 @@
-function [pOvlp nOvlp] = directionalCover(maskFrom, maskOnto)
+function [pOvlp nOvlp] = directionalCover(innerMask, outterMask)
 
-nFrom = sum(maskFrom(:));
-maskOvlp = maskFrom .* maskOnto;
+nFrom = sum(innerMask(:));
+maskOvlp = innerMask .* outterMask;
 
 nOvlp = sum(maskOvlp(:));
 pOvlp = nOvlp / nFrom;
