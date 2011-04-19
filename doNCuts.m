@@ -7,6 +7,7 @@ function [e v D] = doNCuts(W)
 % Use the column corresponding to the smallest nonzero eigenvalue to select
 % the segmentation groups.
 
+n = 4;
 
 if size(W,1) ~= size(W,2)
     error('W should be square');
@@ -14,16 +15,13 @@ end
 
 s = size(W, 1);
 
-D = zeros(size(W));
-Dinv = D;
 
-diagsel = logical(eye(s));
+D = sparse(1:s, 1:s, sum(W,1), s, s);
+Dinv = sparse(1:s, 1:s, 1./sum(W,1), s, s);
 
-D(diagsel) = sum(W, 1);
-Dinv(diagsel) = 1./D(diagsel);
 
 M = sqrt(Dinv) * (D - W) * sqrt(Dinv);
 
-[v d] = eig(M);
-e = d(diagsel);
+[v d] = eigs(M, n, 'SM');
+e = d(logical(eye(n)));
 
