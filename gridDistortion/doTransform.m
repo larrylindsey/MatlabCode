@@ -53,7 +53,13 @@ else
     type = trans.type;
 end
 
-A = type(X(:,1), X(:,2), trans.order);
+if trans.order < 1
+    order = 1;
+else
+    order = trans.order;
+end
+
+A = type(X(:,1), X(:,2), order);
 
 if direction
     T = trans.Tinv;

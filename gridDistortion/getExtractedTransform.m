@@ -1,6 +1,11 @@
 function [sqtrans sq_rc_matcha trans rc_matcha] = ...
     getExtractedTransform(rc_found, rc_grid, grid_model, order, type, u, v)
 
+% scale model
+model_mag = mean(sqrt(sum(grid_model.^2,1)));
+grid_model = grid_model / model_mag;
+rc_found = rc_found / model_mag;
+
 if nargin < 7
     u = [min(rc_found(:,1)) max(rc_found(:,1))];
     v = [min(rc_found(:,2)) max(rc_found(:,2))];
