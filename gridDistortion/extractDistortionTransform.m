@@ -61,6 +61,9 @@ if isempty(match)
     fprintf('Creating match filter\n');
     tic;
     match = gridEstimate(rStr, im0);
+    cm = rStr.cropMask;
+    clear rStr;
+    rStr.cropMask = cm;
     save match_cache.mat match
     toc;
     sendmsg(msgsubjectbeg, ...
@@ -123,55 +126,6 @@ clear HH;
 
 [rc_grid grid_model] = fitGrid(grid_model, rc_found, model_err);
 
-
-% fprintf('Calculating Match Grid\n');
-% tic;
-% matchGrid = fftfilter2(imGrid, match);
-% toc;
-% 
-% sendmsg(msgsubject, 'Calculated Match Grid');
-% 
-% s(end + 1) = cputime;
-% 
-% %Step 2: Use the grid intersection labels to find the exact grid
-% %intersection points.  This is noisy.
-% fprintf('Finding cross points\n');
-% tic;
-% [r c] = findCrossPoints(matchGrid, L);
-% [rlReg clReg] = findBetterRegularCrossPoints(r, c, rowModel, colModel);
-% %[rlReg clReg] = findRegularCrossPoints(r, c, rl, cl);
-% toc;
-% s(end + 1) = cputime;
-% 
-% 
-% %Step 3: Calculate the deviation from a linear grid.
-% fprintf('Calculating grid nonlinearity\n');
-% tic;
-% [rTest cTest] = meshgrid(rlReg, clReg);
-% %dv = gridDifference(r, c, rTest(:), cTest(:));
-% [rTest cTest] = assignGrid(r, c, rTest, cTest);
-% % Now rTest(p) is the closest "rectangular grid" point to r(p), for a given
-% % index p.
-% sendmsg(msgsubject, 'Found cross points and grid nonlinearity');
-% 
-% toc;
-% s(end + 1) = cputime;
-% 
-% %Step 4: Calculate the transform that will remove the 2nd order
-% %nonlinearities.
-% fprintf('Calculating Transform\n');
-% tic;
-% [fFwd, fInv, T, transinfo] = getTransformInfo(r, c, rTest, cTest);
-% toc;
-% s(end + 1) = cputime;
-% 
-% %Now create the transform object that will be used with imtform.
-% fprintf('Creating transform struct\n');
-% tic;
-% Tr = maketform('custom', 2, 2, fFwd, fInv, T);
-% s(end + 1) = cputime;
-% toc;
-% fprintf('Total computation time: %f\n', s(end) - s(1));
 
 if nargout > 1
     dbStr.L = L;
