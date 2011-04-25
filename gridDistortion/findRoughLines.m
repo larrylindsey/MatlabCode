@@ -25,7 +25,7 @@ if spt < 1
     edgeMapSort = sort(edgeMap(cropMask));
     edgeMapT = edgeMapSort(round(7/ 8 * numel(edgeMapSort)));
 
-    bwEdge = logical(edgeMap > edgeMapT) .* cropMask;
+    bwEdge = and(logical(edgeMap > edgeMapT), cropMask);
     
 %     bwEdge = bwareaopen(bwEdge, 1024, 4);
 %     bwEdge = imerode(bwEdge, strel('disk', 4));
