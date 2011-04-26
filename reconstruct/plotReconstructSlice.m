@@ -36,7 +36,8 @@ if ~isfield(imTransStr, 'data') || ~isfield(imTransStr.data, 'u') ...
 end
 
 
-[imtr x y] = applyTransformImage(flipud(imdata), imTransStr);
+[imtr x y] = applyTransformImage(imdata, imTransStr);
+imtr = flipud(imtr);
 
 %imtransform(flipud(imdata), tr, 'UData', udata, 'VData', vdata);
 
