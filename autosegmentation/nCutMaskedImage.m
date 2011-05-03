@@ -1,4 +1,4 @@
-function [W im mask] = nCutMaskedImage(mask, im, nbd, sig)
+function [W im mask offset] = nCutMaskedImage(mask, im, nbd, sig)
 global sigI;
 global sigX;
 
@@ -44,7 +44,7 @@ end
 im = im2double(im);
 
 % Crop out unneccesary pixels.
-[mask im] = doCrop(mask, im);
+[mask im offset] = doCrop(mask, im);
 
 % Calculate indices
 iNodes = calculateIndices(mask);
@@ -54,12 +54,16 @@ W = calculateW(mask, im, iNodes, nbd);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [mask im] = doCrop(mask, im)
+function [mask im offset] = doCrop(mask, im)
 rInd = sum(mask, 2) > 0;
 cInd = sum(mask, 1) > 0;
 
 mask = mask(rInd, cInd);
 im = im(rInd, cInd);
+
+offset(1) = find(rInd, 1, 'first');
+offset(2) = find(cInd, 1, 'first');
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function iNodes = calculateIndices(mask)
