@@ -126,7 +126,8 @@ end
 function w = weightFun(a, b)
 global sigI;
 
-w = exp(- (a - b).^2 / sigI);
+%w = exp(- (a - b).^2 / sigI);
+w = a .* b / sigI;
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

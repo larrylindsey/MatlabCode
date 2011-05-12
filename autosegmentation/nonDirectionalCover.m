@@ -5,6 +5,11 @@ n2 = sum(mask2(:));
 maskOvlp = mask1 .* mask2;
 
 nOvlp = sum(maskOvlp(:));
-pOvlp = nOvlp / sqrt(n1 .* n2);
+
+if n1 == 0 || n2 == 0
+    pOvlp = 0;
+else
+    pOvlp = nOvlp / sqrt(n1 .* n2);
+end
 
 end

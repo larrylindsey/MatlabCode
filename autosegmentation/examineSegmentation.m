@@ -26,13 +26,19 @@ selC = selC(selC <= size(allseg, 2));
 selR = selR(selR > 0);
 selR = selR(selR <= size(allseg, 1));
 
+x = [];
+y = [];
 
 for ii = 1:numel(indices)
     index = indices(ii);
     sec = secdoc(secIndices == index);
+    
     imname = sprintf('seg_cache/image_%04d.png', index);
     fid = fopen(imname, 'r');
     if fid < 0
+        if isempty(x)
+            [x y] = reconstructDomainBounds(secdoc);
+        end
         imindex = sec.section.transImageIndex;
         tr = sec.section.Transform(imindex);
         im = imread(tr.Image.src);
@@ -40,7 +46,7 @@ for ii = 1:numel(indices)
             im = rgb2gray(im);
         end
         im = im2double(im);
-        im = applyTransformImage(im, tr);
+        im = applyTransformImage(im, tr, x, y);
         imwrite(im, imname);
     else
         fclose(fid);
@@ -60,6 +66,5 @@ for ii = 1:numel(indices)
     imshow(imc, 'Parent', ax(3));
     imshow(im, 'Parent', ax(4));
     title(sprintf('Index %d', index));
-    pause
-    
+    drawnow
 end
