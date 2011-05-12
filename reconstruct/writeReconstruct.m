@@ -47,13 +47,12 @@ elseif islogical(content)
 elseif min(size(content)) == 1
     contentText = '';
     
-    if max(abs(content - floor(content))) == 0
-        cstr = '%s %d';
-    else
-        cstr = '%s %g';
-    end
-    
     for ic = 1:numel(content)
+        if abs(content(ic) - floor(content(ic))) == 0
+            cstr = '%s %d';
+        else
+            cstr = '%s %g';
+        end
         contentText = sprintf(cstr, contentText, content(ic));
     end
 else
@@ -84,6 +83,19 @@ for n = 1:numel(names)
         for ic = 1:numel(contours)
             currContour = contours(ic);
             fprintf(fid, '<Contour ');
+            cnames = fieldnames(currContour);
+            for icn = 1:numel(cnames)
+                currcfn = cnames{icn};
+                fprintf(fid, '%s\n', fieldToText(currcfn, ...
+                    currContour));
+            end
+            fprintf(fid, '/>\n');
+        end
+    elseif strcmpi(currfn, 'ZContour')
+        contours = serdoc.ZContour;
+        for ic = 1:numel(contours)
+            currContour = contours(ic);
+            fprintf(fid, '<ZContour ');
             cnames = fieldnames(currContour);
             for icn = 1:numel(cnames)
                 currcfn = cnames{icn};
