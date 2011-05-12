@@ -1,12 +1,23 @@
-function [ws labelim] = fijiTrainableSegmentationAnnotation(classim)
+function [ws labelim] = fijiTrainableSegmentationAnnotation(classim,...
+    openstsz, closestsz)
 
-openstsz = 4;
-closestsz = 2;
+if nargin < 3 || isempty(closestsz)
+    closestsz = 2;
+end
+if nargin < 2 || isempty(openstsz)
+    openstsz = 4;
+end
+
 
 classim = logical(classim > 0);
 
-classim = imopen(classim, strel('disk', openstsz));
-classim = imclose(classim, strel('disk', closestsz));
+if openstsz > 0
+    classim = imopen(classim, strel('disk', openstsz));
+end
+
+if closestsz > 0
+    classim = imclose(classim, strel('disk', closestsz));
+end
 
 imd2 = bwdist(classim);
 
