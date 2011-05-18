@@ -44,7 +44,7 @@ cshift = mod((1:lbrc(2))  + round(lbrc(2) / 2), lbrc(2));
 cshift(logical(cshift == 0)) = lbrc(2);
 
 
-out = zeros([size(im) nk]);
+out = repmat(im(1), [size(im) nk]);
 
 for i_k = 1:nk
     out_temp = outlb(rshift, cshift, i_k);
