@@ -8,7 +8,10 @@ end
 if size(im0, 3) > 1
     im0 = rgb2gray(im0);
 end
-im0 = im2single(im0);
+
+if ~isfloat(im0)
+    im0 = im2single(im0);
+end
 
 
 HH = [];
@@ -64,6 +67,7 @@ if isempty(match)
     cm = rStr.cropMask;
     clear rStr;
     rStr.cropMask = cm;
+    clear cm;
     save match_cache.mat match
     toc;
     sendmsg(msgsubjectbeg, ...
@@ -87,10 +91,12 @@ end
 sprintf('Labeling Grid Intersections\n');
 if isempty(HH)
     tic;
-    [rmask cmask] = find(rStr.cropMask);
-    rmin = min(rmask); rmax = max(rmask);
-    cmin = min(cmask); cmax = max(cmask);
-    im0 = im0 .* rStr.cropMask;
+    [rmin rmax cmin cmax] = mask2boundingbox(rStr.cropMask);
+%     [rmask cmask] = find(rStr.cropMask);
+%     rmin = min(rmask); rmax = max(rmask);
+%     cmin = min(cmask); cmax = max(cmask);
+    im0(not(rStr.cropMask)) = 0;
+    %im0 = im0 .* rStr.cropMask;
     im0 = im0(rmin:rmax, cmin:cmax);
     [rc_found, grid_model, model_err, L, HH] =...
         labelGridIntersections(im0, match,...

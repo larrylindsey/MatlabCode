@@ -55,10 +55,11 @@ if nargin <4
 %         crossEnergy = imfilter(im, im2double(match)) ./ sqrt(imnormsqr);
 %         fprintf('Finished corr map\n');
 %     else
-        imnormsqr = fftfilter2(im.*im, single(ones(size(match))));
-        imnormsqr(imnormsqr < 0) = 0;
-        crossEnergy = fftfilter2(im, match) ./ sqrt(imnormsqr);
-        crossEnergy = crossEnergy .* mask;
+        %imnormsqr = fftfilter2(im.*im, single(ones(size(match))));
+        %imnormsqr(imnormsqr < 0) = 0;
+        %crossEnergy = fftfilter2(im, match) ./ sqrt(imnormsqr);
+        crossEnergy = normcorr(im, match);
+        crossEnergy(not(mask)) = 0;
 %     end
 
     clear imnormsqr;
@@ -66,8 +67,20 @@ if nargin <4
 end
 
 if nargin < 5
-    crossEnergySorted = sort(crossEnergy(mask));
-    tVal = crossEnergySorted(round(.99 * numel(crossEnergySorted)));
+    
+    tPercent = 0.99;
+    
+    [eh, ehx] = hist(crossEnergy(mask), 1000);
+    pp = cumsum(eh);
+    pp = pp / pp(end);
+    thI = find(pp > tPercent, 1, 'first');
+    p2 = pp(thI); x2 = ehx(thI);
+    p1 = pp(thI - 1); x1 = ehx(thI - 1);
+    
+    tVal = ((tPercent - p1) / (p2 - p1)) * x2 + ...
+        ((p2 - tPercent)/(p2 - p1)) * x1;
+%     crossEnergySorted = sort(crossEnergy(mask));
+%     tVal = crossEnergySorted(round(.99 * numel(crossEnergySorted)));
 
     clear crossEnergySorted;
 
