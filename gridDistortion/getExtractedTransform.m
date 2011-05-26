@@ -95,6 +95,53 @@ if v1(2) < 0
     sqgm = sqgm';
 end
 
+=======
+
+data.u = control.u;
+data.v = control.v;
+data.n = round(sqrt(size(rc, 1)));
+%tr = regressionTransform(squareRC, rc, control.order, control.type, data);
+[trsim sel] = ransacRegressionTransform(ransacRegressionTransform, ...
+    squareRC, rc, control.order, control.type, data);%#ok
+
+traff = getTRAff(rc, squareRC, sel, data, control);
+
+squareRC = trsAlign(squareRC(sel,:), rc(sel,:));
+trsim = regressionTransform(squareRC, rc(sel,:), control.order, control.type, ...
+    data);
+
+% % Fix the mag
+% tr.T(2:3,:) = tr.T(2:3,:) / (sqrt(det(tr.T(2:3,:)) * 3 / 4 ));
+% tr = populateTransInverse(tr);
+
+end
+
+function traff = getTRAff(rc, squareRC, sel, data, control)
+rc = rc(sel,:);
+squareRC = squareRC(sel,:);
+
+tral = regressionTransform(squareRC, rc, 1, @legendreMat, data);
+squareRC = doTransform(squareRC, tral);
+
+traff = regressionTransform(squareRC, rc, control.order, control.type,...
+    data);
+end
+
+function sqgm = getSquareGM(gm)
+v1 = gm(1,:);
+v2 = gm(2,:);
+v1n = norm(v1);
+v2n = norm(v2);
+
+cosups = (v1(1) * v2n + v2(2) * v1n) / (2 * v2n * v1n);
+sinups = sqrt(1 - cosups*cosups);
+
+sqgm = [cosups sinups; -sinups cosups];
+
+if v1(2) < 0
+    sqgm = sqgm';
+end
+
 gmnorm = (norm(gm(1,:)) + norm(gm(2,:))) / 2;
 
 sqgm = sqgm * gmnorm;
