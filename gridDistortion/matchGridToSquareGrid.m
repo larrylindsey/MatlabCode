@@ -150,7 +150,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [ci ciOrder cis] = getComponents(lm)
 [ci cis] = components(lm);
-[cis ciOrder] = sort(cis, 'descend');
+[cis ciOrder] = sort(cis, 'descend');%#ok
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function cx = makeLinks(rc, grid_model, coord)
