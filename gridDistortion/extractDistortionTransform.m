@@ -1,4 +1,4 @@
-function [rc_found, rc_grid, grid_model, dbStr] =...
+function [rc_found, rc_grid, grid_model, scale, dbStr] =...
     extractDistortionTransform(im0, varargin)
 
 if ischar(im0)
@@ -19,6 +19,8 @@ HH = [];
 match = [];
 rStr = [];
 bwEnergy = [];
+scale = size(im0);
+scale = reshape(scale(1:2), [1 2]);
 
 while ~isempty(varargin)
     arg = varargin{1};
@@ -131,8 +133,17 @@ end
 clear HH;
 
 %[rc_grid grid_model] = fitGrid(grid_model, rc_found, model_err);
-rc_grid = matchGridToSquareGrid(grid_model, rc_found, model_err);
 
+
+
+rc_grid = matchGridToSquareGrid(rc_found, grid_model, ...
+    sqrt(abs(det(grid_model))) / 10);
+rc_found = rc_found(rc_grid(:,1), :);
+rc_grid = rc_grid(:,[2 3]);
+
+rc_found = rc_found ./ repmat(scale / 2, [size(rc_found,1), 1]) - 1;
+grid_model = grid_model ./ repmat(scale / 2, [2 1]);
+grid_model = eye(2) * sqrt(abs(det(grid_model)));
 
 if nargout > 1
     dbStr.L = L;
@@ -141,6 +152,7 @@ if nargout > 1
     dbStr.rc_found = rc_found;
     dbStr.rc_grid = rc_grid;
     dbStr.grid_model = grid_model;
+    dbStr.model_err = model_err;
 end
 
 c = clock;

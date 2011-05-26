@@ -39,7 +39,10 @@ conncoord = cvect(:,4:5);
 % ci contains an index for each row in rc, indicating the component index
 % of that point. ciOrder contains a list of the component indices in
 % descending order of cardinality.
-[ci ciOrder] = getComponents(linkMat);
+[ci ciOrder cis] = getComponents(linkMat);
+
+ngrp = min(ngrp, numel(ciOrder));
+joingrp = find((2 * cis) > cis(1), 1, 'last');
 
 grp = cell(1, ngrp);
 
@@ -50,10 +53,10 @@ end
 
 bigGroup = grp{1};
 
-for ig = 2:ngrp
+for ig = 2:joingrp
     bigGroup = joinGroups(bigGroup, grp{ig}, rc, grid_model);
 end
-
+    
 %[rc_grid c] = groupDist(rc, ci, icisort(1), icisort(2), grid_model);
 rc_grid = bigGroup;
 end
@@ -144,9 +147,9 @@ grp = cat(2, grpList, coord);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [ci ciOrder] = getComponents(lm)
+function [ci ciOrder cis] = getComponents(lm)
 [ci cis] = components(lm);
-[junk ciOrder] = sort(cis, 'descend');%#ok
+[cis ciOrder] = sort(cis, 'descend');%#ok
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [v coord] = groupDist(rc, ci, g1, g2, grid_model)

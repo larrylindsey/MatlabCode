@@ -8,6 +8,7 @@ if nargin < 1
     trsim.v = [-1 1];
     trsim.norm = [];
     trsim.type = @legendreMat;
+    trsim.useRansac = true;
     return;
 end
 
@@ -44,8 +45,17 @@ data.u = control.u;
 data.v = control.v;
 data.n = round(sqrt(size(rc, 1)));
 %tr = regressionTransform(squareRC, rc, control.order, control.type, data);
-[trsim sel] = ransacRegressionTransform(ransacRegressionTransform, ...
-    squareRC, rc, control.order, control.type, data);%#ok
+
+if isfield(control, 'useRansac') && control.useRansac
+    ctrl_ransac = ransacRegressionTransform();
+    ctrl_ransac.n = 24;
+    ctrl_ransac.minInliers = 30;
+    ctrl_ransac.maxIter = 100;
+    [trsim sel] = ransacRegressionTransform(ctrl_ransac, ...
+        squareRC, rc, control.order, control.type, data);%#ok
+else
+    sel = true(size(rc,1), 1);
+end
 
 traff = getTRAff(rc, squareRC, sel, data, control);
 
