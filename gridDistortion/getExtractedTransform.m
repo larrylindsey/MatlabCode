@@ -1,85 +1,92 @@
-function [sqtrans sq_rc_matcha trans rc_matcha] = ...
-    getExtractedTransform(rc_found, rc_grid, grid_model, order, type, u, v)
+function [trsim traff rc squareRC] = getExtractedTransform(rc, cgrid, gm, control)
+% function tr = getExtractedTransform(rc, cgrid, gm, control)
 
-% scale model
-model_mag = mean(sqrt(sum(grid_model.^2,1)));
-grid_model = grid_model / model_mag;
-rc_found = rc_found / model_mag;
+% return an example control struct
+if nargin < 1
+    trsim.order = 3;
+    trsim.u = [-1 1];
+    trsim.v = [-1 1];
+    trsim.norm = [];
+    trsim.type = @legendreMat;
+    return;
+end
 
-if nargin < 7
-    u = [min(rc_found(:,1)) max(rc_found(:,1))];
-    v = [min(rc_found(:,2)) max(rc_found(:,2))];
-    
-    if nargin < 5
-        type = @legendreMat;
+if det(gm) < 0
+    gm = gm([2 1], :);
+    cgrid = cgrid(:,[2 1]);
+end
+
+% Do normalization, if specified.
+if isfield(control, 'norm') && ~isempty(control.norm)
+    norm = control.norm;
+    if numel(norm) == 1
+        norm = repmat(norm, [1 2]);
     end
+    
+    gm = 2 * gm ./ repmat(norm, [2 1]);
+    
+    norm = repmat(norm, [size(rc, 1), 1]) / 2;
+    rc = (rc ./ norm) - 1;
+    
 end
 
-nansel = sum(isnan(rc_grid), 2) > 0;
-rc_grid = rc_grid(not(nansel),:);
-xy_found = rc_found(not(nansel),[2 1]);
-xy_grid = rc_grid(:,[2 1]);
+% square the grid model
+squareGM = getSquareGM(gm);
 
-[mag angle] = polarModel(grid_model);
+% Calculate the approximated true grid
+squareRC = cgrid * (squareGM');
+squareRC = squareRC + ...
+    repmat(mean(rc, 1) - mean(squareRC, 1), [size(squareRC, 1), 1]);
 
-sq_grid_model = (eye(2) * mag) * ...
-    [cos(angle) sin(angle); -sin(angle) cos(angle)];
+squareRC = trsAlign(squareRC, rc);
 
-sq_xy_match = xy_grid * sq_grid_model;
-xy_match = xy_grid * grid_model;
+data.u = control.u;
+data.v = control.v;
+data.n = round(sqrt(size(rc, 1)));
+%tr = regressionTransform(squareRC, rc, control.order, control.type, data);
+[trsim sel] = ransacRegressionTransform(ransacRegressionTransform, ...
+    squareRC, rc, control.order, control.type, data);%#ok
 
-% Affine alignment
-sqtrans_align.order = 1;
-sqtrans_align.T = calculateTransMat(sq_xy_match, xy_found, ...
-    sqtrans_align.order, type);
-sqtrans_align.Tinv = calculateTransMat(xy_found, sq_xy_match, ...
-    sqtrans_align.order, type);
-sqtrans_align.type = type;
+traff = getTRAff(rc, squareRC, sel, data, control);
 
-trans_align.order = sqtrans_align.order;
-trans_align.T = calculateTransMat(xy_match, xy_found, ...
-    sqtrans_align.order, type);
-trans_align.Tinv = calculateTransMat(xy_found, xy_match, ...
-    sqtrans_align.order, type);
-trans_align.type = type;
+squareRC = trsAlign(squareRC(sel,:), rc(sel,:));
+trsim = regressionTransform(squareRC, rc(sel,:), control.order, control.type, ...
+    data);
 
-
-sq_xy_matcha = doTransform(sq_xy_match, sqtrans_align);
-xy_matcha = doTransform(xy_match, trans_align);
-
-rc_matcha = xy_matcha(:,[2 1]);
-sq_rc_matcha = sq_xy_matcha(:,[2 1]);
-
-
-sqtrans.order = order;
-sqtrans.T = calculateTransMat(xy_found, sq_xy_matcha, order, type);
-sqtrans.Tinv = calculateTransMat(sq_xy_matcha, xy_found, order, type);
-sqtrans.iDim = 2;
-sqtrans.oDim = 2;
-sqtrans.type = type;
-sqtrans.data.u = u;
-sqtrans.data.v = v;
-sqtrans.data.n = size(rc_found, 1);
-
-
-trans.order = order;
-trans.T = calculateTransMat(xy_found, xy_matcha, order);
-trans.Tinv = calculateTransMat(xy_matcha, xy_found, order);
-trans.iDim = 2;
-trans.oDim = 2;
-trans.type = type;
-trans.data  = sqtrans.data;
+% % Fix the mag
+% tr.T(2:3,:) = tr.T(2:3,:) / (sqrt(det(tr.T(2:3,:)) * 3 / 4 ));
+% tr = populateTransInverse(tr);
 
 end
 
-function [mag angle] = polarModel(grid_model)
-mag = sqrt(abs(det(grid_model)));
+function traff = getTRAff(rc, squareRC, sel, data, control)
+rc = rc(sel,:);
+squareRC = squareRC(sel,:);
 
-ngm = grid_model / mag;
-v1 = ngm * [1 ; 0];
-v2 = [0 1 ; -1 0] * ngm * [0 ; 1];
+tral = regressionTransform(squareRC, rc, 1, @legendreMat, data);
+squareRC = doTransform(squareRC, tral);
 
-v = (v1 + v2) / 2;
+traff = regressionTransform(squareRC, rc, control.order, control.type,...
+    data);
+end
 
-angle = atan2(v(2), v(1));
+function sqgm = getSquareGM(gm)
+v1 = gm(1,:);
+v2 = gm(2,:);
+v1n = norm(v1);
+v2n = norm(v2);
+
+cosups = (v1(1) * v2n + v2(2) * v1n) / (2 * v2n * v1n);
+sinups = sqrt(1 - cosups*cosups);
+
+sqgm = [cosups sinups; -sinups cosups];
+
+if v1(2) < 0
+    sqgm = sqgm';
+end
+
+gmnorm = (norm(gm(1,:)) + norm(gm(2,:))) / 2;
+
+sqgm = sqgm * gmnorm;
+
 end

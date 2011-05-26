@@ -24,7 +24,7 @@ end
 RC = cat(2, R(:), C(:));
 RCtr = doTransform(RC, trans);
 
-RCtr = jankyLinearAlign(RCtr, RC);
+% RCtr = jankyLinearAlign(RCtr, RC);
 % RCtr = RCtr + repmat(sh, [size(RCtr,1), 1]);
 % zs = repmat(mean(RC,1), [size(RC,1) 1]);
 
