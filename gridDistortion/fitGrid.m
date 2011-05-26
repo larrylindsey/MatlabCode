@@ -64,8 +64,6 @@ lshift = sparse([link(:,1) ; link(:,2)], [link(:,2) ; link(:,1)], ...
 rshift = sparse([link(:,1) ; link(:,2)], [link(:,2) ; link(:,1)], ...
     [-shift(:,2) ; shift(:,2)]);
 
-%shiftmat = sparse([link(
-
 gridRC = nan(size(rc));
 
 gridRC(i_corner, :) = 0;
@@ -79,8 +77,8 @@ while ~isempty(fifo)
     
     neighbors = find(adjmat(:, index) > 0);
     
-    adjmat(:,index) = 0;
-    adjmat(index,:) = 0;
+    adjmat(:,index) = 0; %#ok<SPRIX>
+    adjmat(index,:) = 0; %#ok<SPRIX>
     
     if ~isempty(neighbors)
         offset = cat(2, lshift(neighbors, index), rshift(neighbors, index));
@@ -129,7 +127,8 @@ function [i_corner l_flip r_flip] = findCorner(rc, lref, rref)
 
 V = cat(1, lref, rref)';
 
-coords = rc * inv(V);
+%coords = rc * inv(V);
+coords = rc / V;
 
 if abs(coords(:,1)) == -coords(:,1)
     coords(:,1) = -coords(:,1);
@@ -145,7 +144,7 @@ else
     r_flip = false;
 end
 
-[junk i_corner] = min(sum(coords, 2));
+[junk i_corner] = min(sum(coords, 2));  %#ok<ASGLU>
 
 end
 
