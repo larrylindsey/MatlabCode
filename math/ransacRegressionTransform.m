@@ -6,7 +6,7 @@ if nargin < 1
     rparams.metric = [];
     rparams.maxError = .001;
     rparams.minInliers = 64;
-    rparams.maxIter = 1000;
+    rparams.maxIter = 100;
     tr = rparams;
     return;
 end
