@@ -133,7 +133,7 @@ end
 clear HH;
 
 %[rc_grid grid_model] = fitGrid(grid_model, rc_found, model_err);
-
+rc_grid = matchGridToSquareGrid(grid_model, rc_found, model_err);
 
 
 rc_grid = matchGridToSquareGrid(rc_found, grid_model, ...
