@@ -43,7 +43,7 @@ while ~isempty(varargin)
         otherwise
             error('Unexpected value');
     end
-    varargin = {varargin{3:end}};
+    varargin = varargin(3:end);
 end
 
 
@@ -130,7 +130,8 @@ end
 
 clear HH;
 
-[rc_grid grid_model] = fitGrid(grid_model, rc_found, model_err);
+%[rc_grid grid_model] = fitGrid(grid_model, rc_found, model_err);
+rc_grid = matchGridToSquareGrid(grid_model, rc_found, model_err);
 
 
 if nargout > 1
