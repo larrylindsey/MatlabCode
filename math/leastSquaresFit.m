@@ -14,12 +14,14 @@ eyetest = ATAInv * ATA;
 
 invErr = rms(eyemat(:) - eyetest(:));
 
+s = warning('off', 'MATLAB:nearlySingularMatrix');
 if invErr > 1e-3
-    ATAInv_alt = inv(ATA);
-    eyetest = ATAInv_alt * ATA;
+    ATAInvTest = eyemat / ATA;
+    eyetest = ATAInv * ATA;
     if rms(eyemat(:) - eyetest(:)) < invErr
-        ATAInv = ATAInv_alt;
+        ATAInv = ATAInvTest;
     end
 end
+warning(s.state, 'MATLAB:nearlySingularMatrix');
 
 c = (ATAInv * A' * z);
