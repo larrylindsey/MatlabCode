@@ -103,11 +103,12 @@ end
 %     repmat(logical(rowLabel > 0), size(columnLabel));
 
 L = sparse(bwlabel(bwEnergy, 4));
-[rc lh] = getLabelPeaks(L);
+rc = getLabelPeaks(L);
 
-lh_sigma = sqrt(var(lh));
-sel = lh < (mean(lh) + lh_sigma);
-rc = rc(sel,:);
+% [rc lh] = getLabelPeaks(L);
+% lh_sigma = sqrt(var(lh));
+% sel = lh < (mean(lh) + lh_sigma);
+% rc = rc(sel,:);
 
 [sample_space angles] = makeTriangleSampleSpace(rc);
 sel = abs(angles - pi / 2) < angle_thresh;
