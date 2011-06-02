@@ -59,6 +59,7 @@ end
     
 %[rc_grid c] = groupDist(rc, ci, icisort(1), icisort(2), grid_model);
 rc_grid = bigGroup;
+rc_grid = rc_grid(:,[1 3 2]);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [lm rcm ccm] = makeSparseMats(conn, conncoord, n)
@@ -149,33 +150,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [ci ciOrder cis] = getComponents(lm)
 [ci cis] = components(lm);
-[cis ciOrder] = sort(cis, 'descend');%#ok
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [v coord] = groupDist(rc, ci, g1, g2, grid_model)
-gsel1 = ci == g1;
-gsel2 = ci == g2;
-
-grc1 = rc(gsel1,:);
-grc2 = rc(gsel2,:);
-
-dd = dist2(grc1, grc2);
-ddminr = repmat(min(dd, [], 1), [size(dd, 1), 1]);
-ddminc = repmat(min(dd, [], 2), [1, size(dd, 2)]);
-minmin = and((ddminr == dd) , (ddminc == dd));
-
-[minsel1 minsel2] = find(minmin);
-
-gminrc1 = grc1(minsel1,:);
-gminrc2 = grc2(minsel2,:);
-
-diffrc = gminrc2 - gminrc1;
-
-diffCoord = diffrc / grid_model;
-
-v = median(diffrc, 1);
-coord = median(diffCoord, 1);
-
+[cis ciOrder] = sort(cis, 'descend');
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function cx = makeLinks(rc, grid_model, coord)
