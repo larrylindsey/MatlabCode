@@ -1,3 +1,0 @@
-seg_eval_medulla_HPF_FS_0_2_gs_ws(910);
-
-seg_eval_medulla_HPF_FS_0_2_crop_gs_nc_amb_l(910);

@@ -1,2 +1,0 @@
-#!/bin/sh
-echo "$1 "`tail -1 $1/log 2>/dev/null`

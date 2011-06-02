@@ -1,7 +1,0 @@
-#!/bin/csh
-
-if (! $?CODE_DIR ) then
-  set CODE_DIR=/groups/chklovskii/chklovskiilab/em_reconstruction/code
-endif
-
-mcc -C -m -R -nojvm -v -I $CODE_DIR/pipeline_utilities -I $CODE_DIR/lib/hash_functions -I $CODE_DIR/lib/xml_toolbox/ $CODE_DIR/house_keeping/copy_global_patchwise_transforms_from_simple_txt_to_mat_files.m

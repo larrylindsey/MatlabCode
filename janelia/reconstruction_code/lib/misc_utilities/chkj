@@ -1,5 +1,0 @@
-#!/bin/sh
-xargs -I@ sh -c "chkj1 @ | grep -v \"STOP: pipeline_sab\" | awk '{printf substr(\$1,1,length(\$1)-1)\"\n\";}'"
-# echo "chkj1 | grep -v \"STOP: pipeline_sab\" | awk '{printf substr(\$1,1,length(\$1)-1)\"\n\";}'"
-
-
