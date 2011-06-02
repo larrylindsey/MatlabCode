@@ -20,9 +20,11 @@ if spt < 1
 
     edgeMap = (abs(imHorizBlur) + abs(imVertBlur));
     
-    cropMask = autocropGrid(edgeMap);
+    %cropMask = autocropGrid(edgeMap);
+    cropMask = true(size(edgeMap));
     
-    edgeMapSort = sort(edgeMap(cropMask));
+    %edgeMapSort = sort(edgeMap(cropMask));
+    edgeMapSort = sort(edgeMap(:));
     edgeMapT = edgeMapSort(round(7/ 8 * numel(edgeMapSort)));
 
     bwEdge = and(logical(edgeMap > edgeMapT), cropMask);
