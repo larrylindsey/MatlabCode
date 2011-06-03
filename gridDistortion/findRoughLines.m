@@ -47,12 +47,18 @@ else
     r = rStr.r;
 end    
 
+% Estimate roughly, the number of lines we expect to find.
+% Each grating cell should be about 128px on a side, give or take a factor
+% 2 or so.
+nEstLines = 2 *max(size(im)) / 128;
+
+h = medfilt2(h, [3 3]);
 pp = findPeaks2(h);
 hpeaks = h(pp);
 hpeaks_sorted = sort(hpeaks);
 sel = (h .* pp > hpeaks_sorted(round(end/2)));
 
-pksel = and(sel, h > hpeaks_sorted(end - 200));
+pksel = and(sel, h > hpeaks_sorted(end - nEstLines));
 [pr pc] = find(pksel);
 peaks = cat(2, pr, pc);
 

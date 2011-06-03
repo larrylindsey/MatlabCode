@@ -1,6 +1,6 @@
 function [match dd ng] = gridEstimate(gridStruct, im)
 
-fillgap_len = max(size(im)) / 16;
+fillgap_len = max(size(im)) / 6;
 grid_size_threshold = 32;
 
 [deg bw h t r peaks] = parseInput(gridStruct);

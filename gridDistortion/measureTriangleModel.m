@@ -13,11 +13,25 @@ rexp = cvect + rmodel;
 uexp = cvect - lmodel;
 dexp = cvect - rmodel;
 
-dmapL = min(dist2(lexp, nbd_vect), [], 2);
-dmapR = min(dist2(rexp, nbd_vect), [], 2);
-dmapU = min(dist2(uexp, nbd_vect), [], 2);
-dmapD = min(dist2(dexp, nbd_vect), [], 2);
+exp = cat(3, lexp, rexp, uexp, dexp);
 
-dmap = min(cat(2, dmapL, dmapR, dmapU, dmapD), [], 2);
+dmap = zeros(size(exp, 1), 4);
 
-measure = sqrt(max(dmap)) / mean(rms(m, 2) * sqrt(2));
+parfor ii = 1:4
+    dmap(:,ii) = min(dist2(exp(:,:,ii), nbd_vect), [], 2);
+end
+% 
+% dmapL = min(dist2(lexp, nbd_vect), [], 2);
+% dmapR = min(dist2(rexp, nbd_vect), [], 2);
+% dmapU = min(dist2(uexp, nbd_vect), [], 2);
+% dmapD = min(dist2(dexp, nbd_vect), [], 2);
+
+%dmap = min(cat(2, dmap(:,:,1), dmap(:,:,2), dmap(:,:,3), dmap(:,:,4)),...
+%    [], 2);
+dmap = min(dmap, [], 2);
+if max(size(dmap)) < 2
+    measure = inf;
+else
+    measure = sqrt(max(dmap)) / mean(rms(m, 2) * sqrt(2));    
+end
+

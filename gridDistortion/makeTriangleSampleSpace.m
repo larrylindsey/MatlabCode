@@ -1,8 +1,11 @@
 function [sampleSpace angles lvectexpect inds] = makeTriangleSampleSpace(rc)
 
+expectAngle = pi / 2;
+% expectAngle = pi / 3;
 
 %setup basic variables
-rotmat = [0 -1; 1 0];
+rotmat = [cos(expectAngle) -sin(expectAngle);...
+    sin(expectAngle) cos(expectAngle)];
 s = size(rc, 1);
 iid = 1:s;
 

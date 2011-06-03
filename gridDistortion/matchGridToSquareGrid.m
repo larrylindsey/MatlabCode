@@ -42,7 +42,7 @@ conncoord = cvect(:,4:5);
 [ci ciOrder cis] = getComponents(linkMat);
 
 ngrp = min(ngrp, numel(ciOrder));
-joingrp = find((2 * cis) > cis(1), 1, 'last');
+joingrp = find((8 * cis) > cis(1), 1, 'last');
 
 grp = cell(1, ngrp);
 
