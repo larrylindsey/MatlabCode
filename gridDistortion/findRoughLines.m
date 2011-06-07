@@ -50,7 +50,7 @@ end
 % Estimate roughly, the number of lines we expect to find.
 % Each grating cell should be about 128px on a side, give or take a factor
 % 2 or so.
-nEstLines = 2 *max(size(im)) / 128;
+nEstLines = round(2 *max(size(im)) / 128);
 
 h = medfilt2(h, [3 3]);
 pp = findPeaks2(h);
