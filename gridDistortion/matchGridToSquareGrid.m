@@ -42,7 +42,7 @@ conncoord = cvect(:,4:5);
 [ci ciOrder cis] = getComponents(linkMat);
 
 ngrp = min(ngrp, numel(ciOrder));
-joingrp = find((8 * cis) > cis(1), 1, 'last');
+joingrp = min(find((8 * cis) > cis(1), 1, 'last'), ngrp);
 
 grp = cell(1, ngrp);
 
@@ -150,7 +150,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [ci ciOrder cis] = getComponents(lm)
 [ci cis] = components(lm);
-[cis ciOrder] = sort(cis, 'descend');%#ok
+[cis ciOrder] = sort(cis, 'descend');
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function cx = makeLinks(rc, grid_model, coord)
