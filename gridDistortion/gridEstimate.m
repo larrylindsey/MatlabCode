@@ -55,6 +55,7 @@ pts = round(pts);
 
 
 gsz = ceil(dd);
+%gsz = [256 256];
 
 igood = (pts(1,:) > gsz(2)) .* (pts(1,:) < size(im, 2) - gsz(2)) .* ...
     (pts(2,:) > gsz(1)) .* (pts(2,:) < size(im, 1) - gsz(1));
