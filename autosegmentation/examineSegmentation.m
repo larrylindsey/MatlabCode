@@ -28,6 +28,8 @@ selR = selR(selR <= size(allseg, 1));
 
 x = [];
 y = [];
+% selR = [];
+% selC = [];
 
 for ii = 1:numel(indices)
     index = indices(ii);
@@ -53,6 +55,15 @@ for ii = 1:numel(indices)
         im = imread(imname);
     end
     
+%     oldSelR = selR;
+%     oldSelC = selC;
+%     [selR selC] = getWindowSel(segstack(:,:,ii));
+%     
+%     if isempty(selR) || isempty(selC)
+%         selC = oldSelC;
+%         selR = oldSelR;
+%     end
+    
     im = im2double(im(selR, selC));
     imc = imread(sprintf('seg_cache/class_%04d.png', index));
     imc = im2double(imc(selR, selC));
@@ -67,4 +78,28 @@ for ii = 1:numel(indices)
     imshow(im, 'Parent', ax(4));
     title(sprintf('Index %d', index));
     drawnow
+    
+    imwrite(.5 * (imlrgb + repmat(segstack(selR, selC, ii), [1 1 3])) .* ...
+        sizeImage(im, size(imlrgb)), ...
+        sprintf('example_%04d.png', ii));
+    
+end
+end
+
+function [selR selC] = getWindowSel(seg)
+[rr cc] = find(seg);
+minR = min(rr); maxR = max(rr); minC = min(cc); maxC = max(cc);
+rangeR = maxR - minR; rangeC = maxC - minC;
+
+minR = minR - rangeR;
+maxR = maxR + rangeR;
+minC = minC - rangeC;
+maxC = maxC + rangeC;
+selC = minC:maxC;
+selR = minR:maxR;
+
+selC = selC(selC > 0);
+selC = selC(selC <= size(seg, 2));
+selR = selR(selR > 0);
+selR = selR(selR <= size(seg, 1));
 end

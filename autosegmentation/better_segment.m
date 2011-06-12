@@ -23,7 +23,7 @@ dimth = 200;
 dimbwth = .35;
 dsegth = 200;
 
-pth = .4;
+pth = .25;
 
 if ischar(segin)
     info = hdf5info(segin);

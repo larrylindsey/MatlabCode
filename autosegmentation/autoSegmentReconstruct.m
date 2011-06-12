@@ -1,6 +1,17 @@
 function [stackOut matchData score indexout] = autoSegmentReconstruct(secdoc, ...
     cname, index, cstr)
 [x y] = reconstructDomainBounds(secdoc);
+
+if nargin == 1
+    cstr.x = x;
+    cstr.y = y;
+    cstr.eT = .5;
+    cstr.iT = .8;
+    cstr.scoreT = .75;
+    stackOut = cstr;
+    return;
+end
+
 if nargin < 4
     cstr = defaultControl;
     if nargin == 0
@@ -43,7 +54,8 @@ doRepartition = false;
 
 finish = false;
 
-while (any(nextMask(:)) || doRepartition) && ~finish
+while (any(nextMask(:)) || doRepartition) && ~finish &&...
+        index > secdoc(1).index + 1 && index + 1 < secdoc(end).index
     
     if ~doRepartition
         
@@ -53,7 +65,7 @@ while (any(nextMask(:)) || doRepartition) && ~finish
         currMask = nextMask;
         indexout = cat(2, indexout, index);
         
-        index = index - 1;
+        index = index + 1;
         
         fprintf('Now segmenting index %d\n', index);
         
@@ -67,6 +79,10 @@ while (any(nextMask(:)) || doRepartition) && ~finish
     
     [nextMask nextData] = selectLabelsByMask(label, currMask, cstr.iT,...
         cstr.eT);
+    
+    if isempty(nextMask)
+        keyboard;
+    end
     
     nextScore = nonDirectionalCover(nextMask, currMask);
     
@@ -245,10 +261,10 @@ end
 function moveLabelIm(index)
 infile = sprintf('seg_cache/label_%04d.png', index);
 outIndex = 0;
-outfile = sprintf('seg_cache/label_%04d.png.%d', outIndex);
+outfile = sprintf('seg_cache/label_%04d.png.%d', index, outIndex);
 while exist(outfile, 'file') > 0
     outIndex = outIndex + 1;
-    outfile = sprintf('seg_cache/label_%04d.png.%d', outIndex);
+    outfile = sprintf('seg_cache/label_%04d.png.%d', index, outIndex);
 end
 movefile(infile, outfile);
 end
