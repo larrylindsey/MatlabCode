@@ -42,55 +42,25 @@ flast = f(1:(end - 1));
 dcurr = d(2:end);
 dlast = d(1:(end - 1));
 
-%imcurr = getImage(files{2});
-trArray.fromPts = [];
-trArray.toPts = [];
-trArray.iFrom = [];
-trArray.iTo = [];
-trArray.trSiftSel = [];
 
+% ii = 1;
+% trArray(ii) = getSiftTrans(dcurr{ii}, dlast{ii}, fcurr{ii}, ...
+%     flast{ii}, rparam, ii);
+% 
+% trArray = repmat(trArray, [numel(files) - 1, 1]);
 
-trArray = repmat(trArray, [numel(files) - 1, 1]);
+trArray = cell(1, numel(files) - 1);
 
-
-for ii = 2:(numel(files) - 1)
-    fprintf('Finding Matches\n');
-    matches = vl_ubcmatch(dcurr{ii}, dlast{ii});
-    fprintf('Done.\n');
-    
-    matchLocLast = flast{ii}(1:2, matches(2,:))';
-    matchLocCurr = fcurr{ii}(1:2, matches(1,:))';
-    
-    matchDist = sqrt(sum((matchLocLast - matchLocCurr).^2, 2));
-    
-    matchDistSort = sort(matchDist);
-    th = matchDistSort(round(end / 8)); %first octile distance
-    
-    sel = matchDist < th;
-    
-    ptsLast = matchLocLast(sel,:);
-    ptsCurr = matchLocCurr(sel,:);
-    
-    [trSift trSiftSel] =...
-        ransacRegressionTransform(rparam, ptsLast, ptsCurr, 1);
-    
-    trSift.fromPts = ptsLast;
-    trSift.toPts = ptsCurr;
-    trSift.iFrom = ii - 1;
-    trSift.iTo = ii;
-    trSift.trSiftSel = trSiftSel;
-    
-    %     flast = fcurr;
-    %     dlast = dcurr;
-    
-    trArray(ii) = trSift;
+parfor ii = 1:(numel(files) - 1)
+    trArray{ii} = getSiftTrans(dcurr{ii}, dlast{ii}, fcurr{ii}, ...
+        flast{ii}, rparam, ii);
 end
 
 
 
 end
 
-function trSift = getSiftTrans(dcurr, dlast, fcurr, flast, rparam)
+function trSift = getSiftTrans(dcurr, dlast, fcurr, flast, rparam, ii)
 fprintf('Finding Matches\n');
 matches = vl_ubcmatch(dcurr, dlast);
 fprintf('Done.\n');
@@ -127,6 +97,7 @@ end
 im = im2single(im);
 
 if ~isempty(tr)
+    fprintf('Applying transform to %s\n', path);
     im = applyTransformImage(im, tr);
 end
 
