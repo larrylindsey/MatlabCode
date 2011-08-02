@@ -1,14 +1,15 @@
-function [trsim traff rc squareRC] = getExtractedTransform(rc, cgrid, gm, control)
+function [tr rc squareRC] = getExtractedTransform(rc, cgrid, gm, control)
 % function tr = getExtractedTransform(rc, cgrid, gm, control)
 
 % return an example control struct
 if nargin < 1
-    trsim.order = 3;
-    trsim.u = [-1 1];
-    trsim.v = [-1 1];
-    trsim.norm = [];
-    trsim.type = @legendreMat;
-    trsim.useRansac = true;
+    tr.order = 3;
+    tr.u = [-1 1];
+    tr.v = [-1 1];
+    tr.norm = [];
+    tr.type = @legendreMat;
+    tr.useRansac = true;
+    tr.affine = false;
     return;
 end
 
@@ -44,7 +45,6 @@ squareRC = trsAlign(squareRC, rc);
 data.u = control.u;
 data.v = control.v;
 data.n = round(sqrt(size(rc, 1)));
-%tr = regressionTransform(squareRC, rc, control.order, control.type, data);
 
 if isfield(control, 'useRansac') && control.useRansac
     ctrl_ransac = ransacRegressionTransform();
@@ -60,12 +60,15 @@ end
 traff = getTRAff(rc, squareRC, sel, data, control);
 
 squareRC = trsAlign(squareRC(sel,:), rc(sel,:));
-trsim = regressionTransform(squareRC, rc(sel,:), control.order, control.type, ...
-    data);
 
-% % Fix the mag
-% tr.T(2:3,:) = tr.T(2:3,:) / (sqrt(det(tr.T(2:3,:)) * 3 / 4 ));
-% tr = populateTransInverse(tr);
+trsim = regressionTransform(squareRC, rc(sel,:), control.order, ...
+    control.type, data);
+
+if (control.affine)
+    tr = traff;
+else
+    tr = trsim;
+end
 
 end
 
