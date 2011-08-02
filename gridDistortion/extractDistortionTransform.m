@@ -141,7 +141,11 @@ rc_grid = rc_grid(:,[2 3]);
 
 rc_found = rc_found ./ repmat(scale / 2, [size(rc_found,1), 1]) - 1;
 grid_model = grid_model ./ repmat(scale / 2, [2 1]);
-grid_model = eye(2) * sqrt(abs(det(grid_model)));
+
+[rc_grid grid_model] = fixGridMatch(rc_grid, grid_model);
+rc_grid = rc_grid(:,[2 1]);
+
+%grid_model = eye(2) * sqrt(abs(det(grid_model)));
 
 if nargout > 1
     dbStr.L = L;
@@ -156,5 +160,27 @@ end
 c = clock;
 sendmsg(msgsubject,...
     sprintf('Finished processing at %d:%d:%g\n', c(4), c(5), c(6)));
+
+end
+
+function [rc_grid grid_model] = fixGridMatch(rc_grid, grid_model)
+
+e1_ind = abs(grid_model(:,1));
+if e1_ind(2) > e1_ind(1)
+    rc_grid = rc_grid(:,[2 1]);
+    grid_model = grid_model(:,[2 1]);
+end
+
+sign_ind = grid_model(logical(eye(2)));
+
+if sign_ind(1) < 0
+    grid_model(1,:) = - grid_model(1,:);
+    rc_grid(:,1) = -rc_grid(:,1);
+end
+
+if sign_ind(2) < 0
+    grid_model(2,:) = -grid_model(2,:);
+    rc_grid(:,2) = -rc_grid(:,2);
+end
 
 end
