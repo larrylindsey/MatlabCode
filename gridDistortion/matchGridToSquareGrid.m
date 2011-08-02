@@ -149,7 +149,7 @@ grp = cat(2, grpList, coord);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [ci ciOrder cis] = getComponents(lm)
-[ci cis] = components(lm);
+[ci cis] = thirdpartyfunction(@components,lm);
 [cis ciOrder] = sort(cis, 'descend');
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
