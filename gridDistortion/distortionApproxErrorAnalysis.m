@@ -41,6 +41,7 @@ if ~isfield(param, 'undImages') || isempty(param.trans)
         exParam = getExtractedTransform();
         %exParam.norm = scale;
         exParam.order = param.transOrder;
+        exParam.useRansac = false;
         trans = getExtractedTransform(rc_found, rc_grid, grid_model,...
             exParam);
         

@@ -61,7 +61,7 @@ traff = getTRAff(rc, squareRC, sel, data, control);
 
 squareRC = trsAlign(squareRC(sel,:), rc(sel,:));
 
-trsim = regressionTransform(squareRC, rc(sel,:), control.order, ...
+trsim = regressionTransform(rc(sel,:), squareRC, control.order, ...
     control.type, data);
 
 if (control.affine)

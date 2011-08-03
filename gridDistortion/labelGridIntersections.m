@@ -56,6 +56,31 @@ ransac_min_inliers = round(max(L(:)) * ransac_inlier_factor);
     
 rc_fit = rc(fit_space(:,5), :);
 
+% model in indicator vectors model(1,:), model(2,:)
+v1 = model(1,:);
+v2 = model(2,:);
+% Find indicator that best corresponds to e1
+a1 = atan2(v1(2), v1(1)) / pi;
+a2 = atan2(v2(2), v2(1)) / pi;
+a1m = mod(a1, 1);
+a2m = mod(a2, 1);
+if a1m > .25 && a1m <= .75
+    if a2m <= .25 || a2m > .75
+        model = model([2 1], :);
+        %vtemp = v1;
+        v1 = v2;
+        %v2 = vtemp;
+    end
+end
+
+if v1(1) < 0
+    model(1,:) = -model(1,:);
+end
+
+if det(model) < 0
+    model(2,:) = -model(2,:);
+end
+
 end
 
 function [rc lh] = getLabelPeaks(L)
