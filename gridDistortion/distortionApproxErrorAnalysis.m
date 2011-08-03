@@ -27,7 +27,7 @@ if ~isempty(errstr)
 end
 
 % If there is no image transform, make one
-if ~isfield(param, 'undImages')
+if ~isfield(param, 'undImages') || isempty(param.trans)
     if isempty(param.trans)
         if isempty(param.imGrid)
             error('Both parameters trans and imGrid are empty');
@@ -47,6 +47,7 @@ if ~isfield(param, 'undImages')
         transfile = sprintf('%s_trans.mat', param.prefix);
         save(transfile, 'trans', '-v7.3');
         param.trans = trans;
+        param.trans.scale = scale;
         clear trans;
     end
     
@@ -66,14 +67,14 @@ if ~isfield(param, 'undImages')
 end
 
 % Run Fiji
-param.rawMatch = str2fun(runFiji(param.fijiExec, param.jarPath, ...
+param.rawMatch = str2func(runFiji(param.fijiExec, param.jarPath, ...
     param.images, [param.prefix '_raw']));
-param.undMatch = str2fun(runFiji(param.fijiExec, param.jarPath, ...
+param.undMatch = str2func(runFiji(param.fijiExec, param.jarPath, ...
     param.undImages, [param.prefix '_und']));
 
 [rawA rawB] = param.rawMatch();
 [undA undB] = param.undMatch();
-[rawUndA rawUndB] = transformRaw(param.transform, rawA, rawB);
+[rawUndA rawUndB] = transformRaw(param.trans, rawA, rawB);
 
 param.raw_rawError = computeError(rawA, rawB);
 param.und_undError = computeError(undA, undB);
@@ -82,7 +83,38 @@ param.raw_undError = computeError(rawUndA, rawUndB);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function e = computeError(ptsA, ptsB)
+e = cell(size(ptsA));
+for ii = 1:numel(e)
+    tr = regressionTransform(ptsA{ii}, ptsB{ii}, 1, @taylorMat);
+    ptsAtr = doTransform(ptsA{ii}, tr);
+    d = sqrt(sum((ptsAtr - ptsB{ii}).^2, 2));
+    e{ii} = rms(d);
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [A B] = transformRaw(tr, inA, inB)
+A = cell(size(inA));
+B = cell(size(inB));
 
+scale = max(tr.scale);
+
+for ii = 1:numel(A)
+    scaleInA = applyScale(inA{ii}, scale);
+    scaleInB = applyScale(inB{ii}, scale);
+    
+    A{ii} = reverseScale(doTransform(scaleInA, tr), scale);
+    B{ii} = reverseScale(doTransform(scaleInB, tr), scale);
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function x = applyScale(x, scale)
+x = 2 * (x / scale) - 1;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function y = reverseScale(y, scale)
+y = scale * (y + 1) / 2;
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function scriptfile = runFiji(fijiExec, jarpath, images, prefix)
 % write the list file to disk
