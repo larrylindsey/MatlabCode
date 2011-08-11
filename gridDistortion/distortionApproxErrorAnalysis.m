@@ -41,6 +41,7 @@ if ~isfield(param, 'undImages') || isempty(param.trans)
         exParam = getExtractedTransform();
         %exParam.norm = scale;
         exParam.order = param.transOrder;
+        exParam.useRansac = false;
         trans = getExtractedTransform(rc_found, rc_grid, grid_model,...
             exParam);
         
@@ -52,18 +53,9 @@ if ~isfield(param, 'undImages') || isempty(param.trans)
     end
     
     % Transform images, then save to disk
-    param.undImages = cell(size(param.images));
-    
-    for ii = 1:numel(param.images)
-        im = getImage(param.images{ii});
-        
-        imtr = applyTransformImage(im, param.trans);
-        
-        param.undImages{ii} = sprintf('%s_und_%s',...
-            param.prefix, param.images{ii});
-        
-        imwrite(imtr, param.undImages{ii});
-    end
+    param.undImages = transformImages(param.images, param.trans, ...
+        param.prefix);
+
 end
 
 % Run Fiji
@@ -81,6 +73,20 @@ param.und_undError = computeError(undA, undB);
 param.raw_undError = computeError(rawUndA, rawUndB);
 
 
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function undImages = transformImages(images, trans, prefix)
+undImages = cell(size(images));
+parfor ii = 1:numel(images)
+    im = getImage(images{ii});
+    
+    imtr = applyTransformImage(im, trans);
+    
+    undImages{ii} = sprintf('%s_und_%s',...
+        prefix, images{ii});
+    
+    imwrite(imtr, undImages{ii});
+end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function e = computeError(ptsA, ptsB)

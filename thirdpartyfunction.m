@@ -11,7 +11,12 @@ if isempty(funcid.file)
     cmd = sprintf(['find %s/ -name %s.* '...
         '| sed -e "%s" | gawk ''{ print $5 }'''], ...
         codedir, funcid.function, 's/\// /g');
-    [junk fdir] = unix(cmd); %#ok
+    [status fdir] = unix(cmd);
+    
+    if status ~= 0
+        error('Encountered unix error: %s', fdir);
+    end
+    
     fdir = textscan(fdir, '%s');
     adir = fdir{1};
     
@@ -23,3 +28,4 @@ end
 varargout = cell(1, nargout);
 
 [varargout{:}] = func(varargin{:});
+end
