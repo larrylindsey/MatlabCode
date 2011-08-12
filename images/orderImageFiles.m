@@ -53,7 +53,7 @@ end
 function n = stringsAlignTo(str1, str2)
 l = min(numel(str1), numel(str2));
 
-n = find(str1(1:l) == str2(1:l), 1, 'last');
+n = find(str1(1:l) ~= str2(1:l), 1, 'first') - 1;
 
 if isempty(n)
     n = 0;

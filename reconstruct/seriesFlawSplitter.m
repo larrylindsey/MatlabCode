@@ -8,7 +8,13 @@ imlist = orderImageFiles(farg);
 
 fid = fopen('traklist', 'w');
 
-for ii = 1:numel(imlist)
+outnames = cell(1, numel(imlist));
+
+disp('Got list. GO!');
+
+tic;
+
+parfor ii = 1:numel(imlist)
     fname = imlist{ii};
     
     imsplit = splitImageByFlaws(fname, 2);
@@ -30,12 +36,25 @@ for ii = 1:numel(imlist)
                 
         for jj = 1:size(imsplit, 3);
             splitnames{jj} = [prefix sprintf('_split%03d', jj) suffix];
-            imwrite(imsplit(:,:,jj), splitnames{jj});
-            fprintf(fid, '%s 0 0 %g\n', splitnames{jj}, ii * d);
+            imwrite(imsplit(:,:,jj), splitnames{jj});            
         end
     else
-        fprintf(fid, '%s 0 0 %g\n', fname, ii * d);
+        splitnames = {fname};
     end
     
+    outnames{ii} = splitnames;    
+    
 end
+
+for ii = 1:numel(imlist)
+    splitnames = outnames{ii};
+    
+    for jj = 1:numel(splitnames)
+        fprintf(fid, '%s 0 0 %g\n', splitnames{jj}, (ii - 1) * d);
+    end
+end
+
+fclose(fid);
+
+toc;
 
