@@ -1,4 +1,4 @@
-function list = orderImageFiles(darg, p)
+function [list sortlist] = orderImageFiles(darg, p)
 % function list = orderImageFiles(darg, [p])
 %
 % Sorts a list of files by correct numerical order.
@@ -44,7 +44,7 @@ for ii = 1:numel(prelist)
     sortlist(ii) = getNumericValue(sortstr);
 end
 
-[junk order] = sort(sortlist, 'ascend'); %#ok
+[sortlist order] = sort(sortlist, 'ascend');
 
 list = prelist(order);
 

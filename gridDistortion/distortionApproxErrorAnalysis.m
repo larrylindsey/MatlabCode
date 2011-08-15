@@ -95,8 +95,10 @@ parfor ii = 1:numel(images)
     
     imtr(zeromask) = 0;
     
-    undImages{ii} = sprintf('%s_und_%s',...
-        prefix, images{ii});
+    [pstr fstr estr] = fileparts(images{ii});
+        
+    undImages{ii} = sprintf('%s/%s_und_%s%s',...
+        pstr, prefix, fstr, estr);
     
     imwrite(imtr, undImages{ii});
 end
