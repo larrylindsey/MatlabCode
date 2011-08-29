@@ -42,14 +42,17 @@ if ~isfield(param, 'undImages') || isempty(param.trans)
         %exParam.norm = scale;
         exParam.order = param.transOrder;
         exParam.useRansac = false;
-        trans = getExtractedTransform(rc_found, rc_grid, grid_model,...
-            exParam);
+        %exParam.affine = true;
+        [trans junk junk terr] = getExtractedTransform(rc_found, rc_grid, grid_model,...
+            exParam); %#ok
         
-        transfile = sprintf('%s_trans.mat', param.prefix);
-        save(transfile, 'trans', '-v7.3');
+        transfile = sprintf('%s_trans.mat', param.prefix);        
         param.trans = trans;
         param.trans.scale = scale;
         param.trans.db = db;
+        param.terr = terr;
+        
+        save(transfile, 'trans', '-v7.3');
         clear trans;
     end
     
@@ -73,13 +76,16 @@ param.raw_rawError = computeError(rawA, rawB);
 param.und_undError = computeError(undA, undB);
 param.raw_undError = computeError(rawUndA, rawUndB);
 
+param.e_rr = cat(1, param.raw_rawError{:});
+param.e_ru = cat(1, param.raw_undError{:});
+param.e_uu = cat(1, param.und_undError{:});
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function undImages = transformImages(images, trans, prefix, db)
 undImages = cell(size(images));
 
-msz = max(size(db.match)) * 1.5;
+msz = max(size(db.match)) * .5;
 
 imlogi = true(size(getImage(images{1})));
 imlogitr = not(applyTransformImage(imlogi, trans));
@@ -96,6 +102,10 @@ parfor ii = 1:numel(images)
     imtr(zeromask) = 0;
     
     [pstr fstr estr] = fileparts(images{ii});
+    
+    if isempty(pstr)
+        pstr = '.';
+    end
         
     undImages{ii} = sprintf('%s/%s_und_%s%s',...
         pstr, prefix, fstr, estr);
