@@ -1,4 +1,4 @@
-function [tr rc squareRC] = getExtractedTransform(rc, cgrid, gm, control)
+function [tr rc squareRC mErr] = getExtractedTransform(rc, cgrid, gm, control)
 % function tr = getExtractedTransform(rc, cgrid, gm, control)
 
 % return an example control struct
@@ -69,6 +69,11 @@ if (control.affine)
 else
     tr = trsim;
 end
+
+rctr = doTransform(rc(sel,:), trsim);
+
+mErr = rms(sum((rc(sel,:) - rctr).^2, 2));
+
 
 end
 
