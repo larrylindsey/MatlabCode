@@ -80,6 +80,10 @@ param.e_rr = cat(1, param.raw_rawError{:});
 param.e_ru = cat(1, param.raw_undError{:});
 param.e_uu = cat(1, param.und_undError{:});
 
+[param.r_rr param.rxy_rr] = computeCorrcoef(rawA, rawB, param.images);
+[param.r_uu param.rxy_uu] = computeCorrcoef(undA, undB, param.undImages);
+[param.r_ru param.rxy_ru] = computeCorrcoef(rawUndA, rawUndB, param.undImages);
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function undImages = transformImages(images, trans, prefix, db)
@@ -111,6 +115,17 @@ parfor ii = 1:numel(images)
         pstr, prefix, fstr, estr);
     
     imwrite(imtr, undImages{ii});
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [r rxy] = computeCorrcoef(ptsA, ptsB, images)
+r = cell(size(ptsA));
+rxy = r;
+for ii = 1:numel(ptsA)
+    if ~isempty(ptsA{ii})
+        [r{ii} rxy{ii}] = calculateAlignmentR(64, ptsA{ii}, ptsB{ii}, ...
+           imread(images{ii}), imread(images{ii + 1}));
+    end
 end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
