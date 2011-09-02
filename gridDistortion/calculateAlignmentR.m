@@ -3,7 +3,7 @@ function [r rxy] = calculateAlignmentR(n, pts1, pts2, im1, im2, s, order)
 if nargin < 7
     order = 1;
     if nargin < 6
-        s = 1.5;
+        s = 2;
     end
 end
 
@@ -33,6 +33,12 @@ f = fspecial('gaussian', ceil(s * 5), s);
 disp('Blurring images');
 im1tr = imfilter(im1tr, f);
 im2 = imfilter(im2, f);
+
+c = clock;
+str = sprintf('Rinput_%d_%d_%d_%d_%g', c(2), c(3), c(4), c(5), c(6));
+
+imwrite(im1tr, [str '_01tr.jpg']);
+imwrite(im2, [str '_02.jpg']);
 
 im1tr(not(im1trmask)) = nan;
 r = corrcoef(im1tr(im1trmask), im2(im1trmask));
