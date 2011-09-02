@@ -1,5 +1,11 @@
 function c = leastSquaresFit(A, z)
-
+if size(A, 1) < size(A, 2)
+    warning('leastSquaresFit:toofew', ...
+        'leastSquaresFit: TOO FEW POINTSS for least squares!');
+elseif size(A,1) < 1.5 * size(A,2)
+    warning('leastSquareFit:low', ...
+        'leastSquaresFit: Not many extra points. Results will be noisy');
+end
 ATA = A' * A;
 
 [U S V] = svd(ATA);
