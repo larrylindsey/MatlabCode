@@ -72,17 +72,24 @@ param.undMatch = str2func(runFiji(param.fijiExec, param.jarPath, ...
 [undA undB] = param.undMatch();
 [rawUndA rawUndB] = transformRaw(param.trans, rawA, rawB);
 
-param.raw_rawError = computeError(rawA, rawB);
-param.und_undError = computeError(undA, undB);
-param.raw_undError = computeError(rawUndA, rawUndB);
+param.rawPts.a = rawA;
+param.rawPts.b = rawB;
+param.undPts.a = undA;
+param.undPts.b = undB;
 
-param.e_rr = cat(1, param.raw_rawError{:});
-param.e_ru = cat(1, param.raw_undError{:});
-param.e_uu = cat(1, param.und_undError{:});
+param.err.raw_rawError = computeError(rawA, rawB);
+param.err.und_undError = computeError(undA, undB);
+param.err.raw_undError = computeError(rawUndA, rawUndB);
 
-[param.r_rr param.rxy_rr] = computeCorrcoef(rawA, rawB, param.images);
-[param.r_uu param.rxy_uu] = computeCorrcoef(undA, undB, param.undImages);
-[param.r_ru param.rxy_ru] = computeCorrcoef(rawUndA, rawUndB, param.undImages);
+param.err.e_rr = cat(1, param.err.raw_rawError{:});
+param.err.e_ru = cat(1, param.err.raw_undError{:});
+param.err.e_uu = cat(1, param.err.und_undError{:});
+
+[param.r.r_rr param.r.rxy_rr] = computeCorrcoef(rawA, rawB, param.images);
+[param.r.r_uu param.r.rxy_uu] = ...
+    computeCorrcoef(undA, undB, param.undImages);
+[param.r.r_ru param.r.rxy_ru] = ...
+    computeCorrcoef(rawUndA, rawUndB, param.undImages);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -103,7 +110,7 @@ parfor ii = 1:numel(images)
     
     imtr = applyTransformImage(im, trans);
     
-    imtr(zeromask) = 0;
+    %imtr(zeromask) = 0;
     
     [pstr fstr estr] = fileparts(images{ii});
     
