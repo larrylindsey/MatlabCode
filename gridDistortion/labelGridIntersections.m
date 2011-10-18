@@ -42,7 +42,7 @@ end
 
 
 L = sparse(bwlabel(bwEnergy, 4));
-rc = getLabelPeaks(L);
+rc = getLabelPeaks(L, crossEnergy);
 
 
 [sample_space angles] = makeTriangleSampleSpace(rc);
@@ -83,16 +83,25 @@ end
 
 end
 
-function [rc lh] = getLabelPeaks(L)
+function [rc lh] = getLabelPeaks(L, crossEnergy)
 
 n = full(max(L(:)));
 rc = zeros(n, 2);
 lh = zeros(n, 1);
+r = cell(n, 1);
+c = r;
+ceSamp = r;
+
+for ii = 1:n
+    [r{ii} c{ii}] = find(L == ii);
+    ceSamp{ii} = crossEnergy(sub2ind(size(crossEnergy), r{ii}, c{ii}));
+end
 
 parfor ii = 1:n
-    [r c] = find(L == ii);
-    rc(ii,:) = [mean(r) mean(c)];
-    lh(ii) = numel(r);
+    [~, imax] = max(ceSamp{ii}); 
+    rc(ii,:) = [r{ii}(imax), c{ii}(imax)];
+    %rc(ii,:) = [mean(r) mean(c)];
+    lh(ii) = numel(r{ii});
 end
 
 end
