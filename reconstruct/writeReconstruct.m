@@ -55,6 +55,7 @@ elseif min(size(content)) == 1
         end
         contentText = sprintf(cstr, contentText, content(ic));
     end
+    contentText = stripOutterSpaces(contentText);
 else
     contentText = '';
     for r = 1:size(content, 1)
@@ -158,5 +159,15 @@ for it = 1:numel(transforms)
 end
 
 fprintf(fid, '</Section>\n');
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function text = stripOutterSpaces(text)
+
+fi = find(text ~= ' ', 1, 'first');
+li = find(text ~= ' ', 1, 'last');
+
+text = text(fi:li);
 
 end
