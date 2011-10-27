@@ -103,7 +103,7 @@ parfor ii = 1:numel(images)
     
     imtr = applyTransformImage(im, trans);
     
-    imtr(zeromask) = 0;
+    %imtr(zeromask) = 0;
     
     [pstr fstr estr] = fileparts(images{ii});
     
