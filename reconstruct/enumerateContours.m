@@ -1,6 +1,6 @@
 function names = enumerateContours(secdoc)
 
-p = matlabpool('size');
+p = max(matlabpool('size'), 1);
 
 secdocSplit = cell(1, p);
 

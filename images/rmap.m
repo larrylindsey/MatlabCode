@@ -21,6 +21,13 @@ end
 im1 = im2single(im1);
 im2 = im2single(im2);
 
+if numel(n) > 1
+    m = n(2);
+    n = n(1);
+else
+    m = n;
+end
+
 samp = 1:n;
 
 %outmap = cell(1, ncpu);
@@ -28,8 +35,8 @@ samp = 1:n;
 %parfor ii = 1:ncpu
 
 %localmap = zeros(size(im1) - n);
-rr = 1:n:(size(im1,1) - n);
-cc = 1:n:(size(im1,2) - n);
+rr = 1:m:(size(im1,1) - n);
+cc = 1:m:(size(im1,2) - n);
 
 map = zeros(numel(rr), numel(cc));
 
