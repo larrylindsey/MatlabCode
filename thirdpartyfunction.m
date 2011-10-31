@@ -17,6 +17,10 @@ if isempty(funcid.file)
         error('Encountered unix error: %s', fdir);
     end
     
+    if isempty(fdir)
+        error('Function %s not found in %s', funcid.function, codedir);
+    end
+    
     fdir = textscan(fdir, '%s');
     adir = fdir{1};
     
