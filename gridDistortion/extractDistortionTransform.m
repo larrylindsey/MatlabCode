@@ -106,7 +106,7 @@ if isempty(HH)
     rc_found(:,1) = rc_found(:,1) + rmin - 1;
     rc_found(:,2) = rc_found(:,2) + cmin - 1;
     sendmsg(msgsubject, 'Labeled Grid Intersections.');
-    save match_energy_cache.mat HH
+    save -v7.3 match_energy_cache.mat HH
 %    keyboard;
 %    close all;
 %    imagesc(HH);

@@ -1,5 +1,5 @@
 function [rc_grid] = matchGridToSquareGrid(rc, grid_model, t)
-ngrp = 4;
+%ngrp = 4;
 
 n = size(rc, 1);
 
@@ -41,13 +41,17 @@ conncoord = cvect(:,4:5);
 % descending order of cardinality.
 [ci ciOrder cis] = getComponents(linkMat);
 
-ngrp = min(ngrp, numel(ciOrder));
-joingrp = min(find((8 * cis) > cis(1), 1, 'last'), ngrp);
+%ngrp = min(ngrp, numel(ciOrder));
 
-grp = cell(1, ngrp);
+sendmail('larry.f.lindsey@gmail.com', 'Keyboard ready', 'Come and get it');
+keyboard;
+
+joingrp = find(cis > 16, 1, 'last');
+
+grp = cell(1, joingrp);
 
 % Mesh the groups, ie, assign each one a row and column
-for ig = 1:ngrp
+for ig = 1:joingrp
     grp{ig} = meshGroup(ci, ciOrder(ig), rConnMat, cConnMat, linkMat);
 end
 
