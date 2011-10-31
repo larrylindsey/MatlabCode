@@ -1,4 +1,4 @@
-function [tr rc squareRC mErr] = getExtractedTransform(rc, cgrid, gm, control)
+function output = getExtractedTransform(rc, cgrid, gm, control)
 % function tr = getExtractedTransform(rc, cgrid, gm, control)
 
 % return an example control struct
@@ -9,7 +9,7 @@ if nargin < 1
     tr.norm = [];
     tr.type = @legendreMat;
     tr.useRansac = true;
-    tr.affine = false;
+    output = tr;
     return;
 end
 
@@ -36,11 +36,7 @@ end
 squareGM = getSquareGM(gm);
 
 % Calculate the approximated true grid
-squareRC = cgrid * (squareGM');
-squareRC = squareRC + ...
-    repmat(mean(rc, 1) - mean(squareRC, 1), [size(squareRC, 1), 1]);
-
-squareRC = trsAlign(squareRC, rc);
+squareRC = getSquareRC(squareGM, cgrid, rc);
 
 data.u = control.u;
 data.v = control.v;
@@ -57,37 +53,40 @@ else
     sel = true(size(rc,1), 1);
 end
 
-traff = getTRAff(rc, squareRC, sel, data, control);
-
+% Reject outliers from the rc's
+[traff affRC] = getTRAff(rc(sel,:), squareRC(sel,:), data, control);
 squareRC = trsAlign(squareRC(sel,:), rc(sel,:));
 
 trsim = regressionTransform(rc(sel,:), squareRC, control.order, ...
     control.type, data);
 
-if (control.affine)
-    tr = traff;
-else
-    tr = trsim;
+% traff - transform from rc to affine-aligned "square" grid
+% trsim - transform from rc to similiarity-aligned square grid
+
+
+rc_aff = doTransform(rc(sel,:), traff);
+rc_sim = doTransform(rc(sel,:), trsim);
+
+output.rc_square = squareRC;
+output.rc_affine = affRC;
+output.similarity.tr = trsim;
+output.similarity.err =  rms(sum((rc(sel,:) - rc_sim).^2, 2));
+output.similarity.rc = rc_sim;
+output.affine.tr = traff;
+output.affine.err =  rms(sum((rc(sel,:) - rc_aff).^2, 2));
+output.affine.rc = rc_aff;
+
 end
-
-rctr = doTransform(rc(sel,:), trsim);
-
-mErr = rms(sum((rc(sel,:) - rctr).^2, 2));
-
-
-end
-
-function traff = getTRAff(rc, squareRC, sel, data, control)
-rc = rc(sel,:);
-squareRC = squareRC(sel,:);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [traff aff_rc] = getTRAff(rc, squareRC, data, control)
 
 tral = regressionTransform(squareRC, rc, 1, @legendreMat, data);
-squareRC = doTransform(squareRC, tral);
+aff_rc = doTransform(squareRC, tral);
 
-traff = regressionTransform(squareRC, rc, control.order, control.type,...
+traff = regressionTransform(aff_rc, rc, control.order, control.type,...
     data);
 end
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function sqgm = getSquareGM(gm)
 v1 = gm(1,:);
 v2 = gm(2,:);
@@ -107,4 +106,13 @@ gmnorm = (norm(gm(1,:)) + norm(gm(2,:))) / 2;
 
 sqgm = sqgm * gmnorm;
 
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function squareRC = getSquareRC(squareGM, cgrid, rc)
+
+squareRC = cgrid * (squareGM');
+squareRC = squareRC + ...
+    repmat(mean(rc, 1) - mean(squareRC, 1), [size(squareRC, 1), 1]);
+
+squareRC = trsAlign(squareRC, rc);
 end
