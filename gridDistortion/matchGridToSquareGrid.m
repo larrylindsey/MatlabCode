@@ -43,10 +43,7 @@ conncoord = cvect(:,4:5);
 
 %ngrp = min(ngrp, numel(ciOrder));
 
-sendmail('larry.f.lindsey@gmail.com', 'Keyboard ready', 'Come and get it');
-keyboard;
-
-joingrp = find(cis > 16, 1, 'last');
+joingrp = find(cis > 8, 1, 'last');
 
 grp = cell(1, joingrp);
 
