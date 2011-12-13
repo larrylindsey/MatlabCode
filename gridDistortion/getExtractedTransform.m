@@ -9,6 +9,8 @@ if nargin < 1
     tr.norm = [];
     tr.type = @legendreMat;
     tr.useRansac = true;
+    tr.gamma = [];
+    tr.weight = [];
     output = tr;
     return;
 end
@@ -41,8 +43,12 @@ squareRC = getSquareRC(squareGM, cgrid, rc);
 data.u = control.u;
 data.v = control.v;
 data.n = round(sqrt(size(rc, 1)));
+data.weight = [];
+data.gamma = [];
+
 
 if isfield(control, 'useRansac') && control.useRansac
+    warning('Ransac is currently b0rken');
     ctrl_ransac = ransacRegressionTransform();
     ctrl_ransac.n = 24;
     ctrl_ransac.minInliers = 30;
@@ -52,12 +58,30 @@ if isfield(control, 'useRansac') && control.useRansac
 else
     sel = true(size(rc,1), 1);
 end
+  
 
 % Reject outliers from the rc's
-[traff affRC] = getTRAff(rc(sel,:), squareRC(sel,:), data, control);
+
+affRC = getAffRC(rc(sel,:), squareRC(sel,:), data);
 squareRC = trsAlign(squareRC(sel,:), rc(sel,:));
 
-trsim = regressionTransform(rc(sel,:), squareRC, control.order, ...
+if isfield(control, 'gamma')
+    data.gamma = control.gamma;
+end
+
+if isfield(control, 'weight')
+    data.weight = control.weight;
+end  
+
+if isfield(control, 'ctrlpts')
+    affRC = cat(1, affRC,  control.ctrlpts);
+    rc = cat(1, rc, control.ctrlpts);
+    squareRC = cat(1, squareRC, control.ctrlpts);
+end
+
+traff = regressionTransform(affRC, rc, control.order, control.type,...
+    data);
+trsim = regressionTransform(rc, squareRC, control.order, ...
     control.type, data);
 
 % traff - transform from rc to affine-aligned "square" grid
@@ -78,13 +102,12 @@ output.affine.rc = rc_aff;
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [traff aff_rc] = getTRAff(rc, squareRC, data, control)
+function aff_rc = getAffRC(rc, squareRC, data)
 
 tral = regressionTransform(squareRC, rc, 1, @legendreMat, data);
 aff_rc = doTransform(squareRC, tral);
 
-traff = regressionTransform(aff_rc, rc, control.order, control.type,...
-    data);
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function sqgm = getSquareGM(gm)
