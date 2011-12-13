@@ -11,15 +11,23 @@ if spt < 1
     gaussFilt = fspecial('gaussian', 50, 9);
     edgeFiltVert = fspecial('sobel');
     edgeFiltHoriz = edgeFiltVert';
+    
+    imFiltBlur = cell(1,2);
+    edgeFiltBlur = cell(1,2);
+    
+%     edgeFiltVertBlur = imfilter(gaussFilt, edgeFiltVert);
+%     edgeFiltHorizBlur = imfilter(gaussFilt, edgeFiltHoriz);
+%     imVertBlur = imfilter(im, edgeFiltVertBlur);
+%     imHorizBlur = imfilter(im, edgeFiltHorizBlur);
+    edgeFiltBlur{1} = imfilter(gaussFilt, edgeFiltVert);
+    edgeFiltBlur{2} = imfilter(gaussFilt, edgeFiltHoriz);
+    
+    parfor ii = 1:2
+        imFiltBlur{ii} = imfilter(im, edgeFiltBlur{ii});
+    end
 
-
-    edgeFiltVertBlur = imfilter(gaussFilt, edgeFiltVert);
-    edgeFiltHorizBlur = imfilter(gaussFilt, edgeFiltHoriz);
-    imVertBlur = imfilter(im, edgeFiltVertBlur);
-    imHorizBlur = imfilter(im, edgeFiltHorizBlur);
-
-
-    edgeMap = (abs(imHorizBlur) + abs(imVertBlur));
+    %     edgeMap = (abs(imHorizBlur) + abs(imVertBlur));
+    edgeMap = abs(imFiltBlur{1}) + abs(imFiltBlur{2});
     
     %cropMask = autocropGrid(edgeMap);
     cropMask = true(size(edgeMap));
