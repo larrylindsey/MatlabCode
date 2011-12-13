@@ -6,9 +6,9 @@ end
 
 im = double(im);
 
-if nargin < 3
-im = im - min(im(:));
-im = im / max(im(:));
+if nargin < 3 || isempty(lim)
+    im = im - min(im(:));
+    im = im / max(im(:));
 else
     im = im - lim(1);
     im = im / (lim(2) - lim(1));
@@ -17,6 +17,7 @@ else
 end
 
 im = floor(im * (size(cmap,1) - 1)) + 1;
+im(isnan(im)) = 1;
 
 cimr = zeros(size(im));
 cimg = cimr;
