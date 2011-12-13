@@ -1,5 +1,6 @@
 function [match dd ng] = gridEstimate(gridStruct, im)
 
+
 fillgap_len = max(size(im)) / 6;
 grid_size_threshold = 32;
 
@@ -76,6 +77,32 @@ for i_p = 1:size(pts, 2)
 end
 
 match = median(patches, 3);
+
+%%%% Display
+[showDisplay f] = getShowDisplay();
+
+if showDisplay
+    figure(f);    
+    hold on;    
+    for k = 1:length(lines)
+        xy = [lines(k).point1; lines(k).point2];
+        plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','yellow');
+    end    
+    plot(pts(1,:), pts(2,:), 'rx', 'LineWidth', 2)
+    
+    figure;
+    imshow(im);
+    hold on;    
+    for k = 1:length(lines)
+        xy = [lines(k).point1; lines(k).point2];
+        plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','yellow');
+    end
+    plot(pts(1,:), pts(2,:), 'rx', 'LineWidth', 2)
+    
+    figure; 
+    imshow(match);
+end
+%%%%
 
 %match = imrotate(match, deg, 'bilinear', 'crop');
 
