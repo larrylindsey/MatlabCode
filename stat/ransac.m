@@ -62,20 +62,12 @@ for i_it = 1:maxIter
     newModel = model(sampleSpace, extra);
     
     nonSample = setdiff(universe, sampleSpace, 'rows');
-    %measureVal = zeros(size(nonSample, 1)) + inf;
-    %testMeasure = metric(newModel, sampleSpace, extra);
-%    catSel = false(1, size(nonSample, 1));
     
     measure = zeros(1, size(nonSample, 1));
     
     parfor i_r = 1:size(nonSample, 1)
         measure(i_r) = metric(newModel,...
             cat(1, sampleSpace, nonSample(i_r, :)), extra);
-        
-%         if measure < maxMeasure
-%             catSel(i_r) = true;
-%             %testMeasure = measure;
-%         end
     end
     
     catSel = measure < maxMeasure;
