@@ -56,6 +56,15 @@ ransac_min_inliers = round(max(L(:)) * ransac_inlier_factor);
     
 rc_fit = rc(fit_space(:,5), :);
 
+if getShowDisplay
+    f = figure;
+    imagesc(crossEnergy); axis image;
+    hold on;
+    ph(1) = plot(rc(:,2), rc(:,1), 'bx', 'LineWidth', 2);
+    ph(2) = plot(rc_fit(:,2), rc_fit(:,1), 'g+', 'LineWidth', 2);
+    set(f, 'UserData', ph);
+end
+
 % model in indicator vectors model(1,:), model(2,:)
 v1 = model(1,:);
 v2 = model(2,:);
