@@ -15,6 +15,6 @@ catch e
     str = sprintf('Caught error on %s at %s\n%s\nIn %s in %s\nAt line %d', ...
         hname, tstr, e.message, e.stack(1).name, e.stack(1).file, e.stack(1).line);
     sendmail('larry.f.lindsey@gmail.com','Caught Error', str);
-    rethrow(e);
+    %rethrow(e);
 end
 end
