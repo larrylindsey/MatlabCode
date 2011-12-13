@@ -43,7 +43,7 @@ conncoord = cvect(:,4:5);
 
 %ngrp = min(ngrp, numel(ciOrder));
 
-joingrp = find(cis > 8, 1, 'last');
+joingrp = find(cis > 16, 1, 'last');
 
 grp = cell(1, joingrp);
 
