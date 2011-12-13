@@ -1,5 +1,6 @@
 function gridStruct = findRoughLines(im, rStr, spt)
 
+showDisplay = true;
 
 if nargin < 3
     spt = 0;
@@ -79,10 +80,10 @@ angleDistributionFT = fft(angleDistribution);
 angleDistributionFT([2 end]) = 0;
 angleDistribution = ifft(angleDistributionFT);
 
-[junk iFortyFive] = min(abs(tDistribution - 45));
+[~, iFortyFive] = min(abs(tDistribution - 45));
 angleDistribution(iFortyFive) = 0;
 
-[junk imax] = max(angleDistribution);
+[~, imax] = max(angleDistribution);
 deg = tDistribution(imax);
 
 %fprintf('Rotating Grid');
@@ -91,8 +92,13 @@ deg = tDistribution(imax);
 %gridOut = imrotate(im, deg, 'bilinear', 'crop');
 %gridOut(not(gridSupport)) = median(im(:));
 
-fprintf('Done');
+if showDisplay
+    close all;
+    setShowDisplay(figure);
+    imshow(bwEdge);
+end
 
+fprintf('Done');
 
 gridStruct.deg = deg;
 gridStruct.bw = bwEdge;
