@@ -1,4 +1,5 @@
-function [trG trM tr00str tr90str] = separateTheTransforms(rot00, rot90, gridRot)
+function [trG trM trR tr00str tr90str] = separateTheTransforms(rot00, rot90,...
+    gridRot)
 % function tr = separateTheTransforms(rot00, rot90, gridRot)
 % 
 % Attempts to use two calibration images, one rotated and/or translated
@@ -17,10 +18,11 @@ function [trG trM tr00str tr90str] = separateTheTransforms(rot00, rot90, gridRot
 %
 % rot90 is assumed to be representable by Tm o Tr o Tg, where Tm and Tg are
 % as above, and Tr is a rotation + translation.
-global data GD_TOL dT K;
+global data GD_TOL dT K N_KTEST;
 %constants
 GD_TOL = 1e-6;
 dT = 1e-6;
+N_KTEST = 24;
 % K = 1e-1;
 K = 1;
 ORDER = 5;
@@ -57,7 +59,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function trT = estimateTransform(rc, rcTRT, trR, control)
 global data GD_TOL K;
-k = K;
+kmag = K;
 tr = regressionTransform(rc, rc, round(control.order / 2), control.type, data);
 
 cerr = transformError(tr, trR, rc, rcTRT);
@@ -67,6 +69,8 @@ while dd > GD_TOL || dd < 0;
     lerr = cerr;
     grad = estimateGrad(tr, trR, rc, rcTRT);
     ltr = tr;
+    
+    [k kmag] = estimateK(kmag, tr, grad, trR, rc, rcTRT);
     tr = updateTR(tr, grad, k);
     
     cerr = transformError(tr, trR, rc, rcTRT);
@@ -76,7 +80,7 @@ while dd > GD_TOL || dd < 0;
     dd = lerr - cerr;
     
     if dd < 0 %&& k * 128 > 1
-        k = k / 2;
+         kmag = kmag / 2;
         cerr = lerr;
         tr = ltr;
     end
@@ -85,6 +89,42 @@ end
 fprintf('DONE!\n');
 
 trT = tr;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [k kmag] = estimateK(kmag, tr, grad, trR, rc, rcTRT)
+global N_KTEST;
+
+ktest = [0 logspace(-6, log(kmag)/log(10), N_KTEST-1)];
+etest = zeros(size(ktest));
+
+parfor ii = 1:numel(ktest)
+    etest(ii) = transformError(updateTR(tr, grad, ktest(ii)), trR, rc, rcTRT);
+end
+
+[~, imin] = min(etest);
+
+interpsel = imin + [-1 0 1];
+if interpsel(1) < 1
+    interpsel = 1:3;
+end
+if interpsel(3) > numel(etest)
+    interpsel = numel(etest) + [-2 -1 0];
+end
+
+k = interpQuadraticExtremum(ktest(interpsel), etest(interpsel));
+
+figure(1);
+subplot(3,1,1);
+plot(ktest, etest);
+subplot(3,1,2);
+plot(grad(:));
+subplot(3, 1, 3);
+plot(tr.T(:));
+drawnow;
+% if k <= ktest(round(numel(ktest)/4))
+%     kmag = kmag / 2;
+% end
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function grad = estimateGrad(tr, trR, rc, rcTRT)
