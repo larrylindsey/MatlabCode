@@ -20,22 +20,26 @@ function [trG trM trR tr00str tr90str] = separateTheTransforms(rot00, rot90,...
 % as above, and Tr is a rotation + translation.
 global data GD_TOL dT K N_KTEST;
 %constants
+ORDER = 5;
 GD_TOL = 1e-6;
 dT = 1e-6;
 N_KTEST = 24;
 % K = 1e-1;
-K = 1;
-ORDER = 5;
+K = 16;
 N = 32;
+
+control = getExtractedTransform;
+control.order = ORDER;
+control.useRansac = false;
+
 data.u = [-1 1];
 data.v = [-1 1];
 data.n = 32;
 data.gamma = [];
 data.weight = [];
+data.order = ORDER;
+data.type = control.type;
 
-control = getExtractedTransform;
-control.order = ORDER;
-control.useRansac = false;
 
 if nargin < 3
     gridRot = 1;
@@ -51,29 +55,31 @@ rcMRM = sepX(rc, invertTransStruct(tr00str.similarity.tr),...
     tr90str.similarity.tr);
 rcGRG = sepX(rc, tr90str.similarity.tr,...
     invertTransStruct(tr00str.similarity.tr));
+trMRM = regressionTransform(rc, rcMRM, control.order, control.type, data);
+trGRG = regressionTransform(rc, rcGRG, control.order, control.type, data);
 
-trG = invertTransStruct(estimateTransform(rc, rcGRG, trR, control));
-trM = estimateTransform(rc, rcMRM, trR, control);
+trG = invertTransStruct(estimateTransform(rc, trGRG, trR, control));
+trM = estimateTransform(rc, trMRM, trR, control);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function trT = estimateTransform(rc, rcTRT, trR, control)
+function trT = estimateTransform(rc, trTRT, trR, control)
 global data GD_TOL K;
 kmag = K;
 tr = regressionTransform(rc, rc, round(control.order / 2), control.type, data);
 
-cerr = transformError(tr, trR, rc, rcTRT);
+cerr = transformError(tr, trR, rc, trTRT, control, data);
 dd = inf;
 
 while dd > GD_TOL || dd < 0;
     lerr = cerr;
-    grad = estimateGrad(tr, trR, rc, rcTRT);
+    grad = estimateGrad(tr, trR, rc, trTRT, control, data);
     ltr = tr;
     
-    [k kmag] = estimateK(kmag, tr, grad, trR, rc, rcTRT);
+    [k kmag] = estimateK(kmag, tr, grad, trR, rc, trTRT, control);
     tr = updateTR(tr, grad, k);
     
-    cerr = transformError(tr, trR, rc, rcTRT);
+    cerr = transformError(tr, trR, rc, trTRT, control, data);
     fprintf('Last error\t%g\nCurr error\t%g\nTol\t\t%g\nk\t\t%g\n\n', ...
         lerr, cerr, GD_TOL, k);
     
@@ -91,14 +97,16 @@ fprintf('DONE!\n');
 trT = tr;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [k kmag] = estimateK(kmag, tr, grad, trR, rc, rcTRT)
-global N_KTEST;
+function [k kmag] = estimateK(kmag, tr, grad, trR, rc, trTRT, control)
+global N_KTEST data;
 
+pdata = data;
 ktest = [0 logspace(-6, log(kmag)/log(10), N_KTEST-1)];
 etest = zeros(size(ktest));
 
 parfor ii = 1:numel(ktest)
-    etest(ii) = transformError(updateTR(tr, grad, ktest(ii)), trR, rc, rcTRT);
+    etest(ii) = transformError(updateTR(tr, grad, ktest(ii)), trR, rc, trTRT,...
+        control, pdata);
 end
 
 [~, imin] = min(etest);
@@ -127,7 +135,7 @@ drawnow;
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function grad = estimateGrad(tr, trR, rc, rcTRT)
+function grad = estimateGrad(tr, trR, rc, trTRT, control, data)
 global dT;
 cdt = dT;
 grad = zeros(size(tr.T));
@@ -136,11 +144,11 @@ trTest = repmat(tr, [1 numel(grad)]);
 parfor n = 1:numel(grad)
     trTest(n).T(n) = trTest(n).T(n) + cdt; %#ok<PFOUS>
     trTest(n) = populateTransInverse(trTest(n));
-    perr = transformError(trTest(n), trR, rc, rcTRT);
+    perr = transformError(trTest(n), trR, rc, trTRT, control, data);
     
     trTest(n).T(n) = trTest(n).T(n) - cdt;
     trTest(n) = populateTransInverse(trTest(n));
-    nerr = transformError(trTest(n), trR, rc, rcTRT);
+    nerr = transformError(trTest(n), trR, rc, trTRT, control, data);
     
     grad(n) = (perr - nerr) / 2 / cdt;
 end
@@ -152,12 +160,15 @@ tr.T = tr.T - k * grad;
 tr = populateTransInverse(tr);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function e = transformError(tr, trR, rc, rcTRT)
+function e = transformError(tr, trR, rc, trTRT, control, data)
+
 rct = doTransform(rc, tr);
 rct = doTransform(rct, trR);
 rct = doTransform(rct, invertTransStruct(tr));
+trRCT = regressionTransform(rc, rct, control.order, control.type, data);
 
-e = mean((sum((rcTRT - rct).^2,2)));
+e = mean((sum((trTRT.T(:) - trRCT.T(:)).^2,2)));
+%e = rms(trRCT.T(:) - trTRT.T(:));
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
