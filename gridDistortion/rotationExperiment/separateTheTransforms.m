@@ -1,5 +1,5 @@
 function [trG trM trR tr00str tr90str] = separateTheTransforms(rot00, rot90,...
-    gridRot)
+    gridRot, trGorig, trMorig)
 % function tr = separateTheTransforms(rot00, rot90, gridRot)
 % 
 % Attempts to use two calibration images, one rotated and/or translated
@@ -41,14 +41,19 @@ data.order = ORDER;
 data.type = control.type;
 
 
-if nargin < 3
-    gridRot = 1;
+if nargin < 5
+    trMorig = [];
+    trGorig = [];
+    if nargin < 3
+        gridRot = 1;
+    end
 end
+
 
 [tr00str tr90str rcFound00, rcFound90] =...
     calculateCompoundTransforms(rot00, rot90, gridRot, control);
 
-trR = calculateR(rcFound00, rcFound90);
+trR = calculateR(rcFound90, rcFound00);
 
 rc = gridRC(linspace(-1,1,N), linspace(-1,1,N));
 rcMRM = sepX(rc, invertTransStruct(tr00str.similarity.tr),...
@@ -58,15 +63,18 @@ rcGRG = sepX(rc, tr90str.similarity.tr,...
 trMRM = regressionTransform(rc, rcMRM, control.order, control.type, data);
 trGRG = regressionTransform(rc, rcGRG, control.order, control.type, data);
 
-trG = invertTransStruct(estimateTransform(rc, trGRG, trR, control));
-trM = estimateTransform(rc, trMRM, trR, control);
+trG = invertTransStruct(estimateTransform(rc, trGRG, trR, control, trGorig));
+trM = estimateTransform(rc, trMRM, trR, control, trMorig);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function trT = estimateTransform(rc, trTRT, trR, control)
+function trT = estimateTransform(rc, trTRT, trR, control, tr)
 global data GD_TOL K;
 kmag = K;
-tr = regressionTransform(rc, rc, round(control.order / 2), control.type, data);
+if isempty(tr)
+    tr = regressionTransform(rc, rc*rotmat(pi / 2), round(control.order / 2), control.type, data);
+    %tr = trTRT;
+end
 
 cerr = transformError(tr, trR, rc, trTRT, control, data);
 dd = inf;
@@ -79,7 +87,7 @@ while dd > GD_TOL || dd < 0;
     [k kmag] = estimateK(kmag, tr, grad, trR, rc, trTRT, control);
     tr = updateTR(tr, grad, k);
     
-    cerr = transformError(tr, trR, rc, trTRT, control, data);
+    cerr = transformError(tr, trR, rc, trTRT, control, data, true);
     fprintf('Last error\t%g\nCurr error\t%g\nTol\t\t%g\nk\t\t%g\n\n', ...
         lerr, cerr, GD_TOL, k);
     
@@ -122,11 +130,11 @@ end
 k = interpQuadraticExtremum(ktest(interpsel), etest(interpsel));
 
 figure(1);
-subplot(3,1,1);
+subplot(4,1,1);
 plot(ktest, etest);
-subplot(3,1,2);
+subplot(4,1,2);
 plot(grad(:));
-subplot(3, 1, 3);
+subplot(4, 1, 3);
 plot(tr.T(:));
 drawnow;
 % if k <= ktest(round(numel(ktest)/4))
@@ -160,15 +168,24 @@ tr.T = tr.T - k * grad;
 tr = populateTransInverse(tr);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function e = transformError(tr, trR, rc, trTRT, control, data)
+function e = transformError(tr, trR, rc, trTRT, control, data, doplot)
 
-rct = doTransform(rc, tr);
+rct = doTransform(rc, (tr));
 rct = doTransform(rct, trR);
 rct = doTransform(rct, invertTransStruct(tr));
 trRCT = regressionTransform(rc, rct, control.order, control.type, data);
 
-e = mean((sum((trTRT.T(:) - trRCT.T(:)).^2,2)));
-%e = rms(trRCT.T(:) - trTRT.T(:));
+%e = mean((sum((trTRT.T(:) - trRCT.T(:)).^2,2)));
+e = rms(trRCT.T(:) - trTRT.T(:));
+
+if nargin > 6 && doplot
+    figure(1);
+    subplot(4,1,4);
+    plot(trRCT.T(:));
+    hold on;
+    plot(trTRT.T(:), 'g');
+    hold off;
+end
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
