@@ -50,18 +50,21 @@ if nargin < 5
 end
 
 
-[tr00str tr90str rcFound00, rcFound90] =...
+[tr00 tr90 rcFound00, rcFound90] =...
     calculateCompoundTransforms(rot00, rot90, gridRot, control);
 
-trR = calculateR(rcFound90, rcFound00);
+trR = calculateR(rcFound00, rcFound90);
 
 rc = gridRC(linspace(-1,1,N), linspace(-1,1,N));
-rcMRM = sepX(rc, invertTransStruct(tr00str.similarity.tr),...
-    tr90str.similarity.tr);
-rcGRG = sepX(rc, tr90str.similarity.tr,...
-    invertTransStruct(tr00str.similarity.tr));
-trMRM = regressionTransform(rc, rcMRM, control.order, control.type, data);
-trGRG = regressionTransform(rc, rcGRG, control.order, control.type, data);
+trMRM = compoundTransform(rc, tr90, invertTransStruct(tr00));
+trGRG = compoundTransform(rc, invertTransStruct(tr00), tr90);
+
+% rcMRM = sepX(rc, invertTransStruct(tr00str.similarity.tr),...
+%     tr90str.similarity.tr);
+% rcGRG = sepX(rc, tr90str.similarity.tr,...
+%     invertTransStruct(tr00str.similarity.tr));
+% trMRM = regressionTransform(rc, rcMRM, control.order, control.type, data);
+% trGRG = regressionTransform(rc, rcGRG, control.order, control.type, data);
 
 trG = invertTransStruct(estimateTransform(rc, trGRG, trR, control, trGorig));
 trM = estimateTransform(rc, trMRM, trR, control, trMorig);
@@ -189,9 +192,16 @@ end
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function rcTRT = sepX(rc, trA, trB)
+% function rcTRT = sepX(rc, trA, trB)
+% rcA = doTransform(rc, trA);
+% rcTRT = doTransform(rcA, trB);
+% end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function trBA = compoundTransform(rc, trB, trA)
+global data;
 rcA = doTransform(rc, trA);
-rcTRT = doTransform(rcA, trB);
+rcBA = doTransform(rcA, trB);
+trBA = regressionTransform(rc, rcBA, data.order, data.type, data);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function trR = calculateR(rcFound00, rcFound90)
@@ -202,7 +212,7 @@ rc00trs = trsAlign(rcFound00, rcFound90);
 trR = regressionTransform(rcFound00, rc00trs, 1, @legendreMat, data);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [tr00str tr90str rcFound00 rcFound90] = ...
+function [tr00 tr90 rcFound00 rcFound90] = ...
     calculateCompoundTransforms(rot00, rot90, gridRot, control)
 
 switch gridRot
@@ -220,7 +230,7 @@ end
 [sel00 sel90] = rcMatch(rot00.rc_grid, rot90.rc_grid * GR);
 
 rcGrid00 = rot00.rc_grid(sel00,:);
-rcGrid90 = rot90.rc_grid(sel90,:);
+% rcGrid90 = rot90.rc_grid(sel90,:);
 
 rcFound00 = rot00.rc_found(sel00,:);
 rcFound90 = rot90.rc_found(sel90,:);
@@ -228,5 +238,8 @@ rcFound90 = rot90.rc_found(sel90,:);
 gm = rot00.grid_model;
 
 tr00str = getExtractedTransform(rcFound00, rcGrid00, gm, control);
-tr90str = getExtractedTransform(rcFound90, rcGrid90, gm, control);
+tr00 = tr00str.similarity.tr;
+tr90 = regressionTransform(rcGrid00, rcFound90, tr00.order, tr00.type,...
+    tr00.data);
+%tr90str = getExtractedTransform(rcFound90, rcGrid90, gm, control);
 end
