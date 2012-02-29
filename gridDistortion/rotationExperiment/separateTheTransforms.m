@@ -79,6 +79,8 @@ if isempty(tr)
     %tr = trTRT;
 end
 
+trTRT.rctrt = doTransform(rc, trTRT);
+
 cerr = transformError(tr, trR, rc, trTRT, control, data);
 dd = inf;
 
@@ -179,7 +181,9 @@ rct = doTransform(rct, invertTransStruct(tr));
 trRCT = regressionTransform(rc, rct, control.order, control.type, data);
 
 %e = mean((sum((trTRT.T(:) - trRCT.T(:)).^2,2)));
-e = rms(trRCT.T(:) - trTRT.T(:));
+%e = rms(trRCT.T(:) - trTRT.T(:));
+
+e = rms(sum((rct - trTRT.rctrt).^2,2));
 
 if nargin > 6 && doplot
     figure(1);
