@@ -24,7 +24,7 @@ scale = reshape(scale(1:2), [1 2]);
 
 while ~isempty(varargin)
     arg = varargin{1};
-    i_match = strmatch(arg, {'HH', 'imGrid', 'match', 'rStr', 'bwEnergy'});
+    i_match = strmatch(arg, {'HH', 'imGrid', 'match', 'rStr', 'bwEnergy'});%#ok
     i_match = i_match(1);
     switch i_match
         case 1
@@ -49,8 +49,8 @@ while ~isempty(varargin)
 end
 
 
-msgsubjectbeg = 'Distortion Extraction Output';
-msgsubject = ['RE: ' msgsubjectbeg];
+% msgsubjectbeg = 'Distortion Extraction Output';
+% msgsubject = ['RE: ' msgsubjectbeg];
 %Step 0: Fix orientation of image
 s = cputime;
 if isempty(rStr)
@@ -58,7 +58,7 @@ if isempty(rStr)
     fprintf('Finding Approximate Grid\n');
     rStr = findRoughLines(im0);
     toc;
-    sendmsg(msgsubjectbeg, 'Found Rough Grid Approximation');
+%     sendmsg(msgsubjectbeg, 'Found Rough Grid Approximation');
     save -v7.3 grid_approx_cache.mat rStr    
 end
 
@@ -72,45 +72,33 @@ if isempty(match)
     clear cm;
     save match_cache.mat match
     toc;
-    sendmsg(msgsubjectbeg, ...
-        sprintf('Created Match Filter of size %d by %d', size(match, 1), ...
-        size(match, 2)));
+%     sendmsg(msgsubjectbeg, ...
+%         sprintf('Created Match Filter of size %d by %d', size(match, 1), ...
+%         size(match, 2)));
     imwrite(match, 'match_attach.png');
-    try
-        sendmail('larry.f.lindsey@gmail.com', 'Match Kernel', 'Attached', ...
-            'match_attach.png');
-    catch senderr
-        fprintf('Unable to send match email.  Error was %s\n',...
-            senderr.message);
-    end
+%     try
+%         sendmail('larry.f.lindsey@gmail.com', 'Match Kernel', 'Attached', ...
+%             'match_attach.png');
+%     catch senderr
+%         fprintf('Unable to send match email.  Error was %s\n',...
+%             senderr.message);
+%     end
 end
-
-% save -v7.3 grid_stuff rStr match imGrid
-% 
-% keyboard;
 
 %Step 1: Label Grid Intersections.
 sprintf('Labeling Grid Intersections\n');
 if isempty(HH)
     tic;
     [rmin rmax cmin cmax] = mask2boundingbox(rStr.cropMask);
-%     [rmask cmask] = find(rStr.cropMask);
-%     rmin = min(rmask); rmax = max(rmask);
-%     cmin = min(cmask); cmax = max(cmask);
     im0(not(rStr.cropMask)) = 0;
-    %im0 = im0 .* rStr.cropMask;
     im0 = im0(rmin:rmax, cmin:cmax);
     [rc_found, grid_model, model_err, L, HH] =...
         labelGridIntersections(im0, match,...
         rStr.cropMask(rmin:rmax,cmin:cmax));
     rc_found(:,1) = rc_found(:,1) + rmin - 1;
     rc_found(:,2) = rc_found(:,2) + cmin - 1;
-    sendmsg(msgsubject, 'Labeled Grid Intersections.');
+%     sendmsg(msgsubject, 'Labeled Grid Intersections.');
     save -v7.3 match_energy_cache.mat HH
-%    keyboard;
-%    close all;
-%    imagesc(HH);
-%    drawnow;
     toc;
 elseif isempty(bwEnergy)
     tic;
@@ -157,9 +145,9 @@ if nargout > 1
     dbStr.model_err = model_err;
 end
 
-c = clock;
-sendmsg(msgsubject,...
-    sprintf('Finished processing at %d:%d:%g\n', c(4), c(5), c(6)));
+% c = clock;
+% sendmsg(msgsubject,...
+%     sprintf('Finished processing at %d:%d:%g\n', c(4), c(5), c(6)));
 
 end
 
