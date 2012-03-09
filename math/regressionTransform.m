@@ -18,5 +18,5 @@ tr.iDim = 2;
 tr.oDim = 2;
 tr.type = type;
 tr.data = data;
-
-tr = populateTransInverse(tr);
+tr.Tinv = [];
+% tr = populateTransInverse(tr);
