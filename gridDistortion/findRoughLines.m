@@ -1,5 +1,7 @@
 function gridStruct = findRoughLines(im, rStr, spt)
 
+TRES = .1;
+
 showDisplay = true;
 
 if nargin < 3
@@ -7,7 +9,7 @@ if nargin < 3
 end
 
 if spt < 1
-
+    
     gaussFilt = fspecial('gaussian', 50, 9);
     edgeFiltVert = fspecial('sobel');
     edgeFiltHoriz = edgeFiltVert';
@@ -15,17 +17,17 @@ if spt < 1
     imFiltBlur = cell(1,2);
     edgeFiltBlur = cell(1,2);
     
-%     edgeFiltVertBlur = imfilter(gaussFilt, edgeFiltVert);
-%     edgeFiltHorizBlur = imfilter(gaussFilt, edgeFiltHoriz);
-%     imVertBlur = imfilter(im, edgeFiltVertBlur);
-%     imHorizBlur = imfilter(im, edgeFiltHorizBlur);
+    %     edgeFiltVertBlur = imfilter(gaussFilt, edgeFiltVert);
+    %     edgeFiltHorizBlur = imfilter(gaussFilt, edgeFiltHoriz);
+    %     imVertBlur = imfilter(im, edgeFiltVertBlur);
+    %     imHorizBlur = imfilter(im, edgeFiltHorizBlur);
     edgeFiltBlur{1} = imfilter(gaussFilt, edgeFiltVert);
-    edgeFiltBlur{2} = imfilter(gaussFilt, edgeFiltHoriz);
-    
-    parfor ii = 1:2
+    edgeFiltBlur{2} = imfilter(gaussFilt, edgeFiltHoriz);    
+
+    for ii = 1:2
         imFiltBlur{ii} = imfilter(im, edgeFiltBlur{ii});
     end
-
+    
     %     edgeMap = (abs(imHorizBlur) + abs(imVertBlur));
     edgeMap = abs(imFiltBlur{1}) + abs(imFiltBlur{2});
     
@@ -35,12 +37,12 @@ if spt < 1
     %edgeMapSort = sort(edgeMap(cropMask));
     edgeMapSort = sort(edgeMap(:));
     edgeMapT = edgeMapSort(round(7/ 8 * numel(edgeMapSort)));
-
+    
     bwEdge = and(logical(edgeMap > edgeMapT), cropMask);
     
-%     bwEdge = bwareaopen(bwEdge, 1024, 4);
-%     bwEdge = imerode(bwEdge, strel('disk', 4));
-
+    %     bwEdge = bwareaopen(bwEdge, 1024, 4);
+    %     bwEdge = imerode(bwEdge, strel('disk', 4));
+    
 else
     disp('Skipping Edge Detection...');
     bwEdge = rStr.bw;
@@ -48,13 +50,13 @@ else
 end
 
 if spt < 2
-    [h t r] = hough(bwEdge, 'ThetaResolution', .1);
+    [h t r] = hough(bwEdge, 'Theta', -90:TRES:(90 - TRES));
 else
     disp('Skipping Hough Transform...');
     h = rStr.h;
     t = rStr.t;
     r = rStr.r;
-end    
+end
 
 % Estimate roughly, the number of lines we expect to find.
 % Each grating cell should be about 128px on a side, give or take a factor
@@ -79,7 +81,7 @@ tDistribution = t((floor(end / 2) + 1):end);
 % % Experimentally determined normalization.
 % % This is used to remove a periodic bias for peaks in the hough space with
 % % regard to line orientation
-% 
+%
 % fnorm = (13 - cosd(4 * tDistribution)) / 13;
 % angleDistribution = angleDistribution ./ fnorm;
 
