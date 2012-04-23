@@ -144,27 +144,26 @@ end
 
 function secStr = readSections(prefix)
 
-dot = numel(prefix) + 1;
 dd = dir([prefix '.*']);
+slash = find(prefix == '/', 1, 'last');
+if isempty(slash)
+    serPath = './';
+else
+    serPath = prefix(1:slash);
+end
 
-secStr = repmat(struct, [1 numel(dd)]);
+secStr = repmat(struct('index', 0, 'name', '', 'section', []), [1 numel(dd)]);
 
 keepsel = true(1, numel(dd));
 
 parfor i_f = 1:numel(dd)
-    name = dd(i_f).name;
-    suffix = name((dot + 1):end);
-    
-    snum = str2double(suffix);
-    
-    if isnan(snum)
-        keepsel(i_f) = false;        
-    else
-        suffix = snum;
+    keepsel(i_f) = ~isempty(regexp(dd(i_f).name, '\.[0-9]+$', 'once'));
+    if keepsel(i_f)
+        name = dd(i_f).name;
+        dot = find(name == '.', 1, 'last');
+        secStr(i_f).index = str2double(name((dot+1):end));
+        secStr(i_f).name = [serPath dd(i_f).name];
     end
-    
-    secStr(i_f).name = name;
-    secStr(i_f).index = suffix;
 end
 
 secStr = secStr(keepsel);
@@ -174,7 +173,7 @@ secIndex = [secStr.index];
 
 secStr = secStr(sortIndex);
 
-for i_sec = 1:numel(secStr)
+parfor i_sec = 1:numel(secStr)
     fprintf('Reading section %d\n', secStr(i_sec).index);
     secStr(i_sec).section = xmlToMatstruct(readXML(secStr(i_sec).name));
 end
