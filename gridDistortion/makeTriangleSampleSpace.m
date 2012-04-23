@@ -1,7 +1,10 @@
-function [sampleSpace angles lvectexpect inds] = makeTriangleSampleSpace(rc)
+function [sampleSpace angles lvectexpect inds] = makeTriangleSampleSpace(rc,...
+    expectAngle)
 
-expectAngle = pi / 2;
-% expectAngle = pi / 3;
+if nargin < 2
+    expectAngle = pi / 2;
+end
+
 
 %setup basic variables
 rotmat = [cos(expectAngle) -sin(expectAngle);...
