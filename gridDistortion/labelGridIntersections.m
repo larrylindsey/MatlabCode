@@ -6,6 +6,7 @@ angle_thresh = .1 * pi;
 ransac_maxerr = .1;
 ransac_inlier_factor = .25;
 ransac_iter = 100;
+expectAngle = pi / 2;
 
 
 
@@ -44,11 +45,13 @@ end
 L = sparse(bwlabel(bwEnergy, 4));
 rc = getLabelPeaks(L, crossEnergy);
 
+rc = simpleNonMaxSuppression(rc, crossEnergy, sqrt(2) * mean(size(match))/2);
 
-[sample_space angles] = makeTriangleSampleSpace(rc);
-sel = abs(angles - pi / 2) < angle_thresh;
-sample_space = sample_space(sel,:);
-ransac_min_inliers = round(max(L(:)) * ransac_inlier_factor);
+
+[sample_space angles] = makeTriangleSampleSpace(rc, expectAngle);
+% sel = abs(angles - expectAngle) < angle_thresh;
+% sample_space = sample_space(sel,:);
+ransac_min_inliers = round(size(rc,1) * ransac_inlier_factor);
 
 [fit_space, model, model_err] = ransac(sample_space,...
     @createTriangleModel, @measureTriangleModel, ransac_maxerr,...
@@ -114,3 +117,4 @@ parfor ii = 1:n
 end
 
 end
+
