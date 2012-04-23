@@ -11,6 +11,7 @@ if nargin < 1
     tr.useRansac = true;
     tr.gamma = [];
     tr.weight = [];
+    tr.xAngle = pi / 2;
     output = tr;
     return;
 end
@@ -34,8 +35,14 @@ if isfield(control, 'norm') && ~isempty(control.norm)
     
 end
 
+if isfield(control, 'xAngle')
+    xAngle = control.xAngle;
+else
+    xAngle = pi / 2;
+end
+
 % square the grid model
-squareGM = getSquareGM(gm);
+squareGM = getSquareGM(gm, xAngle);
 
 % Calculate the approximated true grid
 squareRC = getSquareRC(squareGM, cgrid, rc);
@@ -61,6 +68,8 @@ end
   
 
 % Reject outliers from the rc's
+
+
 
 affRC = getAffRC(rc(sel,:), squareRC(sel,:), data);
 squareRC = trsAlign(squareRC(sel,:), rc(sel,:));
@@ -110,7 +119,7 @@ aff_rc = doTransform(squareRC, tral);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function sqgm = getSquareGM(gm)
+function sqgm = getSquareGM(gm, xAngle)
 v1 = gm(1,:);
 v2 = gm(2,:);
 v1n = norm(v1);
@@ -119,7 +128,12 @@ v2n = norm(v2);
 cosups = (v1(1) * v2n + v2(2) * v1n) / (2 * v2n * v1n);
 sinups = sqrt(1 - cosups*cosups);
 
-sqgm = [cosups sinups; -sinups cosups];
+sqgm = [cosups sinups];%; -sinups cosups];
+if xAngle == pi/2
+    sqgm(2,:) = [-sinups cosups];
+else    
+    sqgm(2,:) = sqgm(1,:) * rotmat(xAngle);
+end
 
 if v1(2) < 0
     sqgm = sqgm';
