@@ -6,6 +6,12 @@ rmodel = repmat(m(2,:), [size(s, 1), 1]);
 cvect = extra(s(:,5), :);
 nbd_ind = s(:,6:end);
 nbd_ind = unique(nbd_ind(nbd_ind > 0));
+
+if numel(nbd_ind) < 1
+    measure = inf;
+    return;
+end
+
 nbd_vect = extra(nbd_ind(:), :);
 
 lexp = cvect + lmodel;
@@ -17,7 +23,7 @@ exp = cat(3, lexp, rexp, uexp, dexp);
 
 dmap = zeros(size(exp, 1), 4);
 
-parfor ii = 1:4
+for ii = 1:4
     dmap(:,ii) = min(dist2(exp(:,:,ii), nbd_vect), [], 2);
 end
 % 
