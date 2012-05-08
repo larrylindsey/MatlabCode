@@ -45,13 +45,14 @@ end
 L = sparse(bwlabel(bwEnergy, 4));
 rc = getLabelPeaks(L, crossEnergy);
 
-rc = simpleNonMaxSuppression(rc, crossEnergy, sqrt(2) * mean(size(match))/2);
+rc = simpleNonMaxSuppression(rc, crossEnergy, mean(size(match))/2);
 
 
 [sample_space angles] = makeTriangleSampleSpace(rc, expectAngle);
 % sel = abs(angles - expectAngle) < angle_thresh;
 % sample_space = sample_space(sel,:);
-ransac_min_inliers = round(size(rc,1) * ransac_inlier_factor);
+% ransac_min_inliers = round(size(rc,1) * ransac_inlier_factor);
+ransac_min_inliers = 7;
 
 [fit_space, model, model_err] = ransac(sample_space,...
     @createTriangleModel, @measureTriangleModel, ransac_maxerr,...
