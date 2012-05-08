@@ -15,10 +15,13 @@ function varargout = thirdpartyfunction(func, varargin)
 
 codedir = '/home/larry/code/3rd-party-matlab';
 
-dohelp = false;
+mode = 0;
 
 if strcmp(func, 'help')
-    dohelp = true;
+    mode = 1;
+    func = varargin{1};
+elseif strcmp(func, 'which')
+    mode = 2;
     func = varargin{1};
 end
 
@@ -50,8 +53,10 @@ if isempty(funcid.file)
 end
 
 varargout = cell(1, nargout);
-if dohelp
+if mode == 1
     help(funcid.function);
+elseif mode ==2
+    which(funcid.function);
 else    
     [varargout{:}] = func(varargin{:});
 end
