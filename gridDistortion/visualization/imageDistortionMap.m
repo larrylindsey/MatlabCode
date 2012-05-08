@@ -12,7 +12,7 @@ function imageDistortionMap(tr, n, lim, f, varargin)
 %       color-vector-field. When n is a singleton, the value in n(1) is
 %       used instead.
 % lim [2] - The boundaries of the domain. For instance, the transform is
-%       usually calculated over an image that has been geometricall
+%       usually calculated over an image that has been geometrically
 %       normalized, so that its pixels are located between -1 and 1, in
 %       both x- and y-directions. In this case, lim = [-1 1].
 % f [1] - the size factor. In the example above, if the original image was
