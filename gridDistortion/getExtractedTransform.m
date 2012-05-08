@@ -8,7 +8,7 @@ if nargin < 1
     tr.v = [-1 1];
     tr.norm = [];
     tr.type = @legendreMat;
-    tr.useRansac = true;
+    tr.useRansac = false;
     tr.gamma = [];
     tr.weight = [];
     tr.xAngle = pi / 2;
@@ -88,7 +88,7 @@ if isfield(control, 'ctrlpts')
     squareRC = cat(1, squareRC, control.ctrlpts);
 end
 
-traff = regressionTransform(affRC, rc, control.order, control.type,...
+traff = regressionTransform(rc, affRC, control.order, control.type,...
     data);
 trsim = regressionTransform(rc, squareRC, control.order, ...
     control.type, data);
