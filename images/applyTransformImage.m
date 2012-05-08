@@ -1,7 +1,7 @@
 function [im x y] = applyTransformImage(im, trans, x, y, interp)
 
-tr = maketform('custom', trans.iDim, trans.oDim, @doCubicTransform, ...
-    @doInverseCubicTransform, trans);
+tr = maketform('custom', trans.iDim, trans.oDim, @doTransform, ...
+    @doTransform, trans);
 
 if isfield(trans, 'Image') && ~isempty(trans.Image)
     doflip = true;    
