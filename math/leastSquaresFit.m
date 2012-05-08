@@ -38,23 +38,27 @@ if nargin > 2
     if isfield(param, 'weight')
         W = param.weight;
     else
-        W = [];
+        W = 1;
     end
     
     if min(size(W)) == 1
         W = diag(W);
-    end
+    end    
     
     if isempty(W)
-        W = eye(size(A,1));
+        W = 1;
     end
 else
     gamma = [];
-    W = eye(size(A, 1));
+    W = 1;
 end
 
 
+%if isempty(W)
+%     ATA = A' * A;
+%else
 ATA = A' * W * A;
+%end
 
 
 if ~isempty(gamma)
@@ -83,4 +87,8 @@ if invErr > 1e-3
 end
 warning(s.state, 'MATLAB:nearlySingularMatrix');
 
+% if isempty(W)
+%     c = (ATAInv * A' * z);
+% else   
 c = (ATAInv * A' * W * z);
+% end
