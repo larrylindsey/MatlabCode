@@ -52,6 +52,6 @@ ptsin = extra.ptsin(sel,:);
 ptsout = extra.ptsout(sel,:);
 ptstr = doTransform(ptsin, tr);
 
-measure = rms(sqrt(sum((ptsout - ptstr).^2, 2)));
+measure = max(sqrt(sum((ptsout - ptstr).^2, 2)));
 end
 
