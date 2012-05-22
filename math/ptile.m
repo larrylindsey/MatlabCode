@@ -1,4 +1,13 @@
 function ms = ptile(m, p, d)
+% function ms = ptile(m, p, [d])
+%  Finds the given percentile value of a population, along the given
+%  dimension
+%
+%  m - data matrix
+%  p - the fractional percentile to find
+%  d - the dimension along which to find the percentile. Defaults to the
+%      first nonzero dimension if omitted
+
 
 if nargin < 3
     d = find(size(m) > 1, 1, 'first');
