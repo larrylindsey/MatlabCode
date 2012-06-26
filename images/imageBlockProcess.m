@@ -35,7 +35,7 @@ for ii = 1:numel(rstep)
     parfor jj = 1:numel(cstep)        
         cc = imod(csel + cstep(jj), mods);
         subim = imrr(:, cc); %#ok<PFBNS>
-        out(ii,jj) = fun(subim); %#ok<PFBNS>
+        out(ii,jj, :) = fun(subim); %#ok<PFBNS>
     end
 end
 
