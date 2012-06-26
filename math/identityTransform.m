@@ -9,6 +9,9 @@ if nargin < 5
             n = 64;            
             if nargin < 2
                 type = @legendreMat;
+                if nargin < 1
+                    order = 1;
+                end
             end
         end
     end

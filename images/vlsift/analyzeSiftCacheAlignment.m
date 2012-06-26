@@ -1,4 +1,16 @@
-function eaOutput = analyzeSiftCacheAlignment(siftCache, tr)
+function eaOutput = analyzeSiftCacheAlignment(siftCache, tr, transFun)
+% eaOutput = analyzeSiftCacheAlignment(siftCache, tr, transFun)
+%  Measures the alignment error of a 
+%
+%
+
+
+if nargin < 3
+    transFun = @doTransform;
+    if nargin < 2
+        tr = identityTransform;
+    end
+end
 
 if ischar(siftCache)
     siftCache = load(siftCache);
@@ -14,8 +26,8 @@ for ii = 1:n
     xy1 = siftCache.feat1{ii};
     xy2 = siftCache.feat2{ii};
     
-    xy1tr = doTransform(xy1, tr);
-    xy2tr = doTransform(xy2, tr);
+    xy1tr = transFun(xy1, tr);
+    xy2tr = transFun(xy2, tr);
     
     eaOutput.d{ii} = sqrt(sum((xy1).^2,2));
     
