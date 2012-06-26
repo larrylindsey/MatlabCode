@@ -99,6 +99,7 @@ for k = 1:(size(rc_coarse, 1) - 1)
     op{k} = getFinePath(bmin, rc_coarse(k + 1,:), rc_coarse(k,:));
 end
 
+op = cat(1, op{:});
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
