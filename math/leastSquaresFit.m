@@ -1,5 +1,5 @@
-function c = leastSquaresFit(A, z, param)
-% c = leastSquaresFit(A, z, <param>)
+function c = leastSquaresFit(A, z, ~, param)
+% c = leastSquaresFit(A, z, ~, <param>)
 %   Finds the least squares solution for c in A*c = z
 %
 %   The optional argument param is a struct with the fields
@@ -15,7 +15,11 @@ function c = leastSquaresFit(A, z, param)
 %        c = inv(A' * W * A + G' * G) * (A' * W * z)
 %
 
-
+if nargin < 1
+    c.gamma = [];
+    c.weight = [];
+    return;
+end
 
 if size(A, 1) < size(A, 2)
     warning('leastSquaresFit:toofew', ...

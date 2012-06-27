@@ -1,5 +1,5 @@
-function [A o] = taylorMatND(x, order)
-% [A o] = taylorMatND(x, order)
+function [A o] = taylorMatND(x, ignore, order)
+% [A o] = taylorMatND(x, [~,] order)
 %
 % Creates a power-series matrix useful for linear least squares regression in k
 % dimensions
@@ -13,6 +13,10 @@ function [A o] = taylorMatND(x, order)
 %             [1 x(n, 1) x(n, 2) x(n,1)^2 x(n,1)*x(n,2) x(n,2)^2]
 % o - [l k] - a matrix representing the order of the lth term in the kth
 %             dimension. This is the direct output of listOrder(k, order)
+
+if nargin < 3
+    order = ignore;
+end
 
 [n k] = size(x);
 
