@@ -1,41 +1,32 @@
-function Aout = taylorMat(x, y, order)
+function [A o] = taylorMat(x, ignore, order)
+% [A o] = taylorMat(x, [~,] order)
+%
+% Creates a Vandermonde matrix over the power series.
+%
+% x - [n k] - input sample locations, for n samples in a k-dimensional space
+% order [1] - the maximal order of the power series
+%
+% A - [n l] - a Vandermonde matrix. For example, given a two dimensional space
+%             and order 2, each row in the matrix is
+%             [1 x(n, 1) x(n, 2) x(n,1)^2 x(n,1)*x(n,2) x(n,2)^2]
+% o - [l k] - a matrix representing the order of the lth term in the kth
+%             dimension. This is the direct output of listOrder(k, order)
 
 if nargin < 3
-    order = 3;
+    order = ignore;
 end
 
-x = x(:);
-y = y(:);
+[n k] = size(x);
 
-o = (order + 1) * (order + 2) / 2;
+%o = (order + 1) * (order + 2) / 2;
+o = listOrder(k, order);
+l = size(o, 1);
 
-Aout = zeros(numel(x), o);
+A = zeros(n, l);
 
-ii = 1;
-for i_order = 0:order
-    for n = 0:i_order
-        x_order = i_order - n;
-        y_order = n;
-        Aout(:,ii) = (x.^x_order) .* (y.^y_order);
-        ii = ii + 1;
-    end    
+for ii = 1:l
+    A(:,ii) = x(:,1).^o(ii,1);
+    for kk = 2:k
+        A(:,ii) = A(:,ii).*(x(:,kk).^o(ii,kk));
+    end
 end
-
-% 
-% x1 = x(:);
-% y1 = y(:);
-% 
-% %x1, y1 in [n 1]
-% 
-% x2 = x1.*x1;
-% xy = x1.*y1;
-% y2 = y1.*y1;
-% 
-% x3 = x2.*x1;
-% x2y = x2.*y1;
-% xy2 = x1.*y2;
-% y3 = y2.*y1;
-% 
-% o = ones(size(x1));
-% 
-% Aout = cat(2, o, x1, y1, x2, xy, y2, x3, x2y, xy2, y3);
