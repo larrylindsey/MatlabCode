@@ -1,4 +1,13 @@
-function rc = gridRC(r, c)
+function rc = gridRC(varargin)
 
-[R C] = meshgrid(r, c);
-rc = cat(2, R(:), C(:));
+rc = cell(size(varargin));
+
+[rc{:}] = meshgrid(varargin{:});
+
+for ii = 1:numel(rc)
+    rcl = rc{ii};
+    rc{ii} = rcl(:);
+end
+
+rc = cat(2, rc{:});
+
