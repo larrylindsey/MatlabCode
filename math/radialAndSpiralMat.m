@@ -1,18 +1,29 @@
-function [A1, A2] = radialAndSpiralMat(x, y, order)
+function [A o] = radialAndSpiralMat(x2, ~, order, fun)
 
-% if size(x, 2) ~= 2
-%     error('radialAndSpiralMat supports only 2 dimensions, rather than %d', ...
-%         size(x, 2));
-% end
+if nargin < 1
+    A = @doRadialSpiralTransform;
+    o = @dimWiseLeastSquaresFit;
+    return;
+end
 
-x = x(:);
-y = y(:);
-xy = cat(2, x, y);
+if nargin < 4
+    fun = @taylorMat;
+elseif isstruct(fun)
+    fun = fun.fun;
+end
 
-r = sqrt(sum(xy.^2, 2));
+if size(x2, 2) ~= 2
+    error('radialAndSpiralMat supports only 2 dimensions, rather than %d', ...
+        size(x2, 2));
+end
 
-P = taylorMatND(r, order);
-S = taylorMatND(r, 2);
+x = x2(:,1);
+y = x2(:,2);
+
+r = sqrt(sum(x2.^2, 2));
+
+[P op] = fun(r, order);
+[S os] = fun(r, 2);
 
 l = size(P,2);
 
@@ -24,5 +35,8 @@ S2 = repmat(x, [1 3]) .* S;
 
 A1 = cat(2, P1, S1);
 A2 = cat(2, P2, S2);
+
+A = cat(3, A1, A2);
+o = cat(1, op, os) + 1;
 
 end

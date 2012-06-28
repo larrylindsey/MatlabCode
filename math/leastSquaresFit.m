@@ -1,5 +1,5 @@
-function c = leastSquaresFit(A, z, ~, param)
-% c = leastSquaresFit(A, z, ~, <param>)
+function c = leastSquaresFit(A, z, param)
+% c = leastSquaresFit(A, z, <param>)
 %   Finds the least squares solution for c in A*c = z
 %
 %   The optional argument param is a struct with the fields

@@ -1,4 +1,4 @@
-function [A o] = taylorMat(x, ignore, order)
+function [A o] = taylorMat(x, ignore, order, ~)
 % [A o] = taylorMat(x, [~,] order)
 %
 % Creates a Vandermonde matrix over the power series.
@@ -11,6 +11,12 @@ function [A o] = taylorMat(x, ignore, order)
 %             [1 x(n, 1) x(n, 2) x(n,1)^2 x(n,1)*x(n,2) x(n,2)^2]
 % o - [l k] - a matrix representing the order of the lth term in the kth
 %             dimension. This is the direct output of listOrder(k, order)
+
+if nargin < 1
+    A = @doStandardTransform;
+    o = @leastSquaresFit;
+    return;
+end
 
 if nargin < 3
     order = ignore;

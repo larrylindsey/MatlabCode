@@ -1,4 +1,4 @@
-function [A_NL o_LD] = legendreMat(x, ignore, order)
+function [A_NL o_LD] = legendreMat(x, ignore, order, ~)
 % [A o] = legendreMat(x, ignore, order)
 %  Creates a Vandermonde matrix over the Legendre polynomials.
 %
@@ -13,6 +13,11 @@ function [A_NL o_LD] = legendreMat(x, ignore, order)
 % o - [l k] - a matrix representing the order of the lth term in the kth
 %             dimension. This is the direct output of listOrder(k, order)
 
+if nargin < 1
+    A_NL = @doStandardTransform;
+    o_LD = @leastSquaresFit;
+    return
+end
 
 if nargin < 3
     order = ignore;
