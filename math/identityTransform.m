@@ -1,29 +1,36 @@
-function tr = identityTransform(order, type, n, u, v)
+function tr = identityTransform(type, order, d, n, lim)
 
 
 if nargin < 5
-    v = [-1 1];
+    lim = [-1; 1];
     if nargin < 4
-        u = [-1 1];
+        n = 1024;
         if nargin < 3
-            n = 64;            
+            d = 2;
             if nargin < 2
-                type = @legendreMat;
+                order = 1;
                 if nargin < 1
-                    order = 1;
+                    type = @taylorMat;
                 end
             end
         end
     end
 end
 
-rc = gridRC(linspace(u(1), u(2), n), linspace(u(1), u(2), n));
+if size(lim, 2) == 1
+    lim = repmat(lim, [1 d]);
+end
+if numel(n) == 1
+    n = repmat(round(n^(1/d)), [d 1]);
+end
 
-data.n = n;
-data.u = u;
-data.v = v;
+t = cell(1,d);
 
-tr = regressionTransform(rc, rc, order, type, data);
-tr.T(tr.T < 1) = 0;
-tr.Tinv(tr.Tinv < 1) = 0;
+for ii = 1:d
+    t{ii} = linspace(lim(1,ii), lim(2,ii), n(ii));
+end
+
+rc = gridRC(t{:});
+
+tr = fitTransform(rc, rc, order, type);
 
