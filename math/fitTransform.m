@@ -32,15 +32,18 @@ if ~isfield(param, 'fun')
     param.fun = @taylorMat;
 end
 
-A = matrixFunction(fpts, tpts, order, param);
+[A mOrder] = matrixFunction(fpts, tpts, order, param);
 
 T = createTransformFun(A, tpts, param);
 
 tr.T = T;
+tr.inv = [];
 tr.doTrans = doTransformFun;
 tr.createTrans = createTransformFun;
 tr.matrixFun = matrixFunction;
 tr.param = param;
 tr.order = order;
+tr.monomialOrder = mOrder;
+tr.ndim = size(fpts, 2);
 
 end
