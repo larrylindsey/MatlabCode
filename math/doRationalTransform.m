@@ -17,5 +17,5 @@ T_D(1:size(A_N,2),:) = [];
 y_N = A_N * T_N;
 y_D = A_D * T_D;
 
-y = y_N ./ y_D;
+y = y_N ./ (1 + y_D);
 end

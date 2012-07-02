@@ -35,4 +35,4 @@ for ii = 2:yd
     A(:,:,ii) = cat(2, P, Qd);
 end
 
-o = cat(1, o_n, -o_d);
+o = cat(1, o_n, -o_d(2:end,:));
