@@ -43,14 +43,14 @@ universe = (1:size(ptsin, 1))';
 end
 
 function tr = makeModel(sel, extra)
-tr = regressionTransform(extra.ptsin(sel,:), extra.ptsout(sel,:), ...
+tr = fitTransform(extra.ptsin(sel,:), extra.ptsout(sel,:), ...
     extra.order, extra.type, extra.data);
 end
 
 function measure = errorMetric(tr, sel, extra)
 ptsin = extra.ptsin(sel,:);
 ptsout = extra.ptsout(sel,:);
-ptstr = doTransform(ptsin, tr);
+ptstr = applyTransform(ptsin, tr);
 
 measure = max(sqrt(sum((ptsout - ptstr).^2, 2)));
 end
