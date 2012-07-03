@@ -20,13 +20,15 @@ fpts = invParam.tpts;
 tpts = invParam.fpts;
 
 % If fpts is empty, make our own fpts, tpts.
-if isEmpty(fpts)
+if isempty(fpts)
+    d = tr.ndim;
     lim = invParam.lim;
     n = invParam.n;
     
     if size(lim, 2) == 1
         lim = repmat(lim, [1 d]);
     end
+    
     if numel(n) == 1
         n = repmat(round(n^(1/d)), [d 1]);
     end

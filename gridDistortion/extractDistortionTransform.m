@@ -1,4 +1,4 @@
-function [rc_found, rc_grid, grid_model, scale, dbStr] =...
+function [rc_found, rc_match_sq, rc_match_aff, dbStr] =...
     extractDistortionTransform(im0, varargin)
 
 if ischar(im0)
@@ -15,7 +15,6 @@ end
 
 
 HH = [];
-% imGrid = [];
 match = [];
 rStr = [];
 bwEnergy = [];
@@ -24,22 +23,19 @@ scale = reshape(scale(1:2), [1 2]);
 
 while ~isempty(varargin)
     arg = varargin{1};
-    i_match = strmatch(arg, {'HH', 'imGrid', 'match', 'rStr', 'bwEnergy'});%#ok
+    i_match = strmatch(arg, {'HH', 'match', 'rStr', 'bwEnergy'});%#ok
     i_match = i_match(1);
     switch i_match
         case 1
             disp('Got HH');
             HH = varargin{2};
         case 2
-            disp('Got imGrid');
-%             imGrid = varargin{2};
-        case 3
             disp('Got match');
             match = varargin{2};
-        case 4
+        case 3
             disp('Got rStr');
             rStr = varargin{2};
-        case 5
+        case 4
             disp('Got bwEnergy');
             bwEnergy = varargin{2};
         otherwise
@@ -48,47 +44,33 @@ while ~isempty(varargin)
     varargin = varargin(3:end);
 end
 
-
-% msgsubjectbeg = 'Distortion Extraction Output';
-% msgsubject = ['RE: ' msgsubjectbeg];
 %Step 0: Fix orientation of image
 s = cputime;
 if isempty(rStr)
-    tic;
     fprintf('Finding Approximate Grid\n');
     rStr = findRoughLines(im0);
-    toc;
-%     sendmsg(msgsubjectbeg, 'Found Rough Grid Approximation');
     save -v7.3 grid_approx_cache.mat rStr    
 end
+s(end + 1) = cputime;
 
 if isempty(match)
     fprintf('Creating match filter\n');
-    tic;
+
     match = gridEstimate(rStr, im0);
     cm = rStr.cropMask;
     clear rStr;
     rStr.cropMask = cm;
     clear cm;
     save match_cache.mat match
-    toc;
-%     sendmsg(msgsubjectbeg, ...
-%         sprintf('Created Match Filter of size %d by %d', size(match, 1), ...
-%         size(match, 2)));
+
     imwrite(match, 'match_attach.png');
-%     try
-%         sendmail('larry.f.lindsey@gmail.com', 'Match Kernel', 'Attached', ...
-%             'match_attach.png');
-%     catch senderr
-%         fprintf('Unable to send match email.  Error was %s\n',...
-%             senderr.message);
-%     end
 end
+s(end + 1) = cputime;
 
 %Step 1: Label Grid Intersections.
 sprintf('Labeling Grid Intersections\n');
 if isempty(HH)
-    tic;
+
     [rmin rmax cmin cmax] = mask2boundingbox(rStr.cropMask);
     im0(not(rStr.cropMask)) = 0;
     im0 = im0(rmin:rmax, cmin:cmax);
@@ -97,19 +79,19 @@ if isempty(HH)
         rStr.cropMask(rmin:rmax,cmin:cmax));
     rc_found(:,1) = rc_found(:,1) + rmin - 1;
     rc_found(:,2) = rc_found(:,2) + cmin - 1;
-%     sendmsg(msgsubject, 'Labeled Grid Intersections.');
+
     save -v7.3 match_energy_cache.mat HH
-    toc;
+
 elseif isempty(bwEnergy)
-    tic;
+
     [rc_found, grid_model, model_err, L, HH] =...
         labelGridIntersections(im0, match, rStr.cropMask, HH);
-    toc;
+
 else
-    tic;
+
     [rc_found, grid_model, model_err, L, HH] =...
         labelGridIntersections(im0, match, rStr.cropMask, HH, bwEnergy);
-    toc;
+    
 end
 s(end + 1) = cputime;
 
@@ -135,6 +117,10 @@ rc_grid = rc_grid(:,[2 1]);
 
 %grid_model = eye(2) * sqrt(abs(det(grid_model)));
 
+rc_match_sq = getSquareMatchGrid(rc_found, getSquareGM(grid_model), rc_grid);
+rc_match_aff = getAffineMatchGrid(rc_found, getSquareGM(grid_model), rc_grid);
+
+
 if nargout > 1
     dbStr.L = L;
     dbStr.match = match;
@@ -150,6 +136,8 @@ end
 %     sprintf('Finished processing at %d:%d:%g\n', c(4), c(5), c(6)));
 
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [rc_grid grid_model] = fixGridMatch(rc_grid, grid_model)
 
@@ -170,5 +158,42 @@ if sign_ind(2) < 0
     grid_model(2,:) = -grid_model(2,:);
     rc_grid(:,2) = -rc_grid(:,2);
 end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function gmSQ = getSquareGM(grid_model)
+
+gmDet = det(grid_model);
+d = sqrt(abs(gmDet));
+
+gmSQ = eye(2) * d;
+
+if gmDet < 0
+    warning('extractedTransform:swappedAxes',...
+        'Detected swapped axes in grid model');
+    gmSQ = gmSQ([2 1],:);
+end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function matchGrid = getSquareMatchGrid(rc_pt, gm, rc_grid)
+
+grid0 = rc_grid * gm;
+matchGrid = trsAlign(grid0, rc_pt);
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function matchGrid = getAffineMatchGrid(rc_pt, gm, rc_grid)
+
+grid0 = rc_grid * gm;
+tr = fitTransform(grid0, rc_pt, 1);
+matchGrid = applyTransform(grid0, tr);
+
 
 end

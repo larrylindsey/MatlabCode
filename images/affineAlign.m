@@ -1,7 +1,7 @@
 function rcout = affineAlign(rcfrom, rcto)
 
-tr = regressionTransform(rcfrom, rcto, 1, @legendreMat);
+tr = fitTransform(rcfrom, rcto, 1, @legendreMat);
 
-rcout = doTransform(rcfrom, tr);
+rcout = applyTransform(rcfrom, tr);
 
 end

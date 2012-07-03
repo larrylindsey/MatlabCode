@@ -16,8 +16,7 @@ end
 
 n = size(siftCache.feat1, 2);
 
-eaOutput.raw = cell(n, 1);
-eaOutput.trans = cell(n, 1);
+eaOutput.sectionWise = cell(n, 1);
 eaOutput.d = cell(n, 1);
 
 for ii = 1:n
@@ -30,13 +29,14 @@ for ii = 1:n
     eaOutput.d{ii} = sqrt(sum((xy1).^2,2));
     
     if isempty(xy1)
-        eaOutput.raw{ii} = [];
-        eaOutput.trans{ii} = [];
+        eaOutput.sectionWise{ii} = [];
     else
-        eaOutput.raw{ii} = measure(xy1, xy2);
-        eaOutput.trans{ii} = measure(xy1tr, xy2tr);
+        eaOutput.sectionWise{ii} = measure(xy1tr, xy2tr);
     end
 end
+
+eaOutput.all = cat(1, eaOutput.sectionWise{:});
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function e = measure(xy1, xy2)
