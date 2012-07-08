@@ -39,9 +39,9 @@ if isempty(fpts)
         t{ii} = linspace(lim(1,ii), lim(2,ii), n(ii));
     end
     
-    fpts = gridRC(t{:});
+    tpts = gridRC(t{:});
     
-    tpts = applyTransform(fpts, tr);    
+    fpts = applyTransform(tpts, tr);    
 end
 
 tr.inv = fitTransform(fpts, tpts, invParam.order, matrixFunction, ...
