@@ -6,9 +6,9 @@ if nargin < 2
     %expect ser to be a string.
     dot = find(ser == '.');
     prefix = ser(1:(dot - 1));
-
+    
     serdoc = xmlToMatstruct(readXML(ser));
-
+    
     secdoc = readSections(prefix);
 elseif nargin == 2
     %expect ser, sec to be structs
@@ -21,7 +21,7 @@ for i_sec = 1:numel(secdoc)
     fprintf('Converting section %d\n', secdoc(i_sec).index);
     clear newtrans;
     for i_trans = 1:numel(secdoc(i_sec).section.Transform)
-        newtrans(i_trans) = ... 
+        newtrans(i_trans) = ...
             processTransform(secdoc(i_sec).section.Transform(i_trans));%#ok
         
         %Record the transform containing image information.
@@ -29,7 +29,7 @@ for i_sec = 1:numel(secdoc)
             secdoc(i_sec).section.transImageIndex = i_trans;
             
         end
-    end    
+    end
     secdoc(i_sec).section.Transform = newtrans;
 end
 end
@@ -40,45 +40,50 @@ function trans = convertTransform(trans)
 A = cat(2, trans.xcoef', trans.ycoef');
 %A = cat(1, A, zeros(4, 2));
 
-
-switch trans.dim
+ptype = trans.dim;
+switch ptype
     case 2
         A([2 3], 2) = A([3 2], 2);
     case 4
         A([4 5], :) = A([5 4], :);
 end
 
-%Tinv = Tinv([7:10 4:6 2:3 1],:);
-
-Tinv = A;
-
-% if ~isempty(trans.Image)
-%     k = max(trans.Contour.points(:,1) * trans.Image.mag);
-%     %Expect to have coefficients only for order up to one, plus the
-%     %coefficient corresponding to xy
-% 
-%     Tinv(1, 1) = A(1, 1) + k * (A(3, 1) + A(5, 1));
-%     Tinv(1, 2) = k - k * (A(3, 2) + A(5, 2)) - A(1, 2);
-%     Tinv(3, 1) = -A(3, 1);
-%     Tinv(2, 2) = -A(2, 2);
-%     Tinv(5, 1) = -A(5, 1);
-% end
-
+T = A;
 trans.type = @taylorMat;
 
-%T = invertTransform(Tinv, @taylorMat, 32, [0 10]);
+%monomial order
+morder = ...
+    [ 0 0;
+    1 0;
+    0 1;
+    2 0;
+    1 1;
+    0 2];
 
-trans.T = [];
-trans.Tinv = Tinv;
+if ptype > 1
+    order = 2;
+else
+    order = 1;
+    morder = morder(1:3,:);
+    T = T(1:3,:);
+end
+[T morder] = rectifyOrder(T, morder, order);
 
-trans.order = 2;
-trans.iDim = 2;
-trans.oDim = 2;
+
+trans.T = T;
+[trans.doTrans trans.createTrans] = taylorMat();
+trans.matrixFun = @taylorMat;
+trans.param = trans.createTrans();
+trans.order = order;
+trans.monomialOrder = morder;
+trans.ndim = 2;
 
 trans.data.n = 32;
 [trans.data.u trans.data.v] = getTransformSupport(trans);
 
-trans = populateTransInverse(trans);
+trans = fitInverseTransform(trans);
+trans.inv.data = trans.data;
+trans = invertTransStruct(trans);
 
 end
 
@@ -87,14 +92,20 @@ end
 function [u v] = getTransformSupport(trans)
 
 if isempty(trans.Image)
-    pts = cat(1, trans.Contour.points);
+    if isempty(trans.Contour)
+        u = [];
+        v = [];
+        return;
+    else
+        pts = cat(1, trans.Contour.points);
+    end
 else
     cname = {trans.Contour.name};
-%     idom = regexp(cname, '^domain');
-%     while isempty(idom{1})
-%         idom = {idom{2:end}};
-%     end
-
+    %     idom = regexp(cname, '^domain');
+    %     while isempty(idom{1})
+    %         idom = {idom{2:end}};
+    %     end
+    
     %Assume the this trans has only one Contour, and it corresponds to the
     %image.
     pts = trans.Contour(1).points * trans.Image.mag;
@@ -113,7 +124,7 @@ transform = convertTransform(transform);
 
 for i_c = 1:numel(transform.Contour)
     transform.Contour(i_c).transPoints = ...
-        applyTransform(transform, transform.Contour(i_c).points);    
+        applyTransform(transform.Contour(i_c).points, transform);
 end
 
 if ~isempty(transform.Image)
@@ -121,24 +132,23 @@ if ~isempty(transform.Image)
         transform.Contour(i_c).imageDomainPoints = ...
             transform.Contour(i_c).points * transform.Image(1).mag;
         transform.Contour(i_c).imageDomainTransPoints = ...
-            applyTransform(transform, ...
-            transform.Contour(i_c).imageDomainPoints);
+            applyTransform(transform.Contour(i_c).imageDomainPoints, transform);
     end
 end
-    
+
 
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function ptsout = applyTransform(contour, ptsin)
-if ~isempty(ptsin)
-    A = taylorMat(ptsin(:,1), ptsin(:,2), contour.order);
-    ptsout = A * contour.T;
-else
-    ptsout = [];
-end
-end
+% function ptsout = applyReconstructTransform(contour, ptsin)
+% if ~isempty(ptsin)
+%     A = taylorMat(ptsin(:,1), ptsin(:,2), contour.order);
+%     ptsout = A * contour.T;
+% else
+%     ptsout = [];
+% end
+% end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

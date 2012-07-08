@@ -1,6 +1,6 @@
 function [rc_found, rc_match_sq, rc_match_aff, dbStr] =...
     extractDistortionTransform(im0, varargin)
-
+tic;
 if ischar(im0)
     im0 = imread(im0);
 end
@@ -134,7 +134,7 @@ end
 % c = clock;
 % sendmsg(msgsubject,...
 %     sprintf('Finished processing at %d:%d:%g\n', c(4), c(5), c(6)));
-
+toc;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

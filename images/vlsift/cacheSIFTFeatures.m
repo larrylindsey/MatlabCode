@@ -34,5 +34,5 @@ end
 
 % fprintf('f has size %d, and d has size %d\n', numel(f), numel(d));
 
-save(cachefile, '-v7.3', 'f', 'd', 'sz');
+save(cachefile, '-v7.3', 'f', 'd', 'sz', 'files');
 

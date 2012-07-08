@@ -39,9 +39,9 @@ T = trIn.T;
 
 trOut = trIn;
 
-Trot = doProj(T, rotProj);
-Tid = doProj(T, idProj);
-Tpb = doProj(T, pbProj);
+Trot = doProj(T, fliplr(rotProj));
+Tid = doProj(T, fliplr(idProj));
+Tpb = doProj(T, fliplr(pbProj));
 
 trOut.T = Trot + Tid + Tpb;
 %trOut.Tinv = [];
@@ -65,7 +65,7 @@ n = 32;
 [X Y] = meshgrid(linspace(tr.data.u(1), tr.data.u(2), n),...
     linspace(tr.data.v(1), tr.data.v(2), n));
 xy = cat(2, X(:), Y(:));
-xyt = doTransform(xy, tr);
+xyt = applyTransform(xy, tr);
 xyaff = affineAlign(xy, xyt);
-tr = regressionTransform(xyaff, xyt, tr.order, @legendreMat, tr.data);
+tr = fitTransform(xyaff, xyt, tr.order, @legendreMat, tr.data);
 end

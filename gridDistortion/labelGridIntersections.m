@@ -15,11 +15,9 @@ if nargin < 3 || isempty(mask)
 end
 
 if nargin <4
-    tic;
     crossEnergy = normcorr(im, match);
     crossEnergy(not(mask)) = 0;
     clear imnormsqr;
-    toc;
 end
 
 if nargin < 5
