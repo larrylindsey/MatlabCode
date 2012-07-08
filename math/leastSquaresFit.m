@@ -23,7 +23,8 @@ end
 
 if size(A, 1) < size(A, 2)
     warning('leastSquaresFit:toofew', ...
-        'leastSquaresFit: TOO FEW POINTSS for least squares!');
+        ['leastSquaresFit: TOO FEW POINTS for least squares!\n'...
+        'Have %d, need at least %d'], size(A,1), size(A,2));
 % elseif size(A,1) < 1.5 * size(A,2)
 %     warning('leastSquareFit:low', ...
 %         'leastSquaresFit: Not many extra points. Results will be noisy');

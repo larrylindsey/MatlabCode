@@ -1,11 +1,11 @@
-function eaOutput = analyzeSiftCacheAlignment(siftCache, tr)
+function eaOutput = analyzeSiftCacheAlignment(siftCache, tr, exclude)
 % eaOutput = analyzeSiftCacheAlignment(siftCache, tr, transFun)
 %  Measures the alignment error of a 
 %
 %
 
 
-if nargin < 2
+if nargin < 2 || isempty(tr)
     tr = identityTransform();
 end
 
@@ -35,7 +35,10 @@ for ii = 1:n
     end
 end
 
-eaOutput.all = cat(1, eaOutput.sectionWise{:});
+sectionWise = eaOutput.sectionWise;
+sectionWise(exclude) = [];
+
+eaOutput.all = cat(1, sectionWise{:});
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

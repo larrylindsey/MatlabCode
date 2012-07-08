@@ -1,5 +1,5 @@
 function [eraw, eblock, trblock] = distortionTransformErrorBlock(...
-    rc_found, rc_match, paramblock, cacheFile)
+    rc_found, rc_match, paramblock, cacheFile, exclude)
 % rc_found - rc_found as returned by extractGridDistortion
 % rc_match - the locations to match rc_found. We want tr: rc_found -> rc_match
 % paramblock - an array of struct with the following fields:
@@ -15,12 +15,20 @@ function [eraw, eblock, trblock] = distortionTransformErrorBlock(...
 %           fit according to the correspoding parameters. eblock
 %           corresponds, dimension-wise
 
+if nargin < 5
+    exclude = [];
+end
 
-eraw = analyzeSiftCacheAlignment(cacheFile);
+
+if ischar(cacheFile)
+    cacheFile = load(cacheFile);
+end
+
+eraw = analyzeSiftCacheAlignment(cacheFile, [], exclude);
 
 trblock = fitTransform(rc_found, rc_match, paramblock(1).order,...
     paramblock(1).fun);
-eblock = analyzeSiftCacheAlignment(cacheFile, trblock);
+eblock = analyzeSiftCacheAlignment(cacheFile, trblock, exclude);
 
 trblock = repmat(trblock, size(paramblock));
 eblock = repmat(eblock, size(paramblock));
@@ -29,6 +37,6 @@ eblock = repmat(eblock, size(paramblock));
 parfor ii = 2:numel(paramblock)
     trblock(ii) = fitTransform(rc_found, rc_match, paramblock(ii).order,...
         paramblock(ii).fun);
-    eblock(ii) = analyzeSiftCacheAlignment(cacheFile, trblock(ii));
+    eblock(ii) = analyzeSiftCacheAlignment(cacheFile, trblock(ii), exclude);
 end
 

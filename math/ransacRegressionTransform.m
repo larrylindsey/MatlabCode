@@ -21,7 +21,7 @@ if nargin < 6
     data.v = [min(ptsin(:,2)) max(ptsin(:,2))];
     data.n = size(ptsin, 1);
     if nargin < 5
-        type = @legendreMat;
+        type = @taylorMat;
     end
 end
 
@@ -52,6 +52,6 @@ ptsin = extra.ptsin(sel,:);
 ptsout = extra.ptsout(sel,:);
 ptstr = applyTransform(ptsin, tr);
 
-measure = max(sqrt(sum((ptsout - ptstr).^2, 2)));
+measure = rms(sqrt(sum((ptsout - ptstr).^2, 2)));
 end
 
