@@ -49,7 +49,7 @@ else
     rctrMap(~mapSel,:) = nan;
     
     rcQ = rcFound;
-    rctrQ = doTransform(rcQ, tr);
+    rctrQ = applyTransform(rcQ, tr);
 end
 
 if ~isempty(thresh)
@@ -98,7 +98,7 @@ lilc = lilr;
 
 [R C] = meshgrid(lilr, lilc);
 RC = cat(2, C(:), R(:));
-RCtr = doTransform(RC, trans);
+RCtr = applyTransform(RC, trans);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
