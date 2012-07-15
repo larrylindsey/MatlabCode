@@ -43,7 +43,7 @@ end
 L = sparse(bwlabel(bwEnergy, 4));
 rc = getLabelPeaks(L, crossEnergy);
 
-rc = simpleNonMaxSuppression(rc, crossEnergy, mean(size(match))/2);
+rc = simpleNonMaxSuppression(rc, crossEnergy, mean(size(match))/3);
 
 
 [sample_space angles] = makeTriangleSampleSpace(rc, expectAngle);
