@@ -1,6 +1,6 @@
 function tr = seriesAlignmentTransforms(cache, idIndex, preTr)
 
-doPreTr = nargin > 2;
+doPreTr = nargin > 2 && ~isempty(preTr);
    
 tr = identityTransform(@taylorMat, 1);
 n = numel(cache.f);

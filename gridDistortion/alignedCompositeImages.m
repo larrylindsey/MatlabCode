@@ -6,6 +6,10 @@ if nargin < 4
     preTr = [];
 end
 
+if ischar(cache)
+    cache = load(cache);
+end
+
 
 ncpu = max(matlabpool('size'), 1);
 splitImfiles0 = cell(1, ncpu);
@@ -34,10 +38,11 @@ parfor cpu = 1:ncpu
     tr2 = splitTr1{cpu};
     imfiles0 = splitImfiles0{cpu};
     imfiles1 = splitImfiles1{cpu};
+    indices = splitIndices{cpu};
     
     for ii = 1:numel(tr1)
-        im1 = getIm(imfiles0{ii});
-        im2 = getIm(imfiles1{ii});
+        im1 = getIm(imfiles0{ii}, preTr);
+        im2 = getIm(imfiles1{ii}, preTr);
         
         im1 = applyTransformImage(im1, tr1(ii), xbound, ybound);
         im2 = applyTransformImage(im2, tr2(ii), xbound, ybound);
@@ -45,9 +50,9 @@ parfor cpu = 1:ncpu
         im1 = clipIm(im1);
         im2 = clipIm(im2);
         
-        imwrite(compositeImage(im1, im2)), ...
+        imwrite(compositeImage(im1, im2), ...
             sprintf('%s/th %03d aligned %03d.png', outdir, ...
-            indices(ii), indices(ii) + 1);
+            indices(ii), indices(ii) + 1));
     end
 end
 end
