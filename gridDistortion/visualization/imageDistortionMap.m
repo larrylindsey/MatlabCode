@@ -99,6 +99,7 @@ lilc = lilr;
 [R C] = meshgrid(lilr, lilc);
 RC = cat(2, C(:), R(:));
 RCtr = applyTransform(RC, trans);
+RCtr = affineAlign(RCtr, RC);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
