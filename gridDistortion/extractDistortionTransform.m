@@ -46,7 +46,7 @@ end
 
 %Step 0: Fix orientation of image
 s = cputime;
-if isempty(rStr)
+if isempty(rStr) && isempty(match)
     fprintf('Finding Approximate Grid\n');
     rStr = findRoughLines(im0);
     save -v7.3 grid_approx_cache.mat rStr    
@@ -71,26 +71,25 @@ s(end + 1) = cputime;
 sprintf('Labeling Grid Intersections\n');
 if isempty(HH)
 
-    [rmin rmax cmin cmax] = mask2boundingbox(rStr.cropMask);
-    im0(not(rStr.cropMask)) = 0;
-    im0 = im0(rmin:rmax, cmin:cmax);
+    %[rmin rmax cmin cmax] = mask2boundingbox(rStr.cropMask);
+    %im0(not(rStr.cropMask)) = 0;
+%     im0 = im0(rmin:rmax, cmin:cmax);
     [rc_found, grid_model, model_err, L, HH] =...
-        labelGridIntersections(im0, match,...
-        rStr.cropMask(rmin:rmax,cmin:cmax));
-    rc_found(:,1) = rc_found(:,1) + rmin - 1;
-    rc_found(:,2) = rc_found(:,2) + cmin - 1;
+        labelGridIntersections(im0, match, []);
+%     rc_found(:,1) = rc_found(:,1) + rmin - 1;
+%     rc_found(:,2) = rc_found(:,2) + cmin - 1;
 
     save -v7.3 match_energy_cache.mat HH
 
 elseif isempty(bwEnergy)
 
     [rc_found, grid_model, model_err, L, HH] =...
-        labelGridIntersections(im0, match, rStr.cropMask, HH);
+        labelGridIntersections(im0, match, [], HH);
 
 else
 
     [rc_found, grid_model, model_err, L, HH] =...
-        labelGridIntersections(im0, match, rStr.cropMask, HH, bwEnergy);
+        labelGridIntersections(im0, match, [], HH, bwEnergy);
     
 end
 s(end + 1) = cputime;
