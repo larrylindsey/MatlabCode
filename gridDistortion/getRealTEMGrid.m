@@ -91,7 +91,7 @@ fprintf('Matching features...\n');
 m_s_t = thirdpartyfunction('vl_ubcmatch', d_stem, d_tem);
 % since we're matching an inset image, we can perform a first-pass
 % rejection based on the match density.
-[f_stem, f_tem] = sparseMatchReject(f_stem, f_tem, 2, m_s_t);
+% [f_stem, f_tem] = sparseMatchReject(f_stem, f_tem, 2, m_s_t);
 
 % Scale the matches to [-1 1] x [-1 1]. This is done to be size invariant,
 % and also because extractDistortionTransform returns rc_found in the same
@@ -99,7 +99,10 @@ m_s_t = thirdpartyfunction('vl_ubcmatch', d_stem, d_tem);
 rc_stem = f_stem([2 1],:)' * 2 / max(size(imStem)) - 1;
 rc_tem = f_tem([2 1],:)' * 2 / max(size(imTem)) - 1;
 
-rparam.n = 7;
+rc_stem = rc_stem(m_s_t(1,:), :);
+rc_tem = rc_tem(m_s_t(2,:), :);
+
+rparam.n = 3;
 rparam.metric = [];
 rparam.maxError = .1;
 rparam.minInliers = 32;
@@ -125,13 +128,13 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [rcTem, rcTemGrid, rcStem] = getRCReal(trRam, rc_tem_match, rc_stem_match, ...
     gridTem, gridStem)
-rc_stem_match = doTransform(rc_stem_match, trRam);
-tr_tem_stem = regressionTransform(rc_tem_match, rc_stem_match, 1);
-tr_stem_tem = regressionTransform(rc_stem_match, rc_tem_match, 1);
+rc_stem_match = applyTransform(rc_stem_match, trRam);
+tr_tem_stem = fitTransform(rc_tem_match, rc_stem_match, 1);
+tr_stem_tem = fitTransform(rc_stem_match, rc_tem_match, 1);
 
 [rcTem, rcTemGrid, rcStem] = selectMatchingGridPoints(tr_tem_stem, gridTem, gridStem);
 
-rcStem = doTransform(rcStem, tr_stem_tem);
+rcStem = applyTransform(rcStem, tr_stem_tem);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -142,13 +145,13 @@ tem_bbox = [-1 -1; -1 1; 1 1; 1 -1];
 tem_bbox(tem_bbox > 0) = tem_bbox(tem_bbox > 0) + bbox_buffer;
 tem_bbox(tem_bbox < 0) = tem_bbox(tem_bbox < 0) - bbox_buffer;
 
-stem_bbox = doTransform(tem_bbox, tr_tem_stem);
+stem_bbox = applyTransform(tem_bbox, tr_tem_stem);
 % Use a bounding box to reduce the search size for matching the individual...
 % grid points TEM vs STEM.
 stem_coarse_sel = inpolygon(gridStem.rc_found(:,1), gridStem.rc_found(:,2), ...
     stem_bbox(:,1), stem_bbox(:,2));
 rc_found_stem = gridStem.rc_found(stem_coarse_sel,:);
-rc_found_tem = doTransform(gridTem.rc_found, tr_tem_stem);
+rc_found_tem = applyTransform(gridTem.rc_found, tr_tem_stem);
 
 % Do the actual selection by nearest neighbor
 dd_thresh = max(sqrt(sum(gridStem.grid_model.^2, 2)));
@@ -173,8 +176,8 @@ end
 function gridTem = affineAlignRCCorrect(gridTem)
 rc_correct = gridTem.rc_correct;
 rc_found = gridTem.rc_found;
-trAff = regressionTransform(rc_correct, rc_found, 1);
-rc_correct_aff = doTransform(rc_correct, trAff);
+trAff = fitTransform(rc_correct, rc_found, 1);
+rc_correct_aff = applyTransform(rc_correct, trAff);
 gridTem.rc_correct_aff = rc_correct_aff;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
