@@ -88,17 +88,15 @@ if isfield(control, 'ctrlpts')
     squareRC = cat(1, squareRC, control.ctrlpts);
 end
 
-traff = regressionTransform(rc, affRC, control.order, control.type,...
-    data);
-trsim = regressionTransform(rc, squareRC, control.order, ...
+traff = fitTransform(rc, affRC, control.order, control.type,...
+     data);
+trsim = fitTransform(rc, squareRC, control.order, ...
     control.type, data);
 
 % traff - transform from rc to affine-aligned "square" grid
 % trsim - transform from rc to similiarity-aligned square grid
-
-
-rc_aff = doTransform(rc(sel,:), traff);
-rc_sim = doTransform(rc(sel,:), trsim);
+rc_aff = applyTransform(rc(sel,:), traff);
+rc_sim = applyTransform(rc(sel,:), trsim);
 
 output.rc_square = squareRC;
 output.rc_affine = affRC;
@@ -113,8 +111,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function aff_rc = getAffRC(rc, squareRC, data)
 
-tral = regressionTransform(squareRC, rc, 1, @legendreMat, data);
-aff_rc = doTransform(squareRC, tral);
+tral = fitTransform(squareRC, rc, 1, @legendreMat, data);
+aff_rc = applyTransform(squareRC, tral);
 
 
 end

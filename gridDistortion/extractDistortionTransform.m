@@ -1,4 +1,4 @@
-function [rc_found, rc_match_sq, rc_match_aff, dbStr] =...
+function [rc_found, rc_match_aff, rc_grid, dbStr] =...
     extractDistortionTransform(im0, varargin)
 tic;
 if ischar(im0)
@@ -119,7 +119,7 @@ rc_grid = rc_grid(:,[2 1]);
 
 %grid_model = eye(2) * sqrt(abs(det(grid_model)));
 
-rc_match_sq = getSquareMatchGrid(rc_found, getSquareGM(grid_model), rc_grid);
+% rc_match_sq = getSquareMatchGrid(rc_found, getSquareGM(grid_model), rc_grid);
 rc_match_aff = getAffineMatchGrid(rc_found, getSquareGM(grid_model), rc_grid);
 
 
@@ -182,12 +182,12 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function matchGrid = getSquareMatchGrid(rc_pt, gm, rc_grid)
-
-grid0 = rc_grid * gm;
-matchGrid = trsAlign(grid0, rc_pt);
-
-end
+% % function matchGrid = getSquareMatchGrid(rc_pt, gm, rc_grid)
+% % 
+% % grid0 = rc_grid * gm;
+% % matchGrid = trsAlign(grid0, rc_pt);
+% % 
+% end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
