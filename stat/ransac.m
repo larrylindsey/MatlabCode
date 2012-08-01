@@ -92,8 +92,10 @@ for i_it = 1:maxIter
     oldDbgN = numel(dbgStr);
     fprintf(dbgStr);
     
-    if size(outSpace, 1) >= size(universe, 1)
-        fprintf(['\nRANSAC sample found to contain entire universe,'...
+    % Error is expected to be non-negative. Otherwise, this will break
+    % things
+    if minError == 0
+        fprintf(['\nRANSAC sample found with zero error,'...
             ' returning\n']);
         return;
     end

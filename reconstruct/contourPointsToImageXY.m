@@ -31,7 +31,9 @@ for ii = 1:numel(contours)
 
         contour(jj).pixelPts = tpts;
         contour(jj).pixelPtsSc = 2 * tpts ./ imszblock - 1;
-        contour(jj).imsz = imsz;        
+        contour(jj).imsz = imsz;
+        contour(jj).mag = sec.Transform(sec.transImageIndex).Image.mag;
+        contour(jj).thickness = sec.thickness;
     end
     contours{ii} = contour;
 end

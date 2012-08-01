@@ -39,6 +39,8 @@ sectionWise = eaOutput.sectionWise;
 sectionWise(exclude) = [];
 
 eaOutput.all = cat(1, sectionWise{:});
+eaOutput.allmean = mean(eaOutput.all);
+eaOutput.allmedian = median(eaOutput.all);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -57,6 +57,9 @@ if isempty(match)
     fprintf('Creating match filter\n');
 
     match = gridEstimate(rStr, im0);
+    if nargout > 3
+        dbStr.rStr = rStr;
+    end
     cm = rStr.cropMask;
     clear rStr;
     rStr.cropMask = cm;

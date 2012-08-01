@@ -1,6 +1,9 @@
 function tr = seriesAlignmentTransforms(cache, idIndex, preTr)
 
 doPreTr = nargin > 2 && ~isempty(preTr);
+if ~doPreTr
+    preTr = [];
+end
    
 tr = identityTransform(@taylorMat, 1);
 n = numel(cache.f);
@@ -44,8 +47,9 @@ for ii = (idIndex - 1):-1:1
 end
 
 
-parfor ii = 1:numel(tr)
+for ii = 1:numel(tr)
     tr(ii) = fitInverseTransform(tr(ii));
+    tr(ii).preTr = preTr;
 end
 
 tr = setDefaultData(tr);
