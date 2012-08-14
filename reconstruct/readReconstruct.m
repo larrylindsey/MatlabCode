@@ -25,7 +25,7 @@ for i_sec = 1:numel(secdoc)
             processTransform(secdoc(i_sec).section.Transform(i_trans));%#ok
         
         %Record the transform containing image information.
-        if ~isempty(secdoc(i_sec).section.Transform(i_trans).Image)
+        if ~isempty(newtrans(i_trans).Image)
             secdoc(i_sec).section.transImageIndex = i_trans;
             
         end
@@ -91,7 +91,7 @@ end
 
 function [u v] = getTransformSupport(trans)
 
-if isempty(trans.Image)
+if ~isfield(trans, 'Image') || isempty(trans.Image)
     if isempty(trans.Contour)
         u = [];
         v = [];
@@ -120,6 +120,11 @@ end
 
 function transform = processTransform(transform)
 
+if ~isfield(transform, 'Image')
+    transform.Image = '';
+    keyboard
+end
+
 transform = convertTransform(transform);
 
 for i_c = 1:numel(transform.Contour)
@@ -127,7 +132,7 @@ for i_c = 1:numel(transform.Contour)
         applyTransform(transform.Contour(i_c).points, transform);
 end
 
-if ~isempty(transform.Image)
+if isfield(transform, 'Image') && ~isempty(transform.Image)
     for i_c = 1:numel(transform.Contour)
         transform.Contour(i_c).imageDomainPoints = ...
             transform.Contour(i_c).points * transform.Image(1).mag;
