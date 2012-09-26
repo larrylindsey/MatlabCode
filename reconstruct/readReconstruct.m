@@ -41,12 +41,15 @@ A = cat(2, trans.xcoef', trans.ycoef');
 %A = cat(1, A, zeros(4, 2));
 
 ptype = trans.dim;
-switch ptype
-    case 2
-        A([2 3], 2) = A([3 2], 2);
-    case 4
-        A([4 5], :) = A([5 4], :);
+if ptype == 2
+    A([2 3], 2) = A([3 2], 2);
 end
+% switch ptype
+%     case 2
+%         A([2 3], 2) = A([3 2], 2);
+%     case 4
+%         A([4 5], :) = A([5 4], :);
+% end
 
 T = A;
 trans.type = @taylorMat;
@@ -56,8 +59,8 @@ morder = ...
     [ 0 0;
     1 0;
     0 1;
-    2 0;
     1 1;
+    2 0;
     0 2];
 
 if ptype > 1
@@ -97,7 +100,12 @@ if ~isfield(trans, 'Image') || isempty(trans.Image)
         v = [];
         return;
     else
-        pts = cat(1, trans.Contour.points);
+        pts = [];
+        for ii = 1:numel(trans.Contour)
+            if ~isempty(trans.Contour(ii).points)
+                pts = cat(1, pts, trans.Contour(ii).points);
+            end
+        end        
     end
 else
     cname = {trans.Contour.name};
