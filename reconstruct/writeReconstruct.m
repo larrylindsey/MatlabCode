@@ -34,6 +34,20 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function text = fieldToText(fname, s)
 
+if ~isfield(s, 'red') || ~isfield(s, 'green') || ~isfield(s, 'blue')
+    s.red = true;
+    s.green = true;
+    s.blue = true;
+end
+
+if ~isfield(s, 'hidden')
+    s.hidden = true;
+end
+    
+if ~isfield(s, 'simplified')
+    s.simplified = true;
+end
+
 content = s.(fname);
 
 if ischar(content)

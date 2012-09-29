@@ -1,4 +1,8 @@
-function secdoc = reverseQuadraticTransforms(secdoc)
+function secdoc = reverseQuadraticTransforms(secdoc, doID)
+
+if nargin < 2
+    doID = false;
+end
 
 for ii = 1:numel(secdoc)
     sec = secdoc(ii);
@@ -8,13 +12,23 @@ for ii = 1:numel(secdoc)
     if imtr.dim > 3                
         % Linearize imtr
         ltr = imtr;
-        ltr.dim = 3;
-        ltr.xcoef(4:end) = 0;
-        ltr.ycoef(4:end) = 0;
-        ltr.T(4:6,:) = 0;
-        ltr = fitInverseTransform(ltr);
-        ltr.xcoef(1:3) = ltr.inv.T([1 3 2], 1);
-        ltr.ycoef(1:3) = ltr.inv.T([1 3 2], 2);
+        if doID
+            ltr.dim = 0;
+            ltr.xcoef = [0 1 0 0 0 0];
+            ltr.ycoef = [0 0 1 0 0 0];
+            ltr.T = [0 0; 0 1; 1 0];
+            ltr.order = 1;
+            ltr.monomialOrder = [0 0; 0 1; 1 0];
+            ltr = fitInverseTransform(ltr);
+        else
+            ltr.dim = 3;
+            ltr.xcoef(4:end) = 0;
+            ltr.ycoef(4:end) = 0;
+            ltr.T(4:6,:) = 0;
+            ltr = fitInverseTransform(ltr);
+            ltr.xcoef(1:3) = ltr.inv.T([1 3 2], 1);
+            ltr.ycoef(1:3) = ltr.inv.T([1 3 2], 2);
+        end
         
         % Iterate through all the Transforms in this section
         for it = 1:numel(sec.section.Transform)
@@ -41,9 +55,9 @@ for ii = 1:numel(secdoc)
                 % Set trans to identity
                 trans.xcoef = [0 1 0 0 0 0];
                 trans.ycoef = [0 0 1 0 0 0];
-                trans.T = [0 0; 1 0; 1 0];
+                trans.T = [0 0; 0 1; 1 0];
                 trans.order = 1;
-                trans.monomialOrder = [0 0; 1 0; 1 0];
+                trans.monomialOrder = [0 0; 0 1; 1 0];
                 trans = fitInverseTransform(trans);
                 
                 % write back
