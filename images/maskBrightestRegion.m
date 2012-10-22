@@ -1,4 +1,8 @@
-function mask = maskBrightestRegion(im, lth, uth, step)
+function mask = maskBrightestRegion(im, th)
+%
+
+
+% nevermind
 % mask = maskBrightestRegion(im, lth, uth, step)
 %   im - the image to mask
 %   lth - the lower threshold to check
@@ -15,26 +19,31 @@ if size(im, 3) > 1
     im = mean(im, 3);
 end
 
-if nargin < 3
-    if strcmp(class(im), 'uint8')
-        uth = max(im(:));
-        step = 1;        
-    else
-        uth = max(im(:));
-        step = (uth - lth) / 10;
-    end
-end
 
-checkVal = lth:step:uth;
+mask = im >= (max(im(:)) - th);
 
-n = numel(checkVal);
-
-mask = false([size(im) n]);
-
-for ii = 1:n
-    mask(:,:,ii) = im >= checkVal(ii);
-end
-
-mask = median(mask, 3);
+% 
+% if nargin < 3
+%     if strcmp(class(im), 'uint8')
+%         uth = max(im(:));
+%         step = 1;        
+%     else
+%         uth = max(im(:));
+%         step = (uth - lth) / 10;
+%     end
+% end
+% 
+% checkVal = lth:step:uth;
+% 
+% n = numel(checkVal);
+% 
+% masksum = zeros(size(im));
+% 
+% for ii = 1:n
+%     mask = im >= checkVal(ii);
+%     masksum = masksum + mask;
+% end
+% 
+% mask = masksum > (n / 2);
 
 end
