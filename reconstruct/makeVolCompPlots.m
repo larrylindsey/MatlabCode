@@ -5,6 +5,7 @@ if nargin < 5
     opts.fontsize = 14;
     opts.axis = [];
     opts.linewidth = 2;
+    opts.font = 'Helvetica';
 end
 
 if nargin < 1
@@ -14,11 +15,17 @@ else
     varargout = {};
 end
 
+if isempty(str.(f1))
+    varargout = {[]};
+    return;
+end
+
 popCon = [str.(f1).(stat)];
 popExp = [str.(f2).(stat)];
 
 plotArgs = {'Color', opts.color, 'LineWidth', opts.linewidth};
-axisArgs = {'FontSize', opts.fontsize};
+axisArgs = {'FontSize', opts.fontsize, 'FontName',...
+    opts.font};
 
 % Cumulative distribution of percentage divergence
 if isempty(opts.axis)
