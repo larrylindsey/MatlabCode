@@ -46,4 +46,6 @@ for jj = 1:numel(ifound)
     end    
 end
 
-stat = sortstruct(stat, 'Object');
+if ~isempty(stat)
+    stat = sortstruct(stat, 'Object');
+end
