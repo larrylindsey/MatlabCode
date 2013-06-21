@@ -9,6 +9,11 @@ if nargin < 2
     vis = false;
 end
 
+if isempty(v)
+    vfix = v;
+    return;
+end
+
 v = validate(v);
 
 % vertex stack
@@ -34,7 +39,9 @@ end
 
 vfix = sortEdges(vfix);
 
-close(hh);
+if vis
+    close(hh);
+end
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
