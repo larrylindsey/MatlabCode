@@ -1,9 +1,13 @@
-function vfix = graph_cc(v)
+function vfix = graph_cc(v, vis)
 % vfix = graph_cc(v)
 %  Find connected components, fixup the vertices so that connected components
 %  all map to the smallest vertex index.
 %
 % v should be in [n 2]
+
+if nargin < 2
+    vis = false;
+end
 
 v = validate(v);
 
@@ -11,8 +15,9 @@ v = validate(v);
 vs = unique(v(:,1));
 
 vfix = [];
-
-hh = waitbar(0, 'Processing Edges');
+if vis
+    hh = waitbar(0, 'Processing Edges');
+end
 os = numel(vs);
 
 while ~isempty(vs)
@@ -22,10 +27,14 @@ while ~isempty(vs)
     % next vertices stack    
     [vfix,~,vs] = bfs(vfix, icv, icv, vs, v);
     
-    waitbar(1 - (numel(vs) / os), hh);
+    if vis
+        waitbar(1 - (numel(vs) / os), hh);
+    end
 end
 
 vfix = sortEdges(vfix);
+
+close(hh);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
