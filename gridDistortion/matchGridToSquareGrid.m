@@ -45,6 +45,11 @@ conncoord = cvect(:,4:5);
 
 joingrp = find(cis > 16, 1, 'last');
 
+if isempty(joingrp)
+    th = median(cis) / 2;
+    joingrp = find(cis > th, 1, 'last');
+end
+
 grp = cell(1, joingrp);
 
 % Mesh the groups, ie, assign each one a row and column

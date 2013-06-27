@@ -19,13 +19,15 @@ if closestsz > 0
     classim = imclose(classim, strel('disk', closestsz));
 end
 
-imd2 = bwdist(classim);
+%imd2 = bwdist(classim);
 
-ws = watershed(imd2, 4);
+%ws = watershed(imd2, 4);
+
+ws = bwlabel(classim, 4);
 
 if nargout > 1
     n = max(ws(:));
-    cmap = hsv(n);
+    cmap = hsv(double(n));
     cmap = cmap(randperm(n), :);
     cmap = cat(1, zeros(1, 3), cmap);
     

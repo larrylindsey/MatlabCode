@@ -11,6 +11,7 @@ parfor jj = 1:s
     
     ep = zeros(n,1);
     seq = unique(slice(:));
+    seq(seq == 0) = [];
     
     for ii = 1:numel(seq)
         kk = seq(ii);

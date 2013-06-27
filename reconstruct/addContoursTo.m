@@ -77,18 +77,19 @@ end
 end
 
 function transformTemplate = makeTransformTemplate(x, y)
+transformTemplate = identityTransform();
 transformTemplate.dim = 0;
 transformTemplate.xcoef = [0 1 0 0 0 0];
 transformTemplate.ycoef = [0 0 1 0 0 0];
 transformTemplate.Contour = [];
 transformTemplate.Image = [];
 transformTemplate.type = @taylorMat;
-transformTemplate.T = zeros(6, 2);
-transformTemplate.T([2 9]) = 1;
-transformTemplate.Tinv = transformTemplate.T;
-transformTemplate.order = 2;
-transformTemplate.iDim = 2;
-transformTemplate.oDim = 2;
+% transformTemplate.T = zeros(6, 2);
+% transformTemplate.T([2 9]) = 1;
+% transformTemplate.Tinv = transformTemplate.T;
+% transformTemplate.order = 2;
+% transformTemplate.iDim = 2;
+% transformTemplate.oDim = 2;
 transformTemplate.data.n = 32;
 transformTemplate.data.u = x;
 transformTemplate.data.v = y;

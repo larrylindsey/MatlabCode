@@ -130,7 +130,7 @@ function transform = processTransform(transform)
 
 if ~isfield(transform, 'Image')
     transform.Image = '';
-    keyboard
+    %keyboard
 end
 
 transform = convertTransform(transform);

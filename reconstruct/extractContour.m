@@ -1,8 +1,12 @@
 function contour = extractContour(secdoc, name)
 
 contour = repmat(struct, 0);
-th = [secdoc.section];
-th = [th.thickness];
+
+th = zeros(size(secdoc));
+for ii = 1:numel(secdoc)
+    th(ii) = secdoc(ii).section.thickness;
+end
+
 z = cumsum(th) - th(1) + min([secdoc.index]) * median(th);
 
 for i_sec = 1:numel(secdoc)
