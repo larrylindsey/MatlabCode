@@ -1,21 +1,35 @@
 function e = bwlDilatedEuler(bwl3d)
 
+s = size(bwl3d,3);
 n = max(bwl3d(:));
-e = zeros(n, 1);
+e = zeros(n, s);
 
 
 
-parfor ii = 1:n    
-    mask = bwl3d == ii;
-    [~,~,ij] = find(mask, 1, 'first');
-    mask = mask(:,:,ij);
-    e(ii) = dEulerNum(mask, 15);
+parfor jj = 1:s
+    slice = bwl3d(:,:,jj);
+    
+    ep = zeros(n,1);
+    seq = unique(slice(:));
+    
+    for ii = 1:numel(seq)
+        kk = seq(ii);
+        mask = slice == kk;
+        ep(kk) = dEulerNum(mask, 15);
+    end
+    
+    e(:,jj) = ep;
 end
 
+e = sum(e,2);
 end
 
 function e = dEulerNum(mask, s)
 mask = imdilate(mask, strel('disk', s));
-rp = regionprops(mask, 'Euler');
-e = rp.EulerNumber;
+rp = regionprops(mask, 'EulerNumber');
+if isfield(rp, 'EulerNumber')
+    e = sum([rp.EulerNumber]);
+else
+    e = 0;
+end
 end
