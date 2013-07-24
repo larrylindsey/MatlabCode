@@ -8,6 +8,8 @@ if nargin < 2
     nomsize = .463;
 end
 
+im = removeBlackBackground(im);
+
 [~, ~, ~, model] = extractDistortionTransform(im);
 
 cal = nomsize / (mean(sqrt(model(:,1).^2 + model(:,2).^2)) * size(im,1)/2);
