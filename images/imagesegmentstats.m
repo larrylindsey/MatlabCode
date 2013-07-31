@@ -146,9 +146,9 @@ end
 
 fprintf('done.\n');
 
-subplot(1, 2, 1); imshow(imresize(im, 1/24));
-subplot(1, 2, 2); imshow(imresize(mask, 1/24));
-drawnow;
+%subplot(1, 2, 1); imshow(imresize(im, 1/24));
+%subplot(1, 2, 2); imshow(imresize(mask, 1/24));
+%drawnow;
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
