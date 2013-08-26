@@ -28,7 +28,8 @@ if det(A) == 0
     return;
 end
 
-v = inv(A) * b;
+% v = inv(A) * b;
+v = A \ b;
 
 pt = v(2) * yhat + y1;
 

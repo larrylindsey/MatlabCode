@@ -17,6 +17,7 @@ end
 if nargin <4
     crossEnergy = normcorr(im, match);
     crossEnergy(not(mask)) = 0;
+    crossEnergy = real(crossEnergy);
     clear imnormsqr;
 end
 
@@ -24,7 +25,12 @@ if nargin < 5
     
     tPercent = 0.99;
     
-    [eh, ehx] = hist(crossEnergy(mask), 1000);
+    cemask = crossEnergy(mask);
+    cemask = real(cemask);
+    cemask = cemask(~isnan(cemask));
+    cemask = cemask(~isinf(cemask));
+    
+    [eh, ehx] = hist(cemask, 1000);
     pp = cumsum(eh);
     pp = pp / pp(end);
     thI = find(pp > tPercent, 1, 'first');
