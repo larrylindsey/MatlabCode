@@ -3,9 +3,20 @@ function imout = letterbox(im, sz)
 sz = sz(1:2);
 sz(3) = size(im, 3);
 
-castfunc = str2func(class(im));
+% castfunc = str2func(class(im));
+% 
+% imout = castfunc(zeros(sz));
 
-imout = castfunc(zeros(sz));
+if size(im, 1) > sz(1)
+    im = imresize(im, sz(1) / size(im,1));
+end
+
+if size(im, 2) > sz(2)
+    im = imresize(im, sz(2) / size(im,2));
+end
+
+
+imout = zeros(sz, class(im));
 
 rows = size(im, 1);
 cols = size(im, 2);
