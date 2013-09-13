@@ -1,5 +1,21 @@
-function [rc_grid] = matchGridToSquareGrid(rc, grid_model, t)
-%ngrp = 4;
+function [rc_grid cvect] = matchGridToSquareGrid(rc, grid_model, t)
+% [rc_grid cvect] = matchGridToSquareGrid(rc, grid_model, t)
+%    rc - [n 2] row-column locations of detected grid points
+%    grid_model - [2 2] grid model
+%    t - [1] threshold
+%
+%    rc_grid - [m 3] where m <= n
+%                    rc_grid(:, 1) indexes into rc
+%                    rc_grid(:, 2:3) indicates the grid coordinate for the
+%                        rc point at the given index
+%                        For example:
+%                            For some 1 <= i <= m, let k = rc_grid(i, 1)
+%                            and [gr gc] = rc_grid(i, 2:3), then the point
+%                            at location rc(:, i) has "grid coordinates"
+%                            (gr, gc). It's neighbors may be found at grid
+%                            coordinates (gr +/- 1, gc +/- 1).
+%    cvect - an intermediary variable. More information on this may be
+%            found in the comments of this function.
 
 n = size(rc, 1);
 

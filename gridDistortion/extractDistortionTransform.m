@@ -1,5 +1,31 @@
 function [rc_found, rc_match_aff, rc_grid, grid_model, dbStr] =...
     extractDistortionTransform(im0, varargin)
+% [rc_found, rc_match_aff, rc_grid, grid_model, dbStr] =...
+%    extractDistortionTransform(im0, ...)
+%
+%
+% Extracts information required to build a distortion transform from an
+% image of a calibration cross-grating-replica.
+%
+% im0 - the image
+% Other arguments accepted (must be followed by the required data)
+%       'HH' - Specify the "crossing" labeling
+%       'match' - Specify the match kernel used to locate "crossings"
+%       'rStr' - Use this instead of the output from findRoughLines(im0)
+%       'bwEnergy'- Specify the energy map (match x im0).
+% 
+% rc_found - the detected points in row-column coordinates, in a coordinate
+%            system normalized to [-1 -1] x [1 1].
+%             OR
+%            If only one output is specified, a struct containing all of the
+%            information you could want.
+%            
+% rc_match_aff - the affine match to rc_found
+% grid_model - the model extracted from RANSAC - not always accurate.
+% dbStr - a struct full of debug information.
+% 
+%
+
 tic;
 if ischar(im0)
     im0 = imread(im0);
@@ -13,6 +39,7 @@ if ~isfloat(im0)
     im0 = im2single(im0);
 end
 
+strflag = nargout == 1 || nargout > 4;
 
 HH = [];
 match = [];
@@ -57,7 +84,7 @@ if isempty(match)
     fprintf('Creating match filter\n');
 
     match = gridEstimate(rStr, im0);
-    if nargout > 3
+    if strflag
         dbStr.rStr = rStr;
     end
     cm = rStr.cropMask;
@@ -97,7 +124,7 @@ else
 end
 s(end + 1) = cputime;
 
-if nargout > 1
+if nargout > 4
     dbstop if error;
     dbStr.HH = HH;
 end
@@ -123,7 +150,10 @@ rc_grid = rc_grid(:,[2 1]);
 rc_match_aff = getAffineMatchGrid(rc_found, getSquareGM(grid_model), rc_grid);
 
 
-if nargout > 1
+if nargout > 4 || nargout == 1
+    dbStr.rc_match_aff = rc_match_aff;
+    dbStr.grid_model = grid_model;
+    dbStr.sz = size(im0);
     dbStr.L = L;
     dbStr.match = match;
     dbStr.s = s;
@@ -132,6 +162,11 @@ if nargout > 1
     dbStr.grid_model = grid_model;
     dbStr.model_err = model_err;
 end
+
+if nargout == 1
+    rc_found = dbStr;
+end
+
 
 % c = clock;
 % sendmsg(msgsubject,...
