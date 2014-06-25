@@ -15,6 +15,7 @@
 % annotationfiles, mitofiles, and animalid must all have the same number of
 % elements.
 
+%%%% Setup Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 minArea = 256; % corresponds to blob roughly 16 x 16 pix.
 
@@ -23,10 +24,13 @@ minArea = 256; % corresponds to blob roughly 16 x 16 pix.
 % Mito color (blue)
 c_mito = [0 0 1];
 
+% Capillary color (purple / magenta)
+c_cap = [255  0   243] / 255;
+
 % Colors among k number of classes
 c_k = [255  0	0;
-       255	255	0;
-       255  0   243;
+       255	255	0;       
+       255  0    243;
        0    0   0] / 255;
 
 % class names
@@ -40,29 +44,55 @@ k_doMito = [true, true, false, false];
 
 n_files = numel(annotationfiles);
 
+% Instantiate the stat_str struct
 stat_str = repmat(areaStatStr, [n_files, k]);
+% and the mito_str struct
 mito_str = stat_str;
 
+% This line is confusing. Look at the output of help('unique') for guidance
 [uanimalid, ~, ids] = unique(animalid);
 
+%%%% Collate Data Structures from Image Files %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 for ii = 1:n_files
+    % Annotation image
     im_a = im2single(imread(annotationfiles{ii}));
+    % Annotation image for mitochondria
     im_m = im2single(imread(mitofiles{ii}));
     
-    mito_mask = getMask(im_m, c_mito);
+    % Get the mitochondria mask from the mito image
+    mito_mask = getMask(im_m, c_mito);    
+    % Get the capillary mask from the annotation image
+    cap_mask = getMask(im_a, c_cap);
+    % Now we know how many pixels the capillary takes up
+    capPix = sum(cap_mask(:));
     
+    if capPix == 0
+        warning('Found zero capillary pixels');
+    end
+    
+    totPix = size(im_a, 1) * size(im_a, 2) - capPix;
+    
+    % Store the current animal id index
     id = ids(ii);
     
+    % For each of the k classes
     for ik = 1:k
+        % Get the classes color
         c = c_k(ik, :);
+        % Get the class-mask from the annotation image
         mask = getMask(im_a, c);
         
+        % Compute the statistic struct for this class
         stat_str(ii, ik) = areaStatStr(mask, minArea, id, ...
-            annotationfiles{ii});        
+            annotationfiles{ii}, totPix);        
         
+        % If we want the corresponding mitochondria stats, get those here
+        % We compute over the pixel-wise and of the class mask and the mito
+        % mask.
         if k_doMito(ik)            
             mito_str(ii, ik) = areaStatStr(and(mask, mito_mask), minArea,...
-                id, mitofiles{ii});
+                id, mitofiles{ii}, totPix);
         end
         
     end
@@ -163,7 +193,7 @@ fclose(g);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function str = areaStatStr(mask, minArea, id, fname)
+function str = areaStatStr(mask, minArea, id, fname, totPix)
 
 if nargin < 1 || isempty(mask)
     str = struct('n', 0, 'fraction', 0, 'avgsize', 0, 'id', -1, ...
@@ -171,7 +201,6 @@ if nargin < 1 || isempty(mask)
     return
 end
 
-totPix = size(mask, 1) * size(mask, 2);
 rpstr = regionprops(mask, 'Area');
 area = [rpstr.Area];
 sel = area < minArea;

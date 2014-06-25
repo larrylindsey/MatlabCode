@@ -23,8 +23,8 @@ for ii = 1:numel(dd)
         mdir = dir([dirname '/*' extM]);
         
         if numel(adir) ~= numel(mdir)
-            warning('Found %d annotation files and %d mito files for dir %s',...
-                numel(adir), numel(mdir), dirname);
+            warning(['Found %d annotation files and %d mito files for' ...
+                ' dir %s. Skipping.'], numel(adir), numel(mdir), dirname);
         else
             
             afiles = strcat([dirname '/'], sort({adir.name}));
