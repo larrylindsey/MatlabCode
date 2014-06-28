@@ -16,6 +16,8 @@ allAFiles = {};
 allMFiles = {};
 allIds = {};
 
+anyUnusedFiles = false;
+
 for ii = 1:numel(dd)
     if ~(strcmp(dd(ii).name, '.') || strcmp(dd(ii).name, '..'))
         dirname = [rootFolder dd(ii).name];
@@ -23,8 +25,8 @@ for ii = 1:numel(dd)
         mdir = dir([dirname '/*' extM]);
         
         if numel(adir) ~= numel(mdir)
-            warning(['Found %d annotation files and %d mito files for' ...
-                ' dir %s. Skipping.'], numel(adir), numel(mdir), dirname);
+            error(['Found %d annotation files and %d mito files for' ...
+                ' dir %s.'], numel(adir), numel(mdir), dirname);
         else
             
             afiles = strcat([dirname '/'], sort({adir.name}));
@@ -44,11 +46,18 @@ for ii = 1:numel(dd)
             if numel(unusedfiles) > 0
                 fprintf('Did not process the following files for dir %s:\n',...
                     dirname);
-                fprintf('%s\n', unusedfiles);
+                fprintf('%s\n', unusedfiles{:});
                 fprintf('\n');
+                anyUnusedFiles = true;
             end
         end
     end
+end
+
+if anyUnusedFiles
+    fprintf(['Please review the unused files, listed above.\n', ...
+        'Press Ctrl+C to exit, press any other key to continue\n']);
+    pause
 end
 
 terminalAndGliaMitoAnalysis(allAFiles, allMFiles, allIds, outputTemplate,...
