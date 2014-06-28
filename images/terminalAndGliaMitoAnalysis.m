@@ -98,7 +98,7 @@ for ii = 1:n_files
         
     end
     
-    if sum(npix) ~= size(im_a, 1) * size(im_a, 2)
+    if size(im_a, 1) * size(im_a, 2) - sum(npix) > minArea
         error(['For image file %s, missed some pixels. Analyzed %d, ', ...
             'expected %d'], annotationfiles{ii}, sum(npix), ...
             size(im_a, 1) * size(im_a, 2));
