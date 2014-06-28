@@ -72,6 +72,7 @@ for ii = 1:n_files
     end
     
     totPix = size(im_a, 1) * size(im_a, 2) - capPix;
+    npix = zeros(k, 1);
     
     % Store the current animal id index
     id = ids(ii);
@@ -84,7 +85,7 @@ for ii = 1:n_files
         mask = getMask(im_a, c);
         
         % Compute the statistic struct for this class
-        stat_str(ii, ik) = areaStatStr(mask, minArea, id, ...
+        [stat_str(ii, ik), npix(ik)] = areaStatStr(mask, minArea, id, ...
             annotationfiles{ii}, totPix);        
         
         % If we want the corresponding mitochondria stats, get those here
@@ -95,6 +96,12 @@ for ii = 1:n_files
                 id, mitofiles{ii}, totPix);
         end
         
+    end
+    
+    if sum(npix) ~= size(im_a, 1) * size(im_a, 2)
+        error(['For image file %s, missed some pixels. Analyzed %d, ', ...
+            'expected %d'], annotationfiles{ii}, sum(npix), ...
+            size(im_a, 1) * size(im_a, 2));
     end
     
 end
@@ -174,15 +181,18 @@ for ii = 1:numel(ids)
     fclose(f);
     
     fprintf(g, '%s, ', uanimalid{id});
+    % ik is class index, k number of classes
     for ik = 1:k
         for ff = 1:numel(strfields)
-            fprintf(g, '%g, ', ...
-                mean([animal_stat_str(:, ik).(strfields{ff})]));
+            aggregate_stat = ...
+                aggregate(animal_stat_str(:,ik), strfields{ff});
+            fprintf(g, '%g, ', aggregate_stat);
         end
         if k_doMito(ik)
             for ff = 1:numel(strfields)
-                fprintf(g, '%g, ', ...
-                    mean([animal_stat_str(:, ik).(strfields{ff})]));
+                aggregate_stat = ...
+                    aggregate(animal_mito_str(:,ik), strfields{ff});
+                fprintf(g, '%g, ', aggregate_stat);
             end
         end        
     end
@@ -193,22 +203,51 @@ fclose(g);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function str = areaStatStr(mask, minArea, id, fname, totPix)
+function a = aggregate(str, fname)
+% str - an animal stat struct array, one struct per image
+% fname - the field name to aggregate. each field has its own rule
+switch fname
+    case 'n'
+        % n aggregated by summation over all images
+        a = sum([str(:, ik).n]);
+    case 'fraction'
+        % fraction aggregated by summing npix across all images, then 
+        % dividing by the summation of totpix.
+        % this gives the total fraction over all analyzed non-capillary
+        % pixels.
+        a = sum([str(:, ik).fraction] .* [str(:, ik).totpix]) /...
+            sum([str(:, ik).totpix]);
+    case 'avgsize'
+        % avgsize aggregated by summing totsize, found by image-wise n *
+        % avgsize, then dividing the sum by the n across all images.
+        a = sum([str(:, ik).avgsize] .* [str(:, ik).n]) / ...
+            sum([str(:, ik).n]);
+    otherwise
+        % As of this writing, we know of only three output struct fields.
+        % If we encounter an unexpected one, aggregate to a not-a-number
+        % (NaN) value.
+        a = nan;
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [str, npix] = areaStatStr(mask, minArea, id, fname, totPix)
 
 if nargin < 1 || isempty(mask)
-    str = struct('n', 0, 'fraction', 0, 'avgsize', 0, 'id', -1, ...
-        'filename', '');
+    str = struct('n', 0, 'fraction', 0, 'avgsize', 0, 'totpix', 0, ...
+        'id', -1, 'filename', '');
     return
 end
 
 rpstr = regionprops(mask, 'Area');
 area = [rpstr.Area];
+npix = sum(area);
 sel = area < minArea;
 area(sel) = [];
 
 str.n = numel(area);
 str.fraction = sum(area) / totPix;
 str.avgsize = mean(area);
+str.totpix = totPix;
 str.id = id;
 str.filename = fname;
 
