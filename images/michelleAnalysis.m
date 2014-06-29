@@ -46,7 +46,7 @@ f = numel(strfields_f);
 k = numel(name_k);
 
 % If k_doMito[ii] is true, then do the mito analysis for the ii'th class
-doMito_k = [true, true, false, false];
+doMito_k = [true, true, false, false, false];
 
 n_files = numel(annotationfiles_n);
 
@@ -63,6 +63,12 @@ a = numel(animalid_a);
 
 imstats_n = collectStats(annotationfiles_n, mitofiles_n, ...
     animalid_n, n_files, k);
+
+% Now, spoof the mito class
+k = k + 1;
+name_k{end + 1} = 'allMito';
+imstats_n = spoofMito(imstats_n);
+
 % we should have
 % all(ids_n == [imstats_n.animalidx])
 
@@ -187,6 +193,23 @@ end
 fprintf(hh, '\n');
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function imstats_n = spoofMito(imstats_n)
+
+global k name_k;
+
+n = numel(imstats_n);
+
+for i_n = 1:n
+    a_mito = cell(1, k - 1);
+    for i_k = 1:(k - 1)
+        cname = name_k{i_k};
+        a_mito{i_k} = imstats_n(i_n).(cname).m;
+    end
+    imstats_n(i_n).allMito.a = [a_mito{:}];
+    imstats_n(i_n).allMito.m = [];
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function imstats_n = collectStats(annotationfiles_n, mitofiles_n, ...
     animalid_n, n_files, k)
 
@@ -197,6 +220,7 @@ imstats_n = repmat(struct, size(annotationfiles_n));
 
 
 for i_n = 1:n_files
+    fprintf('Analyzing file %s\n', annotationfiles_n{i_n});
     % Annotation image
     im_a = im2single(imread(annotationfiles_n{i_n}));
     % Annotation image for mitochondria
