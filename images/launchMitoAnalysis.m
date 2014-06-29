@@ -60,7 +60,7 @@ if anyUnusedFiles
     pause
 end
 
-terminalAndGliaMitoAnalysis(allAFiles, allMFiles, allIds, outputTemplate,...
+michelleAnalysis(allAFiles, allMFiles, allIds, outputTemplate,...
     summaryFile);
 
 end
