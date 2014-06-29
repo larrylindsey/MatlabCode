@@ -1,4 +1,4 @@
-    function terminalAndGliaMitoAnalysis(annotationfiles, mitofiles,...
+ function terminalAndGliaMitoAnalysis(annotationfiles, mitofiles,...
     animalid, outputTemplate, summaryfile)
 % terminalAndGliaMitoAnalysis(annotationfiles, mitofiles,...
 %    animalid, outputfile, summaryfile)
@@ -209,19 +209,19 @@ function a = aggregate(str, fname)
 switch fname
     case 'n'
         % n aggregated by summation over all images
-        a = sum([str(:, ik).n]);
+        a = sum([str.n]);
     case 'fraction'
         % fraction aggregated by summing npix across all images, then 
         % dividing by the summation of totpix.
         % this gives the total fraction over all analyzed non-capillary
         % pixels.
-        a = sum([str(:, ik).fraction] .* [str(:, ik).totpix]) /...
-            sum([str(:, ik).totpix]);
+        a = sum([str.fraction] .* [str.totpix]) /...
+            sum([str.totpix]);
     case 'avgsize'
         % avgsize aggregated by summing totsize, found by image-wise n *
         % avgsize, then dividing the sum by the n across all images.
-        a = sum([str(:, ik).avgsize] .* [str(:, ik).n]) / ...
-            sum([str(:, ik).n]);
+        a = sum([str.avgsize] .* [str.n]) / ...
+            sum([str.n]);
     otherwise
         % As of this writing, we know of only three output struct fields.
         % If we encounter an unexpected one, aggregate to a not-a-number
