@@ -1,4 +1,4 @@
-function launchMitoAnalysis(rootFolder, outputTemplate, summaryFile)
+function stats = launchMitoAnalysis(rootFolder, outputTemplate, summaryFile)
 
 extA = 'noMit.tif';
 extM = 'wMit.tif';
@@ -60,7 +60,11 @@ if anyUnusedFiles
     pause
 end
 
-michelleAnalysis(allAFiles, allMFiles, allIds, outputTemplate,...
+a = michelleAnalysis(allAFiles, allMFiles, allIds, outputTemplate,...
     summaryFile);
+
+if nargout == 1
+    stats = a;
+end
 
 end
