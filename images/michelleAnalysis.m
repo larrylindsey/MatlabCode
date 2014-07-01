@@ -1,4 +1,4 @@
-function michelleAnalysis(annotationfiles_n, mitofiles_n,...
+function imstats_n = michelleAnalysis(annotationfiles_n, mitofiles_n,...
     animalid_n, outputTemplate, summaryfile)
 % michelleAnalysis(annotationfiles, mitofiles,...
 %    animalid, outputfile, summaryfile)
@@ -7,9 +7,13 @@ function michelleAnalysis(annotationfiles_n, mitofiles_n,...
 %   annotationfiles - a cell array containing the annotation image files
 %   mitofiles       - a cell array containing the mitochondria image files
 %   animalid        - a cell array of the animal ids
-%   outputTemplate  - the template path to the output csv file
+%   outputTemplate  - the template path to the output csv files
 %                     should be in printf format with one string argument,
-%                     like 'animalstuff_%s.csv'
+%                     like 'animalstuff_%s.csv'. Output files will be as:
+%                     animalstuff_001.csv for the analysis file for the
+%                                         animal with id 001, and
+%                     animalstuff_001_obj.csv for the individual object
+%                                         file for the same animal.
 %   summaryfile     - the path the summary csv file
 %
 % annotationfiles, mitofiles, and animalid must all have the same number of
@@ -84,17 +88,17 @@ for i_a = 1:a
     animal_sel = ids_n == i_a;
     animal_stat_m = imstats_n(animal_sel);
     animal_summary_stat = computeSummary(animal_stat_m);
-    fname = sprintf(outputTemplate, animalid_a{i_a});
+    sfname = sprintf(outputTemplate, animalid_a{i_a}); % stat file name
+    ofname = sprintf(outputTemplate, ...
+        sprintf('%s_obj', animalid_a{i_a})); % object file name
     
     m = numel(animal_stat_m);
     
-    fh = fopen(fname, 'w');
-    
+    % Open the analysis file for writing and write a header to it
+    fh = fopen(sfname, 'w');    
     if fh < 1
-        error('Could not open %s for writing', fname);
+        error('Could not open %s for writing', sfname);
     end
-    
-    % Write out the header
     fprintf(fh, 'Animal ID, Annotation File, Mito File, ');
     appendHeader(fh);
    
@@ -108,6 +112,55 @@ for i_a = 1:a
         appendData(fh, animal_stat);       
     end
     fclose(fh);
+    
+    % Open the object file name for writing.
+    oh = fopen(ofname, 'w');
+    if oh < 1
+        error('Could not open %s for writing', ofname);
+    end
+    % Write the object-specific header
+    fprintf(oh, 'file, ');
+    for i_k = 1:k
+        fprintf(oh, '%s Area, %s Eccentricity, ',...
+            name_k{i_k}, name_k{i_k});
+    end
+    fprintf(oh, '\n');
+    
+    % Now, write out the areas and eccenticities. Each object gets a
+    % row in the column of its class. This code looks a little bit weird
+    % because of that, just bare with us.
+    
+    
+    for i_m = 1:m
+        animal_stat = animal_stat_m(i_m);
+
+        a = cell(1, k);
+        ae = a;
+        nk = zeros(1, k);
+        
+        for i_k = 1:k
+            cname = name_k{i_k};
+            a{i_k} = animal_stat.(cname).a;
+            ae{i_k} = animal_stat.(cname).ae;
+            nk(i_k) = numel(a{i_k});
+        end
+        
+        p = max(nk);
+        
+        for i_p = 1:p
+            fprintf(oh, '%s, ', animal_stat.afile);
+            for i_k = 1:k                
+                if nk(i_k) >= i_p
+                    fprintf(oh, '%d, %f, ', a{i_k}(i_p), ae{i_k}(i_p));
+                else
+                    fprintf(oh, ', , ');
+                end
+            end
+            fprintf(oh, '\n');
+        end
+    end
+    
+    fclose(oh);
     
     fprintf(gh, '%s, ', animalid_a{i_a});
     appendData(gh, animal_summary_stat);
@@ -201,12 +254,16 @@ n = numel(imstats_n);
 
 for i_n = 1:n
     a_mito = cell(1, k - 1);
+    ae_mito = cell(1, k - 1);
     for i_k = 1:(k - 1)
         cname = name_k{i_k};
         a_mito{i_k} = imstats_n(i_n).(cname).m;
+        ae_mito{i_k} = imstats_n(i_n).(cname).me;
     end
     imstats_n(i_n).allMito.a = [a_mito{:}];
+    imstats_n(i_n).allMito.ae = [ae_mito{:}];
     imstats_n(i_n).allMito.m = [];
+    imstats_n(i_n).allMito.me = [];    
 end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -216,10 +273,24 @@ function imstats_n = collectStats(annotationfiles_n, mitofiles_n, ...
 global minArea c_mito c_k name_k ids_n; 
 
 % instantiate image struct array
-imstats_n = repmat(struct, size(annotationfiles_n));
+% first, create a dummy struct
+dummy = struct('afile', '', ... % annotation file
+    'mfile', '', ...            % mitochondria file
+    'animal', '', ...           % animal id (string)
+    'animalidx', 0, ...         % animal id index (numeric)
+    'totpix', 0);               % total pixels in the image
+for i_k = 1:k
+    cname = name_k{i_k};
+    dummy.(cname).a = [];       % annotation object area
+    dummy.(cname).ae = [];      % annotation object eccentricity
+    dummy.(cname).m = [];       % object-associated mitochondria area
+    dummy.(cname).me = [];      % --"-- eccentricity
+end
+    
+imstats_n = repmat(dummy, size(annotationfiles_n));
 
 
-for i_n = 1:n_files
+parfor i_n = 1:n_files
     fprintf('Analyzing file %s\n', annotationfiles_n{i_n});
     % Annotation image
     im_a = im2single(imread(annotationfiles_n{i_n}));
@@ -250,9 +321,14 @@ for i_n = 1:n_files
         a_mask = getMask(im_a, c);
         m_mask = a_mask & mito_mask;
         
-        imstats_n(i_n).(cname).a = areaArray(a_mask);
-        imstats_n(i_n).(cname).m = areaArray(m_mask);
-        
+        [a, ae] = areaArray(a_mask);
+        [m, me] = areaArray(m_mask);
+
+        imstats_n(i_n).(cname).a = a;
+        imstats_n(i_n).(cname).ae = ae;
+        imstats_n(i_n).(cname).m = m;
+        imstats_n(i_n).(cname).me = me;
+
         npix = npix + sum(imstats_n(i_n).(cname).a);
     end
     
@@ -266,9 +342,10 @@ end
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function a = areaArray(mask)
-areaprop = regionprops(mask, 'Area');
+function [a, ae] = areaArray(mask)
+areaprop = regionprops(mask, 'Area', 'Eccentricity');
 a = [areaprop.Area];
+ae = [areaprop.Eccentricity];
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function mask = getMask(im, c)
