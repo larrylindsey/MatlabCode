@@ -51,6 +51,7 @@ k = numel(name_k);
 
 % If k_doMito[ii] is true, then do the mito analysis for the ii'th class
 doMito_k = [true, true, false, false, false];
+doObject_k = [true, true, false, false, true];
 
 n_files = numel(annotationfiles_n);
 
@@ -119,45 +120,44 @@ for i_a = 1:a
         error('Could not open %s for writing', ofname);
     end
     % Write the object-specific header
-    fprintf(oh, 'file, ');
+    %fprintf(oh, 'file, ');
     for i_k = 1:k
-        fprintf(oh, '%s Area, %s Eccentricity, ',...
-            name_k{i_k}, name_k{i_k});
+        if doObject_k(i_k)
+            fprintf(oh, '%s Area, %s Eccentricity, ',...
+                name_k{i_k}, name_k{i_k});
+        end
     end
     fprintf(oh, '\n');
     
     % Now, write out the areas and eccenticities. Each object gets a
     % row in the column of its class. This code looks a little bit weird
     % because of that, just bare with us.
+    nk = zeros(1, k);
+    a = cell(1, k);
+    ae = a;
     
-    
-    for i_m = 1:m
-        animal_stat = animal_stat_m(i_m);
-
-        a = cell(1, k);
-        ae = a;
-        nk = zeros(1, k);
+    for i_k = 1:k
+        cname = name_k{i_k};
+        stat_array = [animal_stat_m.(cname)];
+        a{i_k} = stat_array.a;
+        ae{i_k} = stat_array.ae;
+        nk(i_k) = numel(a{i_k});
+    end
         
+    p = max(nk);
+    
+    for i_p = 1:p
+        %fprintf(oh, '%s, ', animal_stat.afile);
         for i_k = 1:k
-            cname = name_k{i_k};
-            a{i_k} = animal_stat.(cname).a;
-            ae{i_k} = animal_stat.(cname).ae;
-            nk(i_k) = numel(a{i_k});
-        end
-        
-        p = max(nk);
-        
-        for i_p = 1:p
-            fprintf(oh, '%s, ', animal_stat.afile);
-            for i_k = 1:k                
+            if doObject_k(i_k)
                 if nk(i_k) >= i_p
                     fprintf(oh, '%d, %f, ', a{i_k}(i_p), ae{i_k}(i_p));
                 else
                     fprintf(oh, ', , ');
                 end
             end
-            fprintf(oh, '\n');
         end
+        fprintf(oh, '\n');
     end
     
     fclose(oh);
