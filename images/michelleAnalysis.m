@@ -170,61 +170,17 @@ fclose(gh);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function stat = computeSummary(stat_m)
-global k name_k
-
-stat.afile = {stat_m.afile};
-stat.mfile = {stat_m.mfile};
-stat.animal = stat_m(1).animal;
-stat.totpix = sum([stat_m.totpix]);
-
-for i_k = 1:k
-    cname = name_k{i_k};
-    c_cat = [stat_m.(cname)];
-    stat.(cname).a = [c_cat.a];
-    stat.(cname).m = [c_cat.m];
-end
-
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function stat = computestat(sname, cname, str, type)
-% sname - stat name
-% cname - class name
-% str - the struct
-% type - 'a' or 'm' for annotation or mito
-
-global minArea;
-
-% population
-pop = str.(cname).(type);
-pop(pop < minArea) = [];
-
-switch sname
-    case 'n'
-        stat = numel(pop);
-    case 'fraction'
-        % non capillary pixels
-        noncappix = str.totpix - sum(str.capillary.a);
-        stat = sum(pop) / noncappix;
-    case 'avgsize'
-        stat = mean(pop);
-    otherwise
-        error('don''t know how to compute stat %s', sname);
-end
-
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function appendData(hh, str)
-global k name_k strfields_f f doMito_k;
+global k name_k strfields_f f doMito_k minArea;
 for i_k = 1:k
     for i_f = 1:f
         fprintf(hh, '%g, ',...
-            computestat(strfields_f{i_f}, name_k{i_k}, str, 'a'));
+            computestat(strfields_f{i_f}, name_k{i_k}, str, 'a', minArea));
     end
     if doMito_k(i_k)
         for i_f = 1:f
             fprintf(hh, '%g, ',...
-                computestat(strfields_f{i_f}, name_k{i_k}, str, 'm'));
+                computestat(strfields_f{i_f}, name_k{i_k}, str, 'm', minArea));
         end
     end
 end
@@ -319,6 +275,12 @@ parfor i_n = 1:n_files
         
         % Get the class-mask from the annotation image
         a_mask = getMask(im_a, c);
+        
+        if ~all(size(a_mask) == size(mito_mask))
+            error('Sizes for images %s and %s do not match', ...
+                annotationfiles_n{i_n}, mitofiles_n{i_n})
+        end
+        
         m_mask = a_mask & mito_mask;
         
         [a, ae] = areaArray(a_mask);
