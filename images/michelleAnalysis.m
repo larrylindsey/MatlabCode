@@ -44,7 +44,7 @@ c_k = [255  0	0;
 
 % class names
 name_k = {'terminal', 'glia', 'capillary', 'background'};
-strfields_f = {'n', 'fraction', 'avgsize'};
+strfields_f = {'nnorm', 'fraction', 'avgsize'};
 f = numel(strfields_f);
 
 k = numel(name_k);
