@@ -10,15 +10,21 @@ end
 
 global name_k strfields_f name_title_k strfield_title_f name_id_map ...
     strfields_id_map f k doMito_k g minArea name_g fig_font_size ...
-    title_font_size
+    title_font_size hist_n
 
-name_k = {'terminal', 'glia', 'capillary', 'background', 'allMito'};
+name_k = {'terminal', 'glia', 'capillary', 'background', 'allMito', ...
+    'terminal_s', 'terminal_m', 'terminal_l', 'glia_s', 'glia_m', 'glia_l'};
 strfields_f = {'nnorm', 'fraction', 'avgsize'};
 
-name_title_k = {'Terminal', 'Glia', 'Capillary', 'Background', 'Mitochondria'};
+name_title_k = {'Terminal', 'Glia', 'Capillary', 'Background', ...
+    'Mitochondria',...
+    'Small Terminals', 'Medium Terminals', 'Large Terminals', ...
+    'Small Glia', 'Medium Glia', 'Large Glia'};
 strfield_title_f = {'# / Area (um^{-2})', 'Fraction', 'Size (um^2)'};
 
 name_g = {'YV', 'YE', 'YEP', 'AV', 'AE', 'AEP'};
+
+hist_n = 32;
 
 k = numel(name_k);
 f = numel(strfields_f);
@@ -28,7 +34,7 @@ minArea = 256;
 name_id_map = struct;
 strfields_id_map = struct;
 
-doMito_k = [true, true, false, false, false, false];
+doMito_k = [true, true, false, false, false, false, false, false, false, false, false, false];
 
 for i_k = 1:k
     name_id_map.(name_k{i_k}) = i_k;
@@ -55,12 +61,57 @@ for i_g = 1:g
 end
 
 % plotDataByGroup(stat_g);
-plotDataByAnimalAndGroup(stat_g);
+% plotDataByAnimalAndGroup(stat_g);
+plotHistogramsByGroup(stat_g);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function plotDataByGroup(stat_g)
-global k f g doMito_k
+function plotHistogramsByGroup(stat_g)
+global k doMito_k g
+cstat_g = collateByGroup(stat_g);
+
+for i_k = 1:k
+    groupHistogramPlotHelper(cstat_g, i_k, 'a');
+end
+
+for i_k = find(doMito_k)
+    groupHistogramPlotHelper(cstat_g, i_k, 'm');
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function groupHistogramPlotHelper(cstat_g, i_k, type)
+global name_k name_g hist_n strfield_title_f name_title_k title_font_size...
+    fig_font_size g
+i_f = 3;
+
+figure;
+cname = name_k{i_k};
+
+stat_all = [cstat_g.(cname)];
+data_all = [stat_all.(type)];
+[~, hist_x] = hist(log10(data_all), hist_n);
+
+for i_g = 1:g
+    data = cstat_g(i_g).(cname).(type);
+    
+    subplot(2, 3, i_g);
+    
+    hist(log10(data), hist_x);
+    title(sprintf('%s - %s', name_g{i_g}, name_title_k{i_k}), ...
+        'FontSize', title_font_size);
+%     xTicks = get(gca, 'XTick');
+%     xTickLabels = 10.^xTicks;
+%     set(gca, 'XTickLabel', xTickLabels);
+    xlabel(['Log_{10} ' strfield_title_f{i_f}], 'FontSize', fig_font_size);
+    
+    
+    set(gca, 'FontSize', fig_font_size);
+    
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function cstat_g = collateByGroup(stat_g)
+global g
 
 cstat_g = cell(g, 1);
 
@@ -69,6 +120,13 @@ for i_g = 1:6
 end
 
 cstat_g = cat(1, cstat_g{:});
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function plotDataByGroup(stat_g)
+global k f doMito_k
+
+cstat_g = collateByGroup(stat_g);
 
 for i_k = 1:k
     for i_f = 1:f
@@ -157,8 +215,10 @@ for i_g = 1:g
 end
 makeItPretty(type, i_k, i_f);
 
-print(hf, '-dpng', sprintf('figure_%d_%d_%s.png', i_k, i_f, type));
-print(hf, '-depsc', sprintf('figure_%d_%d_%s.eps', i_k, i_f, type));
+print(hf, '-dpng', sprintf('animal_plot_%s_%s_%s.png',...
+    name_k{i_k}, strfields_f{i_f}, type));
+print(hf, '-depsc', sprintf('animal_plot_%s_%s_%s.eps',...
+    name_k{i_k}, strfields_f{i_f}, type));
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function makeItPretty(type, i_k, i_f)
