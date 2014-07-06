@@ -1,5 +1,5 @@
 function imstats_n = michelleAnalysis(annotationfiles_n, mitofiles_n,...
-    animalid_n, outputTemplate, summaryfile)
+    animalid_n, outputTemplate, summaryfile, imstats_n)
 % michelleAnalysis(annotationfiles, mitofiles,...
 %    animalid, outputfile, summaryfile)
 %
@@ -50,8 +50,8 @@ f = numel(strfields_f);
 k = numel(name_k);
 
 % If k_doMito[ii] is true, then do the mito analysis for the ii'th class
-doMito_k = [true, true, false, false, false];
-doObject_k = [true, true, false, false, true];
+doMito_k = [true, true, false, false, false, false, false, false, false, false, false];
+doObject_k = [true, true, false, false, true, true, true, true, true, true, true];
 
 n_files = numel(annotationfiles_n);
 
@@ -65,14 +65,19 @@ a = numel(animalid_a);
 % a - animal
 % k - class
 % f - struct fields
-
-imstats_n = collectStats(annotationfiles_n, mitofiles_n, ...
-    animalid_n, n_files, k);
+if nargin < 6
+    imstats_n = collectStats(annotationfiles_n, mitofiles_n, ...
+        animalid_n, n_files, k);
+end
 
 % Now, spoof the mito class
-k = k + 1;
+% k = k + 1;
 name_k{end + 1} = 'allMito';
 imstats_n = spoofMito(imstats_n);
+name_k = {name_k{:}, 'terminal_s', 'terminal_m', 'terminal_l',...
+    'glia_s', 'glia_m', 'glia_l'};
+imstats_n = spoofSizeCategories(imstats_n);
+k = numel(name_k);  
 
 % we should have
 % all(ids_n == [imstats_n.animalidx])
@@ -133,28 +138,27 @@ for i_a = 1:a
     % row in the column of its class. This code looks a little bit weird
     % because of that, just bare with us.
     nk = zeros(1, k);
-    a = cell(1, k);
-    ae = a;
+    areas = cell(1, k);
+    eccentricities = areas;
     
     for i_k = 1:k
         cname = name_k{i_k};
         stat_array = [animal_stat_m.(cname)];
-        a{i_k} = stat_array.a;
-        ae{i_k} = stat_array.ae;
-        nk(i_k) = numel(a{i_k});
+        areas{i_k} = [stat_array.a];
+        eccentricities{i_k} = [stat_array.ae];
+        nk(i_k) = numel(areas{i_k});
     end
         
     p = max(nk);
     
     for i_p = 1:p
         %fprintf(oh, '%s, ', animal_stat.afile);
-        for i_k = 1:k
-            if doObject_k(i_k)
-                if nk(i_k) >= i_p
-                    fprintf(oh, '%d, %f, ', a{i_k}(i_p), ae{i_k}(i_p));
-                else
-                    fprintf(oh, ', , ');
-                end
+        for i_k = find(doObject_k)
+            if nk(i_k) >= i_p
+                fprintf(oh, '%d, %f, ', areas{i_k}(i_p),...
+                    eccentricities{i_k}(i_p));
+            else
+                fprintf(oh, ', , ');
             end
         end
         fprintf(oh, '\n');
@@ -220,6 +224,38 @@ for i_n = 1:n
     imstats_n(i_n).allMito.ae = [ae_mito{:}];
     imstats_n(i_n).allMito.m = [];
     imstats_n(i_n).allMito.me = [];    
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function imstats_n = spoofSizeCategories(imstats_n)
+n = numel(imstats_n);
+
+%infimum
+c_inf = [2500, 50000, 250000];
+% supremum
+c_sup = [c_inf(2), c_inf(3), inf];
+% suffixes, small, medium, large
+suff = {'_s', '_m', '_l'};
+s = numel(suff);
+% categories we're considering
+cnames = {'terminal', 'glia'};
+
+for i_n = 1:n
+    for i_k = 1:numel(cnames)
+        cname = cnames{i_k};
+        
+        areas = imstats_n(i_n).(cname).a;
+        eccentricities = imstats_n(i_n).(cname).ae;
+
+        for i_s = 1:s
+            cname_sub = [cname, suff{i_s}];
+            sel = areas > c_inf(i_s) & areas <= c_sup(i_s);
+            imstats_n(i_n).(cname_sub).a = areas(sel);
+            imstats_n(i_n).(cname_sub).ae = eccentricities(sel);
+            imstats_n(i_n).(cname_sub).m = [];
+            imstats_n(i_n).(cname_sub).me = [];
+        end
+    end
 end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
