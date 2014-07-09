@@ -1,4 +1,13 @@
-function generatePlots(stat)
+function generatePlots(stat, kind)
+% generatePlots(stat, kind)
+% Generate plots on a stat struct as returned by launchMitoAnalysis
+%
+% stat - the stat struct
+% kind - one of 'g', 'ag', 'hg', or 'hc'
+%   g: histogram of all stats by group
+%  ag: plots of stats by animal and annotation class (39 in total)
+%  hg: histogram of area size by group and annotation class
+%  hc: histogram of area size by annotation class only
 
 if ~isfield(stat, 'group')
     error('Need group info. Did you run applyGroupType?');
@@ -10,26 +19,58 @@ end
 
 global name_k strfields_f name_title_k strfield_title_f name_id_map ...
     strfields_id_map f k doMito_k g minArea name_g label_font_size ...
-    title_font_size hist_n axis_font_size
+    title_font_size hist_n axis_font_size subplot_reduction ...
+    pbox_aspect ebar_line_width mbar_line_width marker_line_width ...
+    marker_size mean_bar_width marker_color
 
+% class names in the stat struct
 name_k = {'terminal', 'glia', 'capillary', 'background', 'allMito', ...
     'terminal_s', 'terminal_m', 'terminal_l', 'glia_s', 'glia_m', 'glia_l'};
+% stat names, referenced to computestat.m
 strfields_f = {'nnorm', 'fraction', 'avgsize'};
-
+% class title as it will appear in the plot title
 name_title_k = {'Terminal', 'Glia', 'Capillary', 'Background', ...
     'Mitochondria',...
     'Small Terminals', 'Medium Terminals', 'Large Terminals', ...
     'Small Glia', 'Medium Glia', 'Large Glia'};
+% stat name as it will appear in the title and y-axis
 strfield_title_f = {'# / Area (um^{-2})', 'Fraction', 'Size (um^2)'};
-
+% group names, as they appear on titles and axes
 name_g = {'YV', 'YE', 'YEP', 'AV', 'AE', 'AEP'};
 
+% number of histogram bins
 hist_n = 32;
+
+% The group histograms are six to a figure. Reduce the font size globally
+% by this many points
+subplot_reduction = 2;
+
+% Marker size for plot kind ag
+marker_size = 18;
+% Aspect ratio for the ag plots
+pbox_aspect = [4 5 1];
+% error bar line weight
+ebar_line_width = 2;
+% mean bar line weight
+mbar_line_width = 2;
+% marker line weight (plot ag only)
+marker_line_width = 3;
+% The width (or length, really) of the mean bar
+mean_bar_width = .5;
+% Marker colors for ag plots
+marker_color = [.25 .25 .25];
+% Minimum area cutoff for annotations and mitochondria, in that order
+minArea = [2500 256];
+
+% Title font size
+title_font_size = 20;
+% ylabel, xlabel font size
+label_font_size = 16;
+% Font size for other axes text
+axis_font_size = 14;
 
 k = numel(name_k);
 f = numel(strfields_f);
-
-minArea = [2500 256];
 
 name_id_map = struct;
 strfields_id_map = struct;
@@ -46,11 +87,7 @@ end
 
 % cal_f = [1 1 .002 * .002];
 
-axis_font_size = 14;
-label_font_size = 16;
-title_font_size = 20;
-
-g = 6;
+g = numel(name_g);
 groups = [stat.group];
 g_idx = unique(groups);
 
@@ -61,10 +98,18 @@ for i_g = 1:g
     stat_g{i_g} = stat(gsel);
 end
 
-% plotDataByGroup(stat_g);
-% plotDataByAnimalAndGroup(stat_g);
-plotHistogramsByGroup(stat_g);
-% plotAreaHistogramsByClass(stat_g);
+switch kind
+    case 'g'
+        plotDataByGroup(stat_g);
+    case 'ag'
+        plotDataByAnimalAndGroup(stat_g);
+    case 'hg'
+        plotHistogramsByGroup(stat_g);
+    case 'hc'
+        plotAreaHistogramsByClass(stat_g);
+    otherwise
+        error('I don''t know how to make a plot of kind %s', kind);
+end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function plotAreaHistogramsByClass(stat_g)
@@ -161,7 +206,7 @@ end
 function hh = histogramHelper(stat, type, name, i_k, minArea, hist_x)
 i_f = 3;
 global strfield_title_f label_font_size title_font_size name_title_k ...
-    hist_n name_k axis_font_size
+    hist_n name_k axis_font_size subplot_reduction
 
 cname = name_k{i_k};
 data = stat.(cname).(type);
@@ -189,18 +234,18 @@ hh = setdiff(get(gca, 'Children'), all_ch);
 
 if type == 'a'
     title(sprintf('%s - %s', name, name_title_k{i_k}), ...
-        'FontSize', title_font_size - 2, 'FontWeight', 'bold');   
+        'FontSize', title_font_size - subplot_reduction, 'FontWeight', 'bold');   
 elseif type == 'm'
     title(sprintf('%s - %s\nMitochondria', name, name_title_k{i_k}), ...
-        'FontSize', title_font_size - 2, 'FontWeight', 'bold');
+        'FontSize', title_font_size - subplot_reduction, 'FontWeight', 'bold');
 end
 
 %     xTicks = get(gca, 'XTick');
 %     xTickLabels = 10.^xTicks;
 %     set(gca, 'XTickLabel', xTickLabels);
-xlabel(['Log_{10} ' strfield_title_f{i_f}], 'FontSize', label_font_size - 2);
+xlabel(['Log_{10} ' strfield_title_f{i_f}], 'FontSize', label_font_size - subplot_reduction);
 
-set(gca, 'FontSize', axis_font_size - 2);
+set(gca, 'FontSize', axis_font_size - subplot_reduction);
 set(gca, 'Box', 'off');
 set(gca, 'TickLength', [0 0]);
 end
@@ -238,7 +283,7 @@ end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function generateGroupBarPlotHelper(cstat_g, i_k, i_f, type)
-global strfields_f minArea g name_k
+global strfields_f minArea g name_k ebar_line_width
 figure;
 b = zeros(1, g);
 e = b;
@@ -254,7 +299,7 @@ hold on;
 if i_f == 3 % std err only means something for mean area
     for i_g = 1:g
         plot([i_g, i_g], [b(i_g) - e(i_g), b(i_g) + e(i_g)], ...
-            'k', 'LineWidth', 2);
+            'k', 'LineWidth', ebar_line_width);
     end
 end
 
@@ -278,9 +323,8 @@ end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function dataByAnimalPlotHelper(stat_g, i_k, i_f, type)
-global g strfields_f name_k minArea
-
-mean_bar_width = .5;
+global g strfields_f name_k minArea marker_line_width pbox_aspect ...
+    mbar_line_width ebar_line_width mean_bar_width marker_color
 
 % this will be referenced later as a char-array
 style = 'oxvds^*';
@@ -304,18 +348,19 @@ for i_g = 1:g
         stat_values(i_a) = computestat(strfields_f{i_f}, cname,...
             astat, type, minArea);
         % Plot an individual symbol
-        doPlot(i_g, stat_values(i_a), style(i_a), 'Color', [.25 .25 .25], ...
-            'LineWidth', 3);
+        doPlot(i_g, stat_values(i_a), style(i_a), 'Color', marker_color, ...
+            'LineWidth', marker_line_width);
     end
     e = stderr(stat_values);
     m = mean(stat_values);
 
     % Plot mean an error bars
-    doPlot(i_g + [-mbr_2, mbr_2], m * [1, 1], 'k', 'LineWidth', 2);
-    doPlot(i_g * [1, 1], m + [-e, e], 'k', 'LineWidth', 2);    
+    doPlot(i_g + [-mbr_2, mbr_2], m * [1, 1], 'k', 'LineWidth', ...
+        mbar_line_width);
+    doPlot(i_g * [1, 1], m + [-e, e], 'k', 'LineWidth', ebar_line_width);    
 end
 
-set(gca, 'PlotBoxAspectRatio', [4 5 1]);
+set(gca, 'PlotBoxAspectRatio', pbox_aspect);
 
 makeItPretty(type, i_k, i_f);
 
@@ -327,7 +372,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function makeItPretty(type, i_k, i_f)
 global name_title_k strfield_title_f name_g label_font_size ...
-    title_font_size axis_font_size
+    title_font_size axis_font_size g
 
 pfstring = '';
 switch type
@@ -343,11 +388,11 @@ title(sprintf(pfstring, name_title_k{i_k},...
 
 ylabel(strfield_title_f{i_f}, 'FontSize', label_font_size);
 
-set(gca, 'XTick', 1:6);
+set(gca, 'XTick', 1:g);
 set(gca, 'XTickLabel', name_g);
 set(gca, 'FontSize', axis_font_size);
 
-xlim([0 7]);
+xlim([0 g + 1]);
 ylim([0 max(ylim)]);
 
 set(gca, 'Box', 'off');
@@ -356,8 +401,9 @@ set(gca, 'TickLength', [0 0]);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function p = doPlot(varargin)
+global marker_size
 ph = plot(varargin{:});
-set(ph, 'Markers', 18);
+set(ph, 'Markers', marker_size);
 if nargout > 0
     p = ph;
 end
