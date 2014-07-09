@@ -21,8 +21,14 @@ global name_k strfields_f name_title_k strfield_title_f name_id_map ...
     strfields_id_map f k doMito_k g minArea name_g label_font_size ...
     title_font_size hist_n axis_font_size subplot_reduction ...
     pbox_aspect ebar_line_width mbar_line_width marker_line_width ...
-    marker_size mean_bar_width marker_color linear_log_label
+    marker_size mean_bar_width marker_color linear_log_label ...
+    clean_your_mess all_histogram_color c_k
 
+c_k = [255  0	0;
+    255	255	0;
+    255  0    243;
+    0    0   0
+    0    0   255] / 255;
 % class names in the stat struct
 name_k = {'terminal', 'glia', 'capillary', 'background', 'allMito', ...
     'terminal_s', 'terminal_m', 'terminal_l', 'glia_s', 'glia_m', 'glia_l'};
@@ -71,6 +77,10 @@ axis_font_size = 14;
 % set true for linear units in xlabel on log histograms, false for log
 % units
 linear_log_label = false;
+% if set true, closes figures just after writing them to disk
+clean_your_mess = true;
+% for all-annotation-class histograms, set true for color
+all_histogram_color = false;
 
 k = numel(name_k);
 f = numel(strfields_f);
@@ -109,23 +119,34 @@ switch kind
     case 'hg'
         plotHistogramsByGroup(stat_g);
     case 'hc'
-        plotAreaHistogramsByClass(stat_g);
+        plotAreaHistogramsByClass(stat);
     otherwise
         error('I don''t know how to make a plot of kind %s', kind);
 end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function plotAreaHistogramsByClass(stat_g)
-global name_k
+function plotAreaHistogramsByClass(stat)
+global name_k all_histogram_color clean_your_mess marker_color c_k
 
 for i_k = 1:5
     cname = name_k{i_k};
     kclass = [stat.(cname)];
     summary_stat.(cname).a = [kclass.a];
     figure;
-    histogramHelper(summary_stat, 'a', 'All', i_k, [0 0]);
+    hh = histogramHelper(summary_stat, 'a', 'All', i_k, [0 0]);
+    
+    if all_histogram_color
+        set(hh, 'FaceColor', c_k(i_k,:));
+    else
+        set(hh, 'FaceColor', marker_color);
+    end
+    
     print(gcf, '-dpng', sprintf('all-histogram-%s.png', cname));
     print(gcf, '-depsc', sprintf('all-histogram-%s.eps', cname));
+
+    if clean_your_mess
+        close
+    end
 end
 
 end
@@ -154,7 +175,7 @@ end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function groupHistogramPlotHelper(cstat_g, i_k, type)
-global name_k name_g hist_n g strfields_f minArea
+global name_k name_g hist_n g strfields_f minArea clean_your_mess
 i_f = 3;
 
 figure;
@@ -209,7 +230,9 @@ print(gcf, '-dpng', sprintf('histogram_%s_%s_%s.png',...
     name_k{i_k}, strfields_f{i_f}, type));
 print(gcf, '-depsc', sprintf('histogram_%s_%s_%s.eps',...
     name_k{i_k}, strfields_f{i_f}, type));
-
+if clean_your_mess
+    close
+end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function hh = histogramHelper(stat, type, name, i_k, minArea, hist_x)
@@ -336,7 +359,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function dataByAnimalPlotHelper(stat_g, i_k, i_f, type)
 global g strfields_f name_k minArea marker_line_width pbox_aspect ...
-    mbar_line_width ebar_line_width mean_bar_width marker_color
+    mbar_line_width ebar_line_width mean_bar_width marker_color...
+    clean_your_mess
 
 % this will be referenced later as a char-array
 style = 'oxvds^*';
@@ -380,6 +404,10 @@ print(hf, '-dpng', sprintf('animal_plot_%s_%s_%s.png',...
     name_k{i_k}, strfields_f{i_f}, type));
 print(hf, '-depsc', sprintf('animal_plot_%s_%s_%s.eps',...
     name_k{i_k}, strfields_f{i_f}, type));
+
+if clean_your_mess
+    close
+end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function makeItPretty(type, i_k, i_f)
