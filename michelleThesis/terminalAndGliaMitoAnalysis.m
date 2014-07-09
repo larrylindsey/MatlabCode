@@ -274,19 +274,3 @@ fprintf('done.\n');
 %drawnow;
 
 end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function hex = hexColor(c)
-% Create a color string that can be used in Excel
-
-% If we get only one component, set all three to
-% be the same. We use < 3 rather than == 1 for
-% robustness. Plus, it looks like a heart. Kind of.
-if numel(c) < 3
-    repmat(c, [1 3]);
-end
-
-
-
-hex = sprintf('#%02X%02X%02X', c(1), c(2), c(3));
-
-end

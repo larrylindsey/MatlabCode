@@ -26,7 +26,7 @@ fprintf('Begin analysis\n');
 global minArea c_mito c_cap c_k name_k ids_n k strfields_f f doMito_k;
 
 
-minArea = 256; % corresponds to blob roughly 16 x 16 pix.
+minArea = [2500 2500];
 
 % Predefined colors
 

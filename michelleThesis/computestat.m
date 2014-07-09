@@ -6,6 +6,14 @@ function [stat, e] = computestat(sname, cname, str, type, minArea)
 
 cal = .002 * .002;
 
+if numel(minArea) > 1
+    if type == 'a'
+        minArea = minArea(1);
+    elseif type == 'm'
+        minArea = minArea(2);
+    end    
+end
+
 % population
 pop = str.(cname).(type) * cal;
 pop(pop < minArea * cal) = [];

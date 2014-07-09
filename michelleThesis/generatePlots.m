@@ -9,8 +9,8 @@ end
 % end
 
 global name_k strfields_f name_title_k strfield_title_f name_id_map ...
-    strfields_id_map f k doMito_k g minArea name_g fig_font_size ...
-    title_font_size hist_n
+    strfields_id_map f k doMito_k g minArea name_g label_font_size ...
+    title_font_size hist_n axis_font_size
 
 name_k = {'terminal', 'glia', 'capillary', 'background', 'allMito', ...
     'terminal_s', 'terminal_m', 'terminal_l', 'glia_s', 'glia_m', 'glia_l'};
@@ -29,12 +29,12 @@ hist_n = 32;
 k = numel(name_k);
 f = numel(strfields_f);
 
-minArea = 256;
+minArea = [2500 256];
 
 name_id_map = struct;
 strfields_id_map = struct;
 
-doMito_k = [true, true, false, false, false, false, false, false, false, false, false, false];
+doMito_k = 1:12 < 3; % eventually, we'll have k = 12.
 
 for i_k = 1:k
     name_id_map.(name_k{i_k}) = i_k;
@@ -46,8 +46,9 @@ end
 
 % cal_f = [1 1 .002 * .002];
 
-fig_font_size = 14;
-title_font_size = 16;
+axis_font_size = 14;
+label_font_size = 16;
+title_font_size = 20;
 
 g = 6;
 groups = [stat.group];
@@ -63,6 +64,21 @@ end
 % plotDataByGroup(stat_g);
 % plotDataByAnimalAndGroup(stat_g);
 plotHistogramsByGroup(stat_g);
+% plotAreaHistogramsByClass(stat_g);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function plotAreaHistogramsByClass(stat_g)
+global name_k
+
+for i_k = 1:5
+    cname = name_k{i_k};
+    kclass = [stat.(cname)];
+    summary_stat.(cname).a = [kclass.a];
+    figure;
+    histogramHelper(summary_stat, 'a', 'All', i_k, [0 0]);
+    print(gcf, '-dpng', sprintf('all-histogram-%s.png', cname));
+    print(gcf, '-depsc', sprintf('all-histogram-%s.eps', cname));
+end
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -80,8 +96,7 @@ end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function groupHistogramPlotHelper(cstat_g, i_k, type)
-global name_k name_g hist_n strfield_title_f name_title_k title_font_size...
-    fig_font_size g
+global name_k name_g hist_n g strfields_f minArea
 i_f = 3;
 
 figure;
@@ -89,25 +104,105 @@ cname = name_k{i_k};
 
 stat_all = [cstat_g.(cname)];
 data_all = [stat_all.(type)];
+
+if type == 'a'
+    data_all(data_all < minArea(1)) = [];
+elseif type == 'm'
+    data_all(data_all < minArea(2)) = [];
+end
+
+data_all = data_all * .002 * .002;
+
 [~, hist_x] = hist(log10(data_all), hist_n);
+dx = hist_x(2) - hist_x(1);
+xmin = min(hist_x) - dx / 2;
+xmax = max(hist_x) + dx / 2;
+minXTick = ceil(2 * xmin) / 2;
+maxXTick = floor(2 * xmax) / 2;
+altXTick = minXTick:.5:maxXTick;
+
+ymax = 0;
+axes = zeros(1, g);
+
+sc = linspace(.5, 0, g);
+
+for i_g = 1:g    
+    subplot(2, 3, i_g);
+    hh = histogramHelper(cstat_g(i_g), type, name_g{i_g}, i_k, minArea, hist_x);
+    set(hh, 'FaceColor', sc(i_g) * [1 1 1]);
+    axes(i_g) = gca;
+    g_ymax = max(ylim);
+    if g_ymax > ymax
+        ymax = g_ymax;
+    end
+end
+
+set(gcf,'units','normalized','outerposition',[0 0 1 1])
+
+drawnow;
 
 for i_g = 1:g
-    data = cstat_g(i_g).(cname).(type);
-    
-    subplot(2, 3, i_g);
-    
-    hist(log10(data), hist_x);
-    title(sprintf('%s - %s', name_g{i_g}, name_title_k{i_k}), ...
-        'FontSize', title_font_size);
+    set(axes(i_g), 'YLim', [0 ymax], 'XLim', [xmin xmax]);
+    xTick = get(axes(i_g), 'XTick');
+    if numel(xTick) < numel(altXTick)
+        set(axes(i_g), 'XTick', altXTick);  
+    end
+end
+
+drawnow;
+
+print(gcf, '-dpng', sprintf('histogram_%s_%s_%s.png',...
+    name_k{i_k}, strfields_f{i_f}, type));
+print(gcf, '-depsc', sprintf('histogram_%s_%s_%s.eps',...
+    name_k{i_k}, strfields_f{i_f}, type));
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function hh = histogramHelper(stat, type, name, i_k, minArea, hist_x)
+i_f = 3;
+global strfield_title_f label_font_size title_font_size name_title_k ...
+    hist_n name_k axis_font_size
+
+cname = name_k{i_k};
+data = stat.(cname).(type);
+
+if type == 'a'
+    data(data < minArea(1)) = [];
+elseif type == 'm'
+    data(data < minArea(2)) = [];
+end
+
+data = data * .002 * .002;
+
+if nargin > 5
+    hist_arg = hist_x;
+else
+    hist_arg = hist_n;
+end
+
+hold on;
+all_ch = get(gca, 'Children');
+
+hist(log10(data), hist_arg);
+
+hh = setdiff(get(gca, 'Children'), all_ch);
+
+if type == 'a'
+    title(sprintf('%s - %s', name, name_title_k{i_k}), ...
+        'FontSize', title_font_size - 2, 'FontWeight', 'bold');   
+elseif type == 'm'
+    title(sprintf('%s - %s\nMitochondria', name, name_title_k{i_k}), ...
+        'FontSize', title_font_size - 2, 'FontWeight', 'bold');
+end
+
 %     xTicks = get(gca, 'XTick');
 %     xTickLabels = 10.^xTicks;
 %     set(gca, 'XTickLabel', xTickLabels);
-    xlabel(['Log_{10} ' strfield_title_f{i_f}], 'FontSize', fig_font_size);
-    
-    
-    set(gca, 'FontSize', fig_font_size);
-    
-end
+xlabel(['Log_{10} ' strfield_title_f{i_f}], 'FontSize', label_font_size - 2);
+
+set(gca, 'FontSize', axis_font_size - 2);
+set(gca, 'Box', 'off');
+set(gca, 'TickLength', [0 0]);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function cstat_g = collateByGroup(stat_g)
@@ -185,34 +280,43 @@ end
 function dataByAnimalPlotHelper(stat_g, i_k, i_f, type)
 global g strfields_f name_k minArea
 
-mean_bar_width = .25;
+mean_bar_width = .5;
 
+% this will be referenced later as a char-array
 style = 'oxvds^*';
 
 hf = figure;
 hold on;
 cname = name_k{i_k};
 mbr_2 = mean_bar_width / 2; % half mean bar width
+% For each group...
 for i_g = 1:g
     stat = stat_g{i_g};
     animal_idx_m = [stat.animalidx];
     animal_idx_a = unique(animal_idx_m);
     a = numel(animal_idx_a);
     stat_values = zeros(1, a);
+    % Plot the per-animal (i_a) mean
     for i_a = 1:a
         sel = animal_idx_m == animal_idx_a(i_a);
         astat = computeSummary(stat(sel));
+        % Computer our stat, then save it for later
         stat_values(i_a) = computestat(strfields_f{i_f}, cname,...
             astat, type, minArea);
-        
-        plot(i_g, stat_values(i_a), style(i_a), 'LineWidth', 2);
+        % Plot an individual symbol
+        doPlot(i_g, stat_values(i_a), style(i_a), 'Color', [.25 .25 .25], ...
+            'LineWidth', 3);
     end
     e = stderr(stat_values);
     m = mean(stat_values);
 
-    plot(i_g + [-mbr_2, mbr_2], m * [1, 1], 'k', 'LineWidth', 2);
-    plot(i_g * [1, 1], m + [-e, e], 'k', 'LineWidth', 2);    
+    % Plot mean an error bars
+    doPlot(i_g + [-mbr_2, mbr_2], m * [1, 1], 'k', 'LineWidth', 2);
+    doPlot(i_g * [1, 1], m + [-e, e], 'k', 'LineWidth', 2);    
 end
+
+set(gca, 'PlotBoxAspectRatio', [4 5 1]);
+
 makeItPretty(type, i_k, i_f);
 
 print(hf, '-dpng', sprintf('animal_plot_%s_%s_%s.png',...
@@ -222,7 +326,8 @@ print(hf, '-depsc', sprintf('animal_plot_%s_%s_%s.eps',...
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function makeItPretty(type, i_k, i_f)
-global name_title_k strfield_title_f name_g fig_font_size title_font_size
+global name_title_k strfield_title_f name_g label_font_size ...
+    title_font_size axis_font_size
 
 pfstring = '';
 switch type
@@ -233,14 +338,27 @@ switch type
 end
 
 title(sprintf(pfstring, name_title_k{i_k},...
-    strfield_title_f{i_f}), 'FontSize', title_font_size);
+    strfield_title_f{i_f}), 'FontSize', title_font_size,...
+    'FontWeight', 'bold');
 
-ylabel(strfield_title_f{i_f}, 'FontSize', fig_font_size);
+ylabel(strfield_title_f{i_f}, 'FontSize', label_font_size);
 
 set(gca, 'XTick', 1:6);
 set(gca, 'XTickLabel', name_g);
-set(gca, 'FontSize', fig_font_size);
+set(gca, 'FontSize', axis_font_size);
 
 xlim([0 7]);
+ylim([0 max(ylim)]);
 
+set(gca, 'Box', 'off');
+set(gca, 'TickLength', [0 0]);
+
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function p = doPlot(varargin)
+ph = plot(varargin{:});
+set(ph, 'Markers', 18);
+if nargout > 0
+    p = ph;
+end
 end
