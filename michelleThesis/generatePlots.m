@@ -21,7 +21,7 @@ global name_k strfields_f name_title_k strfield_title_f name_id_map ...
     strfields_id_map f k doMito_k g minArea name_g label_font_size ...
     title_font_size hist_n axis_font_size subplot_reduction ...
     pbox_aspect ebar_line_width mbar_line_width marker_line_width ...
-    marker_size mean_bar_width marker_color
+    marker_size mean_bar_width marker_color linear_log_label
 
 % class names in the stat struct
 name_k = {'terminal', 'glia', 'capillary', 'background', 'allMito', ...
@@ -68,6 +68,9 @@ title_font_size = 20;
 label_font_size = 16;
 % Font size for other axes text
 axis_font_size = 14;
+% set true for linear units in xlabel on log histograms, false for log
+% units
+linear_log_label = false;
 
 k = numel(name_k);
 f = numel(strfields_f);
@@ -140,6 +143,16 @@ for i_k = find(doMito_k)
 end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function din = applyCutoff(din, i_k, type)
+global minArea name_k
+cname = name_k{i_k};
+if type == 'a' && ~strcmp(cname, 'allMito')
+    din(din < minArea(1)) = [];
+else
+    din(din < minArea(2)) = [];
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function groupHistogramPlotHelper(cstat_g, i_k, type)
 global name_k name_g hist_n g strfields_f minArea
 i_f = 3;
@@ -150,12 +163,7 @@ cname = name_k{i_k};
 stat_all = [cstat_g.(cname)];
 data_all = [stat_all.(type)];
 
-if type == 'a'
-    data_all(data_all < minArea(1)) = [];
-elseif type == 'm'
-    data_all(data_all < minArea(2)) = [];
-end
-
+data_all = applyCutoff(data_all, i_k, type);
 data_all = data_all * .002 * .002;
 
 [~, hist_x] = hist(log10(data_all), hist_n);
@@ -171,7 +179,11 @@ axes = zeros(1, g);
 
 sc = linspace(.5, 0, g);
 
-for i_g = 1:g    
+set(gcf,'units','normalized','outerposition',[0 0 1 1])
+
+drawnow;
+
+for i_g = 1:g
     subplot(2, 3, i_g);
     hh = histogramHelper(cstat_g(i_g), type, name_g{i_g}, i_k, minArea, hist_x);
     set(hh, 'FaceColor', sc(i_g) * [1 1 1]);
@@ -182,15 +194,12 @@ for i_g = 1:g
     end
 end
 
-set(gcf,'units','normalized','outerposition',[0 0 1 1])
-
-drawnow;
 
 for i_g = 1:g
     set(axes(i_g), 'YLim', [0 ymax], 'XLim', [xmin xmax]);
     xTick = get(axes(i_g), 'XTick');
     if numel(xTick) < numel(altXTick)
-        set(axes(i_g), 'XTick', altXTick);  
+        set(axes(i_g), 'XTick', altXTick);
     end
 end
 
@@ -206,16 +215,12 @@ end
 function hh = histogramHelper(stat, type, name, i_k, minArea, hist_x)
 i_f = 3;
 global strfield_title_f label_font_size title_font_size name_title_k ...
-    hist_n name_k axis_font_size subplot_reduction
+    hist_n name_k axis_font_size subplot_reduction linear_log_label
 
 cname = name_k{i_k};
 data = stat.(cname).(type);
 
-if type == 'a'
-    data(data < minArea(1)) = [];
-elseif type == 'm'
-    data(data < minArea(2)) = [];
-end
+data = applyCutoff(data, i_k, type);
 
 data = data * .002 * .002;
 
@@ -234,16 +239,23 @@ hh = setdiff(get(gca, 'Children'), all_ch);
 
 if type == 'a'
     title(sprintf('%s - %s', name, name_title_k{i_k}), ...
-        'FontSize', title_font_size - subplot_reduction, 'FontWeight', 'bold');   
+        'FontSize', title_font_size - subplot_reduction, 'FontWeight', 'bold');
 elseif type == 'm'
     title(sprintf('%s - %s\nMitochondria', name, name_title_k{i_k}), ...
         'FontSize', title_font_size - subplot_reduction, 'FontWeight', 'bold');
 end
 
-%     xTicks = get(gca, 'XTick');
-%     xTickLabels = 10.^xTicks;
-%     set(gca, 'XTickLabel', xTickLabels);
-xlabel(['Log_{10} ' strfield_title_f{i_f}], 'FontSize', label_font_size - subplot_reduction);
+
+if linear_log_label
+    xTicks = get(gca, 'XTick');
+    xTickLabels = 10.^xTicks;
+    set(gca, 'XTickLabel', xTickLabels);
+    xlabel([strfield_title_f{i_f}], 'FontSize',...
+        label_font_size - subplot_reduction);
+else
+    xlabel(['Log_{10} ' strfield_title_f{i_f}], 'FontSize', ...
+        label_font_size - subplot_reduction);
+end
 
 set(gca, 'FontSize', axis_font_size - subplot_reduction);
 set(gca, 'Box', 'off');
@@ -353,11 +365,11 @@ for i_g = 1:g
     end
     e = stderr(stat_values);
     m = mean(stat_values);
-
+    
     % Plot mean an error bars
     doPlot(i_g + [-mbr_2, mbr_2], m * [1, 1], 'k', 'LineWidth', ...
         mbar_line_width);
-    doPlot(i_g * [1, 1], m + [-e, e], 'k', 'LineWidth', ebar_line_width);    
+    doPlot(i_g * [1, 1], m + [-e, e], 'k', 'LineWidth', ebar_line_width);
 end
 
 set(gca, 'PlotBoxAspectRatio', pbox_aspect);
