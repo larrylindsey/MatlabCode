@@ -339,7 +339,7 @@ for i_g = 1:g
     [b(i_g), e(i_g)] = computestat(strfields_f{i_f}, cname,...
         cstat_g(i_g), type, minArea);
 end
-bar(b, 'Color', bar_graph_color);
+bar(b, 'FaceColor', bar_graph_color);
 hold on;
 if i_f == 3 % std err only means something for mean area
     for i_g = 1:g
