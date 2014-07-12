@@ -325,10 +325,13 @@ for i_k = find(doMito_k)
     end
 end
 
+
+
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function generateGroupBarPlotHelper(cstat_g, i_k, i_f, type)
-global strfields_f minArea g name_k ebar_line_width bar_graph_color
+global strfields_f minArea g name_k ebar_line_width bar_graph_color ...
+    name_g clean_your_mess
 figure;
 b = zeros(1, g);
 e = b;
@@ -349,6 +352,16 @@ if i_f == 3 % std err only means something for mean area
 end
 
 makeItPretty(type, i_k, i_f);
+
+
+print(hf, '-dpng', sprintf('group_barplot_%s_%s_%s_%s.png',...
+    name_g{i_g}, name_k{i_k}, strfields_f{i_f}, type));
+print(hf, '-depsc', sprintf('group_barplot_%s_%s_%s_%s.eps',...
+    name_g{i_g}, name_k{i_k}, strfields_f{i_f}, type));
+
+if clean_your_mess
+    close
+end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function plotDataByAnimalAndGroup(stat_g)
