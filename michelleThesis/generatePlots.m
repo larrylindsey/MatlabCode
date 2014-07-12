@@ -22,7 +22,8 @@ global name_k strfields_f name_title_k strfield_title_f name_id_map ...
     title_font_size hist_n axis_font_size subplot_reduction ...
     pbox_aspect ebar_line_width mbar_line_width marker_line_width ...
     marker_size mean_bar_width marker_color linear_log_label ...
-    clean_your_mess all_histogram_color c_k
+    clean_your_mess all_histogram_color c_k bar_graph_color ...
+    histogram_fade_color histogram_fade
 
 c_k = [255  0	0;
     255	255	0;
@@ -65,6 +66,13 @@ marker_line_width = 3;
 mean_bar_width = .5;
 % Marker colors for ag plots
 marker_color = [.25 .25 .25];
+% Face color for bar graphs and unfaded histograms
+bar_graph_color = [.25 .25 .25];
+% For the multigoup histogram, this sets the color at full brightness
+histogram_fade_color = [1 1 1];
+% Set the fade for multigroup histograms
+histogram_fade = [.5 0]; % from 1/2 to 0 fraction of the full brightness
+                         % color. Here, this is mid-grey to black.
 % Minimum area cutoff for annotations and mitochondria, in that order
 minArea = [2500 256];
 
@@ -79,7 +87,8 @@ axis_font_size = 14;
 linear_log_label = false;
 % if set true, closes figures just after writing them to disk
 clean_your_mess = true;
-% for all-annotation-class histograms, set true for color
+% for all-annotation-class histograms, set true for annotation color (k_c),
+% false to use bar_graph_color
 all_histogram_color = false;
 
 k = numel(name_k);
@@ -126,7 +135,7 @@ end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function plotAreaHistogramsByClass(stat)
-global name_k all_histogram_color clean_your_mess marker_color c_k
+global name_k all_histogram_color clean_your_mess bar_graph_color c_k
 
 for i_k = 1:5
     cname = name_k{i_k};
@@ -138,7 +147,7 @@ for i_k = 1:5
     if all_histogram_color
         set(hh, 'FaceColor', c_k(i_k,:));
     else
-        set(hh, 'FaceColor', marker_color);
+        set(hh, 'FaceColor', bar_graph_color);
     end
     
     print(gcf, '-dpng', sprintf('all-histogram-%s.png', cname));
@@ -175,7 +184,8 @@ end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function groupHistogramPlotHelper(cstat_g, i_k, type)
-global name_k name_g hist_n g strfields_f minArea clean_your_mess
+global name_k name_g hist_n g strfields_f minArea clean_your_mess ...
+    histogram_fade_color histogram_fade
 i_f = 3;
 
 figure;
@@ -198,7 +208,7 @@ altXTick = minXTick:.5:maxXTick;
 ymax = 0;
 axes = zeros(1, g);
 
-sc = linspace(.5, 0, g);
+sc = linspace(histogram_fade(1), histogram_fade(2), g);
 
 set(gcf,'units','normalized','outerposition',[0 0 1 1])
 
@@ -207,7 +217,7 @@ drawnow;
 for i_g = 1:g
     subplot(2, 3, i_g);
     hh = histogramHelper(cstat_g(i_g), type, name_g{i_g}, i_k, minArea, hist_x);
-    set(hh, 'FaceColor', sc(i_g) * [1 1 1]);
+    set(hh, 'FaceColor', sc(i_g) * histogram_fade_color);
     axes(i_g) = gca;
     g_ymax = max(ylim);
     if g_ymax > ymax
@@ -318,7 +328,7 @@ end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function generateGroupBarPlotHelper(cstat_g, i_k, i_f, type)
-global strfields_f minArea g name_k ebar_line_width
+global strfields_f minArea g name_k ebar_line_width bar_graph_color
 figure;
 b = zeros(1, g);
 e = b;
@@ -329,7 +339,7 @@ for i_g = 1:g
     [b(i_g), e(i_g)] = computestat(strfields_f{i_f}, cname,...
         cstat_g(i_g), type, minArea);
 end
-bar(b);
+bar(b, 'Color', bar_graph_color);
 hold on;
 if i_f == 3 % std err only means something for mean area
     for i_g = 1:g
