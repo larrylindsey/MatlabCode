@@ -89,7 +89,7 @@ linear_log_label = false;
 clean_your_mess = true;
 % for all-annotation-class histograms, set true for annotation color (k_c),
 % false to use bar_graph_color
-all_histogram_color = false;
+all_histogram_color = true;
 
 k = numel(name_k);
 f = numel(strfields_f);
@@ -331,8 +331,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function generateGroupBarPlotHelper(cstat_g, i_k, i_f, type)
 global strfields_f minArea g name_k ebar_line_width bar_graph_color ...
-    name_g clean_your_mess
-figure;
+    name_g clean_your_mess c_k all_histogram_color
+hf = figure;
 b = zeros(1, g);
 e = b;
 
@@ -342,7 +342,15 @@ for i_g = 1:g
     [b(i_g), e(i_g)] = computestat(strfields_f{i_f}, cname,...
         cstat_g(i_g), type, minArea);
 end
-bar(b, 'FaceColor', bar_graph_color);
+
+if all_histogram_color && i_k <= size(c_k, 1)
+    use_color =  c_k(i_k,:);
+else
+    use_color = bar_graph_color;
+end
+    
+
+bar(b, 'FaceColor', use_color);
 hold on;
 if i_f == 3 % std err only means something for mean area
     for i_g = 1:g
