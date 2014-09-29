@@ -1,5 +1,13 @@
 function ser2csv(secdoc, rexp, fname)
- 
+% ser2csv(secdoc, rexp, fname)
+%
+%  Do some SER calculations in a Reconstruct project and write the results
+%     to a csv file.
+%
+% secdoc - the sections returned from readReconstruct
+% rexp - a regular expression identifying the SER traces in question
+% fname - the file to write out
+
  fprintf('enumerating contours\n');
  
  names = enumerateContours(secdoc);
