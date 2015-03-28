@@ -2,8 +2,8 @@ function mapImageRegions(rootFolder)
 
 global c_k c_mito s_inf s_sup s_mito
 c_k = [255  0	0;
-    255	255	0;
-    255  0    243;
+    0	.75*255	0;
+    .75*255  0    .75*243;
     0    0   0] / 255;
 
 c_mito = [0 0 1];
@@ -17,48 +17,7 @@ if nargin < 1
     rootFolder = './';
 end
 
-if rootFolder(end) ~= '/' && rootFolder(end) ~= '\'
-    rootFolder = [rootFolder '/'];
-end
-
-% List the files in rootDir, then select only the ones that are directories
-dd = dir(rootFolder);
-dirsel = [dd.isdir] == 1;
-dd = dd(dirsel);
-extA = 'noMit.tif';
-extM = 'wMit.tif';
-
-if rootFolder(end) ~= '/' && rootFolder(end) ~= '\'
-    rootFolder = [rootFolder '/'];
-end
-
-% List the files in rootDir, then select only the ones that are directories
-dd = dir(rootFolder);
-dirsel = [dd.isdir] == 1;
-dd = dd(dirsel);
-
-allAFiles = {};
-allMFiles = {};
-
-for ii = 1:numel(dd)
-    if ~(strcmp(dd(ii).name, '.') || strcmp(dd(ii).name, '..'))
-        dirname = [rootFolder dd(ii).name];
-        adir = dir([dirname '/*' extA]);
-        mdir = dir([dirname '/*' extM]);
-        
-        if numel(adir) ~= numel(mdir)
-            error(['Found %d annotation files and %d mito files for' ...
-                ' dir %s.'], numel(adir), numel(mdir), dirname);
-        else
-            
-            afiles = strcat([dirname '/'], sort({adir.name}));
-            mfiles = strcat([dirname '/'], sort({mdir.name}));
-            
-            allAFiles = cat(2, allAFiles, afiles);
-            allMFiles = cat(2, allMFiles, mfiles);
-        end
-    end
-end
+[allAFiles, allMFiles] = getMichelleImages(rootFolder);
 
 
 for i_f = 1:numel(allAFiles)
@@ -78,7 +37,7 @@ w_a = z;
 mask_m = false(size(z));
 k = size(c_k, 1);
 
-w = [.33 .67 1];
+w = [.25 .5 1];
 
 for i_k = 1:k
     mask = getMask(im_a, c_k(i_k,:));
@@ -106,7 +65,9 @@ for i_n = 1:cc.NumObjects
     end
 end
 
-im_a2 = im_a .* repmat(w_a, [1 1 3]);
+im_a_grey = repmat(mean(im_a, 3), [1 1 3]);
+
+im_a2 = im_a .* repmat(w_a, [1 1 3]) + im_a_grey .* repmat(1 - w_a, [1 1 3]);
 im_m2 = im_a2;
 im_m2(repmat(mask_m, [1 1 3])) = im_m(repmat(mask_m, [1 1 3]));
 

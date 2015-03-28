@@ -41,9 +41,10 @@ name_title_k = {'Terminal', 'Glia', 'Capillary', 'Background', ...
     'Small Terminals', 'Medium Terminals', 'Large Terminals', ...
     'Small Glia', 'Medium Glia', 'Large Glia'};
 % stat name as it will appear in the title and y-axis
-strfield_title_f = {'# / Area (um^{-2})', 'Fraction', 'Size (um^2)'};
+strfield_title_f = {'Density', '% Tissue', 'Size (um^2)'};
 % group names, as they appear on titles and axes
 name_g = {'YV', 'YE', 'YEP', 'AV', 'AE', 'AEP'};
+%name_g = {'YV'};
 
 % number of histogram bins
 hist_n = 32;
@@ -53,15 +54,15 @@ hist_n = 32;
 subplot_reduction = 2;
 
 % Marker size for plot kind ag
-marker_size = 18;
+marker_size = 30;
 % Aspect ratio for the ag plots
 pbox_aspect = [4 5 1];
 % error bar line weight
-ebar_line_width = 2;
+ebar_line_width = 2.5;
 % mean bar line weight
-mbar_line_width = 2;
+mbar_line_width = 2.5;
 % marker line weight (plot ag only)
-marker_line_width = 3;
+marker_line_width = 1.75;
 % The width (or length, really) of the mean bar
 mean_bar_width = .5;
 % Marker colors for ag plots
@@ -125,6 +126,8 @@ switch kind
         plotDataByGroup(stat_g);
     case 'ag'
         plotDataByAnimalAndGroup(stat_g);
+    case 'agb'
+        plotBarsByAnimalAndGroup(stat_g);
     case 'hg'
         plotHistogramsByGroup(stat_g);
     case 'hc'
@@ -372,6 +375,75 @@ if clean_your_mess
 end
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function plotBarsByAnimalAndGroup(stat_g)
+global k f doMito_k
+
+for i_k = 1:k
+    for i_f = 1:f
+        barsByAnimalPlotHelper(stat_g, i_k, i_f, 'a');
+    end
+end
+
+for i_k = find(doMito_k)
+    for i_f = 1:f
+        barsByAnimalPlotHelper(stat_g, i_k, i_f, 'm');
+    end
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function barsByAnimalPlotHelper(stat_g, i_k, i_f, type)
+global g strfields_f name_k minArea  pbox_aspect ebar_line_width  ...
+    clean_your_mess
+c1 = 'white';
+c2 = [.5, .5, .5];
+grp_color = {c1, c1, c1, c2, c2, c2};
+
+hf = figure;
+hold on;
+cname = name_k{i_k};
+% mbr_2 = mean_bar_width / 2; % half mean bar width
+% For each group...
+for i_g = 1:g
+    stat = stat_g{i_g};
+    animal_idx_m = [stat.animalidx];
+    animal_idx_a = unique(animal_idx_m);
+    a = numel(animal_idx_a);
+    stat_values = zeros(1, a);
+    % Plot the per-animal (i_a) mean
+    for i_a = 1:a
+        sel = animal_idx_m == animal_idx_a(i_a);
+        astat = computeSummary(stat(sel));
+        % Computer our stat, then save it for later
+        stat_values(i_a) = computestat(strfields_f{i_f}, cname,...
+            astat, type, minArea);
+        % Plot an individual symbol
+        %doPlot(i_g, stat_values(i_a), style(i_a), 'Color', marker_color, ...
+        %    'LineWidth', marker_line_width);
+    end
+    e = stderr(stat_values);
+    m = mean(stat_values);
+    
+    % Plot mean an error bars
+%     doPlot(i_g + [-mbr_2, mbr_2], m * [1, 1], 'k', 'LineWidth', ...
+%         mbar_line_width);
+    bar(i_g, m, 'FaceColor', grp_color{i_g});
+    doPlot(i_g * [1, 1], m + [-e, e], 'k', 'LineWidth', ebar_line_width);
+end
+
+set(gca, 'PlotBoxAspectRatio', pbox_aspect);
+
+makeItPretty(type, i_k, i_f);
+
+% print(hf, '-dpng', sprintf('animal_plot_%s_%s_%s.png',...
+%     name_k{i_k}, strfields_f{i_f}, type));
+print(hf, '-depsc', sprintf('animal_bar_plot_%s_%s_%s.eps',...
+    name_k{i_k}, strfields_f{i_f}, type));
+
+if clean_your_mess
+    close
+end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function plotDataByAnimalAndGroup(stat_g)
 global k f doMito_k
 
@@ -394,7 +466,8 @@ global g strfields_f name_k minArea marker_line_width pbox_aspect ...
     clean_your_mess
 
 % this will be referenced later as a char-array
-style = 'oxvds^*';
+%style = 'oxvds^*';
+style = '.........';
 
 hf = figure;
 hold on;
@@ -431,8 +504,8 @@ set(gca, 'PlotBoxAspectRatio', pbox_aspect);
 
 makeItPretty(type, i_k, i_f);
 
-print(hf, '-dpng', sprintf('animal_plot_%s_%s_%s.png',...
-    name_k{i_k}, strfields_f{i_f}, type));
+% print(hf, '-dpng', sprintf('animal_plot_%s_%s_%s.png',...
+%     name_k{i_k}, strfields_f{i_f}, type));
 print(hf, '-depsc', sprintf('animal_plot_%s_%s_%s.eps',...
     name_k{i_k}, strfields_f{i_f}, type));
 
@@ -474,7 +547,7 @@ end
 function p = doPlot(varargin)
 global marker_size
 ph = plot(varargin{:});
-set(ph, 'Markers', marker_size);
+set(ph, 'MarkerSize', marker_size);
 if nargout > 0
     p = ph;
 end
